@@ -1,0 +1,99 @@
+/* Global. */
+
+@font-face {
+  font-family: 'Roboto';
+  src: url(/interface/fonts/Roboto-Regular.ttf);
+}
+
+html, 
+body, 
+h1, 
+p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #EEE;
+	color: #FF7000;
+	font-family: 'Roboto', 'Tahoma', sans-serif;
+	height: auto;
+	width: 200px;
+}
+
+
+/* Common. */
+
+.custom-text-center {
+  text-align: center;
+}
+
+.custom-text-left {
+  text-align: left;
+}
+
+.custom-text-right {
+  text-align: right;
+}
+
+.custom-row {
+  margin: 5px 0;
+}
+
+.custom-row::after {
+  clear: both;
+	content: '';
+	display: table;
+}
+
+.custom-col {
+  float: left;
+  width: 50%;
+}
+
+.custom-border-bottom {
+  border-bottom: 1px solid #333;
+}
+
+
+/* Header. */
+
+.custom-header {
+  padding-top: 5px;
+}
+
+.custom-header-content img {
+  height: 32px;
+  width: auto;
+}
+
+.custom-header-content img, 
+.custom-header-content h1 {
+  line-height: 32px;
+}
+
+
+/* Main. */
+
+.custom-item {
+  color: #FF7000;
+	cursor: pointer;
+	display: block;
+	font-size: 15px;
+	padding: 5px 0;
+	text-decoration: none;
+  transition: .2s;
+}
+
+.custom-item:hover {
+  background-color: #DDD;
+  transition: .2s;
+}
+
+
+/* Footer. */
+
+.custom-version {
+  font-weight: bold;
+  padding: 5px 0;
+}
