@@ -17,12 +17,89 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         return true;
     } else if (request.command === "createImage") {
         createPostsImages();
+    } else if (request.command === "createThreadImage") {
+        createThreadImage();
     } else if (request.command === "error") {
         GLOBAL_BACKGROUND_URI = [];
         GLOBAL_BACKGROUND_IMAGES = [];
         GLOBAL_BACKGROUND_POST_COUNT = 0;
     }
 });
+
+
+function createThreadImage() {
+    GLOBAL_BACKGROUND_POST_COUNT = GLOBAL_BACKGROUND_URI.length;
+    var number = 0;
+    var i = 0;
+
+    while (i !== GLOBAL_BACKGROUND_URI.length - 1) {
+        var coordinate = GLOBAL_BACKGROUND_URI[i].coordinates;
+        var image = new Image();
+        image.src = GLOBAL_BACKGROUND_URI[i].image;
+
+        image.customProperty = {
+            number: number,
+            coordinateWidth: coordinate.width,
+            coordinateHeight: coordinate.height,
+            coordinatePageLeft: coordinate.pageLeft,
+            coordinatePageTop: coordinate.pageTop 
+        };   
+
+        image.onload = function () {
+            GLOBAL_BACKGROUND_IMAGES[this.customProperty.number] = this;
+        };
+        
+        number++;
+        i++;
+    }
+
+    // last image should be cropped.
+    
+    var coordinate = GLOBAL_BACKGROUND_URI[i].coordinates;
+    var image = new Image(); 
+    image.src = GLOBAL_BACKGROUND_URI[i].image;
+    
+    image.customProperty = {
+        number: number,
+        coordinateWidth: coordinate.width,
+        coordinateHeight: coordinate.height,
+        coordinatePageLeft: coordinate.pageLeft,
+        coordinatePageTop: coordinate.pageTop 
+    };   
+
+    image.onload = function () {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        canvas.width = this.customProperty.coordinateWidth;
+        canvas.height = this.customProperty.coordinateHeight
+        context.drawImage(
+            this,
+            this.customProperty.coordinatePageLeft, 
+            0,
+            this.customProperty.coordinateWidth,
+            this.customProperty.coordinateHeight,
+            0,
+            0,
+            this.customProperty.coordinateWidth, 
+            this.customProperty.coordinateHeight
+        );
+
+        var croppedURL = canvas.toDataURL("image/png");
+        var croppedImage = new Image();
+
+        croppedImage.src = croppedURL;
+        croppedImage.customProperty = {
+            number: this.customProperty.number
+        };
+
+        croppedImage.onload = function() {
+            GLOBAL_BACKGROUND_URI = [];
+            GLOBAL_BACKGROUND_IMAGES[this.customProperty.number] = this;
+            createImage();
+        }
+    };
+    
+}
 
 
 /**
@@ -161,7 +238,15 @@ function createImage() {
     }
 
     var url = canvas.toDataURL("image/png");
-    chrome.tabs.create({url: url, active: false, selected: false});
+    //chrome.tabs.create({url: url, active: false, selected: false});
+
+    /*
+    var tempImage = new Image();
+    tempImage.src = url;
+    tempImage.onload = function() {
+        chrome.downloads.download({url: url, filename: "thread.mhtml"});
+    };
+    */chrome.downloads.download({url: url, filename: "1.jpg"});
 
     GLOBAL_BACKGROUND_IMAGES = [];
     GLOBAL_BACKGROUND_POST_COUNT = 0;

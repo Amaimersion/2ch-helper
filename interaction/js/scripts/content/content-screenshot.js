@@ -12,8 +12,57 @@
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.command === "createScreenshotOfPosts") {
         createScreenshotOfPosts();
+    } else if (request.command === 'createScreenshotOfThread') {
+        createScreenshotOfThread();
     }
 });
+
+
+function createScreenshotOfThread() {
+    var thread = document.getElementById('posts-form');
+
+    var defaultPageOptions = getPageOptions();
+    changePageOptions();
+
+    var coordinate = {};
+
+    coordinate.pageTop = thread.offsetTop;
+    coordinate.pageLeft = thread.offsetLeft;
+    coordinate.width = thread.offsetWidth;
+    coordinate.height = thread.offsetHeight;
+
+    sendThreadCoordinatesAndCommand(coordinate, defaultPageOptions);
+}
+
+
+function sendThreadCoordinatesAndCommand(coordinate, defaultPageOptions) {
+    if (coordinate.height <= 0) {
+        setPageOptions(defaultPageOptions);
+        sendMessageToBackgroundScript({command: "createThreadImage"});
+        return;
+    }
+
+    var errorOccurrence = window.setTimeout(function() {
+        alert("Error");
+        setPageOptions(defaultPageOptions);
+        sendMessageToBackgroundScript({command: "error"});
+        return;
+    }, 10000);
+
+    window.scrollTo(coordinate.pageLeft, coordinate.pageTop);
+
+    window.setTimeout(function() {
+        sendMessageToBackgroundScript({
+            command: "createScreenshot",
+            coordinates: coordinate
+        }, function(response) {
+            window.clearTimeout(errorOccurrence);
+            coordinate.height -= window.innerHeight;
+            coordinate.pageTop += window.innerHeight;
+            sendThreadCoordinatesAndCommand(coordinate, defaultPageOptions);
+        });
+    }, 500);
+}
 
 
 /**

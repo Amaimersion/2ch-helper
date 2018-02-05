@@ -1,49 +1,47 @@
 {
     "manifest_version": 2,
-
     "name": "2ch+",
     "short_name": "2ch+",
     "version": "1.0.0",
-    "version_name": "beta-03.02.18",
+    "version_name": "beta-05.02.18",
     "description": "Simplifies the interaction with 2ch.hk.",
-
     "icons": {
         "16": "/interface/icons/icon-16.png",
         "32": "/interface/icons/icon-32.png",
         "48": "/interface/icons/icon-48.png",
         "128": "/interface/icons/icon-128.png"
     },
-
     "browser_action": {
         "default_title": "2ch+",
         "default_popup": "/interface/html/popup.html"
     },
-
     "background": {
         "scripts": [
-            "/interaction/js/background/background-globals.js",
-            "/interaction/js/background/background-screenshot.js"
+            "/interaction/js/scripts/background/background-globals.js",
+            "/interaction/js/scripts/background/background-screenshot.js",
+            "/interaction/js/scripts/background/background-downloads.js"
         ]
     },
-
     "content_scripts": [
         {
             "matches": [
                 "*://2ch.hk/*/res/*"
             ],
             "js": [
-                "/interaction/js/content/content-globals.js", 
-                "/interaction/js/content/content-elements-events.js", 
-                "/interaction/js/content/content-screenshot.js"
+                "/interaction/js/libs/jszip.min.js",
+                "/interaction/js/scripts/content/content-globals.js",
+                "/interaction/js/scripts/content/content-elements-events.js",
+                "/interaction/js/scripts/content/content-screenshot.js",
+                "/interaction/js/scripts/content/content-downloads.js"
             ]
         }
     ],
-
     "permissions": [
+        "pageCapture",
+        "downloads",
         "activeTab",
         "*://2ch.hk/*"
     ],
-    
     "author": "Sergey Kuznetsov",
-    "homepage_url": "https://github.com/Amaimersion"
+    "homepage_url": "https://github.com/Amaimersion/2ch-helper"
 }
