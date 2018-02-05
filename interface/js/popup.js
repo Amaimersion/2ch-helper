@@ -14,16 +14,36 @@ if (document.readyState === 'loading') {
  * Starts when the popup.html has the status 'DOMContentLoaded'.
  */
 function main() {
-    bindActions();
+    bindEvents();
 }
 
 
 /**
- * Binds onclick actions on an HTML elements.
+ * Binds onclick events on an HTML elements.
  */
-function bindActions() {
+function bindEvents() {
     document.getElementById('screenshot-of-posts').onclick = function() {
         sendMessageToContentScript({command: 'createScreenshotOfPosts'});
+    };
+
+    document.getElementById('screenshot-of-thread').onclick = function() {
+        sendMessageToContentScript({command: 'createScreenshotOfThread'});
+    }
+
+    document.getElementById('download-images').onclick = function() {
+        sendMessageToContentScript({command: 'downloadImages'});
+    };
+
+    document.getElementById('download-video').onclick  = function() {
+        sendMessageToContentScript({command: 'downloadVideo'});
+    };
+
+    document.getElementById('download-media').onclick  = function() {
+        sendMessageToContentScript({command: 'downloadMedia'});
+    };
+
+    document.getElementById('download-thread').onclick = function() {
+        sendMessageToBackgroundScript({command: 'downloadThread'});
     };
 }
 
@@ -44,5 +64,23 @@ function sendMessageToContentScript(message, callback) {
         chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
             callback(response);
         });
+    });
+}
+
+
+/**
+ * Sends the message to the background scripts.
+ * 
+ * @param {Object} message
+ * A message for sending.
+ * 
+ * @param {function(Object)} callback
+ * A callback that handles the response.
+ */
+function sendMessageToBackgroundScript(message, callback) {
+    callback = callback || function() {};
+
+    chrome.runtime.sendMessage(message, function(response) {
+        callback(response);
     });
 }
