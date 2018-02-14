@@ -1,6 +1,25 @@
+/** 
+ * The module that handles messages.
+ * Can handle messages of the following types: 'command'.
+ * 
+ * @module BackgroundMessage
+ */
 function BackgroundMessage() {}
 
 
+/**
+ * Handles messages.
+ * 
+ * @memberof BackgroundMessage
+ * @static
+ * 
+ * @param {Object} request
+ * @param {Object} sender 
+ * @param {Object} sendResponse 
+ * 
+ * @returns {Boolean} 
+ * Returns true because there will be an asynchronous response.
+ */
 BackgroundMessage.onMessage = function(request, sender, sendResponse) {
     if (request.type === 'command') {
         BackgroundMessage.commandHandler(request, sendResponse);
@@ -12,6 +31,18 @@ BackgroundMessage.onMessage = function(request, sender, sendResponse) {
 }
 
 
+/**
+ * Handles command type messages.
+ * 
+ * @memberof BackgroundMessage
+ * @static
+ * @async
+ * 
+ * @param {Object} request 
+ * @param {Object} sendResponse 
+ * 
+ * @throws {Error} Throws an error if occurs.
+ */
 BackgroundMessage.commandHandler = function(request, sendResponse) {
     const command = request.command;
 
@@ -86,7 +117,6 @@ BackgroundMessage.commandHandler = function(request, sendResponse) {
         const options = {
             file: request.path
         };
-
         const promise = BackgroundAPI.injectScript(options);
 
         promise.then(() => {
@@ -99,6 +129,18 @@ BackgroundMessage.commandHandler = function(request, sendResponse) {
 }
 
 
+/**
+ * Handles unknown type messages.
+ * 
+ * @memberof BackgroundMessage
+ * @static
+ * 
+ * @param {Object} request 
+ * @param {Object} sender 
+ * @param {Object} sendResponse
+ * 
+ * @throws {Error} Throws an error with request information.
+ */
 BackgroundMessage.errorHandler = function(request, sender, sendResponse) {
     console.log(
         'An unknown request was received.\n',
@@ -122,4 +164,7 @@ BackgroundMessage.errorHandler = function(request, sender, sendResponse) {
 }
 
 
+/** 
+ * Sets a message handler. 
+ */
 chrome.runtime.onMessage.addListener(BackgroundMessage.onMessage);
