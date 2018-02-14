@@ -10,7 +10,7 @@ function BackgroundAPI() {}
  * Clears a cashe of the background page.
  * It's just reload it, but it's works.
  * 
- * @memberof ContentAPI
+ * @memberof BackgroundAPI
  * @static
  */
 BackgroundAPI.clearCashe = function() {
@@ -21,7 +21,7 @@ BackgroundAPI.clearCashe = function() {
 /**
  * Injects a script into the page.
  * 
- * @memberof ContentAPI
+ * @memberof BackgroundAPI
  * @static
  * @async
  * 
