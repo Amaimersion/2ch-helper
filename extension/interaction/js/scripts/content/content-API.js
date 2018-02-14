@@ -11,6 +11,7 @@ function ContentAPI() {}
  * 
  * @memberof ContentAPI
  * @static
+ * @type {Object}
  */
 ContentAPI.anotherAPI = {
     'screenshot': {
