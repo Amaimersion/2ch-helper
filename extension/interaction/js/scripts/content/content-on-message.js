@@ -1,6 +1,22 @@
+/** 
+ * The module that handle messages.
+ * Can handle messages of the following types: 'API'.
+ * 
+ * @module ContentMessage
+ */
 function ContentMessage() {}
 
 
+/**
+ * Handles messages.
+ * 
+ * @param {Object} request
+ * @param {Object} sender 
+ * @param {Object} sendResponse 
+ * 
+ * @returns {Boolean} 
+ * Returns true because there will be an asynchronous response.
+ */
 ContentMessage.onMessage = function(request, sender, sendResponse) {
     if (request.type === 'API') {
         ContentMessage.APIHandler(request, sendResponse);
@@ -12,6 +28,14 @@ ContentMessage.onMessage = function(request, sender, sendResponse) {
 }
 
 
+/**
+ * Handles API type messages.
+ * 
+ * @param {Object} request 
+ * @param {Object} sendResponse 
+ * 
+ * @throws {Error} Throws an error if occurs.
+ */
 ContentMessage.APIHandler = function(request, sendResponse) {
     const promise = ContentAPI.executeAnotherAPI(
         request.name, 
@@ -27,6 +51,15 @@ ContentMessage.APIHandler = function(request, sendResponse) {
 }
 
 
+/**
+ * Handles unknown type messages.
+ * 
+ * @param {Object} request 
+ * @param {Object} sender 
+ * @param {Object} sendResponse
+ * 
+ * @throws {Error} Throws an error with request information.
+ */
 ContentMessage.errorHandler = function(request, sender, sendResponse) {
     console.log(
         'An unknown request was received.\n',
@@ -50,4 +83,7 @@ ContentMessage.errorHandler = function(request, sender, sendResponse) {
 }
 
 
+/** 
+ * Sets a message handler. 
+ */
 chrome.runtime.onMessage.addListener(ContentMessage.onMessage);
