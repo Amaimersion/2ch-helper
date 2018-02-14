@@ -23,6 +23,7 @@ ContentDOMContentLoaded.main = function() {
  * 
  * @memberof ContentDOMContentLoaded
  * @static
+ * 
  * @param {String} [checkboxesSelector=input[type="checkbox"]] 
  * A query selector for finding checkboxes. 
  * Defaults to 'input[type="checkbox"]'.

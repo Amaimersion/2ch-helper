@@ -12,6 +12,7 @@ function ContentDownloads() {}
  * @memberof ContentDownloads
  * @static
  * @async
+ * 
  * @param {function(Object)} [callback] 
  * A callback that executes after download and handles the response.
  */
@@ -33,6 +34,7 @@ ContentDownloads.downloadImages = function(callback) {
  * @memberof ContentDownloads
  * @static
  * @async
+ * 
  * @param {function(Object)} [callback] 
  * A callback that executes after download and handles the response.
  */
@@ -54,6 +56,7 @@ ContentDownloads.downloadVideo = function(callback) {
  * @memberof ContentDownloads
  * @static
  * @async
+ * 
  * @param {function(Object)} [callback] 
  * A callback that executes after download and handles the response.
  */
@@ -72,6 +75,7 @@ ContentDownloads.downloadMedia = function(callback) {
  * @memberof ContentDownloads
  * @static
  * @async
+ * 
  * @param {function(Object)} [callback] 
  * A callback that executes after download and handles the response.
  */

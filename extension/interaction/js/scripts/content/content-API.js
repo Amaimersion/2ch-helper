@@ -57,8 +57,12 @@ ContentAPI.anotherAPI = {
  * @memberof ContentAPI
  * @static
  * @async
- * @param {String} name A name of another content module.
- * @param {String} method A method of another content module.
+ * 
+ * @param {String} name 
+ * A name of another content module.
+ * @param {String} method 
+ * A method of another content module.
+ * 
  * @returns {Promise<undefined>} 
  * A promise for the execute that will resolve when injects and executes are successfully completed.
  * Resolve will contain undefined if success, otherwise reject will contain an error.
@@ -91,7 +95,10 @@ ContentAPI.executeAnotherAPI = function(name, method) {
  * @memberof ContentAPI
  * @static
  * @async
- * @param {String} name A name of another content module.
+ * 
+ * @param {String} name 
+ * A name of another content module.
+ * 
  * @returns {Promise<undefined>}
  * A promise for the injection that will resolve when the module will injects.
  * Resolve will contain undefined if success, otherwise reject will contain an error. 
@@ -134,8 +141,12 @@ ContentAPI.injectAnotherAPI = function(name) {
  * @memberof ContentAPI
  * @static
  * @async
- * @param {String} name A name of another content module.
- * @param {String} method A method of another content module.
+ * 
+ * @param {String} name 
+ * A name of another content module.
+ * @param {String} method 
+ * A method of another content module.
+ * 
  * @returns {Promise<undefined>} 
  * A promise for the execute that will resolve when the method will starts.
  * Resolve will contain undefined if success, otherwise reject will contain an error.
@@ -166,8 +177,12 @@ ContentAPI.executeAnotherAPIMethod = function(name, method) {
  * 
  * @memberof ContentAPI
  * @static
- * @param {String} [id=posts-form] An id of thread. Defaults to 'posts-form'.
- * @returns {HTMLElement} A thread if it was finded, otherwise null.
+ * 
+ * @param {String} [id=posts-form] 
+ * An id of thread. Defaults to 'posts-form'.
+ * 
+ * @returns {HTMLElement} 
+ * A thread if it was finded, otherwise null.
  */
 ContentAPI.getThread = function(id) {
     return document.getElementById(id || 'posts-form');
@@ -208,8 +223,12 @@ ContentAPI.getParent = function(element, condition) {
  * 
  * @memberof ContentAPI
  * @static
- * @param {Object} message A message for sending.
- * @param {function(Object)} [callback] A callback that handle the response.
+ * 
+ * @param {Object} message 
+ * A message for sending.
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that handle the response.
  */
 ContentAPI.sendMessageToBackground = function(message, callback) {
    callback = callback || function() {};
