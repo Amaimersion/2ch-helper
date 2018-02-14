@@ -1,6 +1,32 @@
+/** 
+ * The module that handles download requests.
+ * 
+ * @module BackgroundDownloads
+ */
 function BackgroundDownloads() {}
 
 
+/**
+ * Delay for downloading.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * @type {Number}
+ */
+BackgroundDownloads.downloadDelay = 500;
+
+
+/**
+ * Downloads a thread.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * @async
+ * 
+ * @returns {Promise<undefined>} 
+ * A promise for the download that will resolve when download are successfully completed.
+ * Resolve will contain undefined if success.
+ */
 BackgroundDownloads.downloadThread = function() {
     return new Promise((resolve, reject) => {
         const query = {active: true, currentWindow: true};
@@ -26,6 +52,19 @@ BackgroundDownloads.downloadThread = function() {
 }
 
 
+/**
+ * Downloads an images.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * @async
+ * 
+ * @param {Array<String>} urls An urls for download.
+ *  
+ * @returns {Promise<undefined>} 
+ * A promise for the download that will resolve when download are successfully completed.
+ * Resolve will contain undefined if success, otherwise reject will contain an error.
+ */
 BackgroundDownloads.downloadImages = function(urls) {
     return new Promise((resolve, reject) => {
         this.downloadData(urls).then(() => {
@@ -37,6 +76,19 @@ BackgroundDownloads.downloadImages = function(urls) {
 }
 
 
+/**
+ * Downloads a video.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * @async
+ * 
+ * @param {Array<String>} urls An urls for download.
+ *  
+ * @returns {Promise<undefined>} 
+ * A promise for the download that will resolve when download are successfully completed.
+ * Resolve will contain undefined if success, otherwise reject will contain an error.
+ */
 BackgroundDownloads.downloadVideo = function(urls) {
     return new Promise((resolve, reject) => {
         this.downloadData(urls).then(() => {
@@ -48,6 +100,21 @@ BackgroundDownloads.downloadVideo = function(urls) {
 }
 
 
+/**
+ * Downloads a data.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * @async
+ * 
+ * @param {Object} options 
+ * An options for download.
+ * See https://developer.chrome.com/extensions/downloads#method-download
+ * 
+ * @returns {Promise<Number>} 
+ * A promise for the download that will resolve when download are successfully completed.
+ * Resolve will contain the id of the new download item if success.
+ */
 BackgroundDownloads.download = function(options) {
     return new Promise((resolve, reject) => {
         chrome.downloads.download(options, (downloadId) => {
@@ -57,6 +124,34 @@ BackgroundDownloads.download = function(options) {
 }
 
 
+/**
+ * Downloads a data of the urls.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * @async
+ * 
+ * @param {Array<String>} urls
+ * The urls for download. 
+ * 
+ * @param {String} [fileName]
+ * A name of the file. 
+ * By default this is determined based on the url. 
+ * If cannot be determined, then 'undefined'.
+ * 
+ * @param {String} [fileFormat] 
+ * A format of the file. 
+ * By default this is determined based on the url. 
+ * If cannot be determined, then ''.
+ * 
+ * @param {Object} [downloadOptions] 
+ * An options for download.
+ * See https://developer.chrome.com/extensions/downloads#method-download
+ * 
+ * @returns {Promise<undefined>} 
+ * A promise for the download that will resolve when download are successfully completed.
+ * Resolve will contain undefined if success, otherwise reject will contain an error.
+ */
 BackgroundDownloads.downloadData = function(urls, fileName, fileFormat, downloadOptions) {
     return new Promise((resolve, reject) => {
         downloadOptions = downloadOptions || {};
@@ -83,7 +178,7 @@ BackgroundDownloads.downloadData = function(urls, fileName, fileFormat, download
                         this.download(downloadOptions).then(() => {
                             return res();
                         });
-                    }, 500);
+                    }, this.downloadDelay);
                 });
             });
         }
@@ -100,6 +195,22 @@ BackgroundDownloads.downloadData = function(urls, fileName, fileFormat, download
 }
 
 
+/**
+ * Determines the file name based on the url.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * 
+ * @param {String} url
+ *  
+ * @returns {String} 
+ * The name of the url.
+ * If cannot be determined, then undefined. 
+ * 
+ * @example
+ * // returns '123'.
+ * BackgroundDownloads.determineFileName('https://2ch.hk/pr/src/987/123.jpg').
+ */
 BackgroundDownloads.determineFileName = function(url) {
     const lastIndex = url.lastIndexOf('.');
     const preLastIndex = url.lastIndexOf('/');
@@ -112,6 +223,22 @@ BackgroundDownloads.determineFileName = function(url) {
 }
 
 
+/**
+ * Determines the file format based on the url.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * 
+ * @param {String} url
+ *  
+ * @returns {String} 
+ * The format of the url.
+ * If cannot be determined, then undefined. 
+ * 
+ * @example
+ * // returns '.jpg'.
+ * BackgroundDownloads.determineFileName('https://2ch.hk/pr/src/987/123.jpg').
+ */
 BackgroundDownloads.determineFileFormat = function(url) {
     const lastIndex = url.lastIndexOf('.');
 
@@ -123,6 +250,21 @@ BackgroundDownloads.determineFileFormat = function(url) {
 }
 
 
+/**
+ * Removes invalid characters from the file name.
+ * 
+ * @memberof BackgroundDownloads
+ * @static
+ * 
+ * @param {String} name 
+ * A file name for fix.
+ * 
+ * @param {String} [char=''] 
+ * A char for replace. Defaults to ''. 
+ *  
+ * @returns {String} 
+ * A valid file name.
+ */
 BackgroundDownloads.fixFileName = function(name, char) {
     return name.replace(/[\\\/\:\*\?\"\<\>\|]/g, char || '');
 }
