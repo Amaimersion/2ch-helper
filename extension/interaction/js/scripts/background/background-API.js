@@ -29,7 +29,7 @@ BackgroundAPI.clearCashe = function() {
  * An options for execute. 
  * See https://developer.chrome.com/extensions/tabs#method-executeScript
  * 
- * @returns {Promise<null>} 
+ * @returns {Promise<void>} 
  * A promise for the inject that will resolve when injects are successfully completed.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */

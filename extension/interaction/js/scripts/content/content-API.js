@@ -64,7 +64,7 @@ ContentAPI.anotherAPI = {
  * @param {String} method 
  * A method of another content module.
  * 
- * @returns {Promise<null>} 
+ * @returns {Promise<void>} 
  * A promise for the execute that will resolve when injects and executes are successfully completed.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
@@ -100,7 +100,7 @@ ContentAPI.executeAnotherAPI = function(name, method) {
  * @param {String} name 
  * A name of another content module.
  * 
- * @returns {Promise<null>}
+ * @returns {Promise<void>}
  * A promise for the injection that will resolve when the module will injects.
  * Resolve will contain nothing if success, otherwise reject will contain an error. 
  */
@@ -148,7 +148,7 @@ ContentAPI.injectAnotherAPI = function(name) {
  * @param {String} method 
  * A method of another content module.
  * 
- * @returns {Promise<null>} 
+ * @returns {Promise<void>} 
  * A promise for the execute that will resolve when the method will starts.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
