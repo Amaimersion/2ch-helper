@@ -1,9 +1,54 @@
+/** 
+ * The module that handles screenshot requests.
+ * 
+ * @module ContentScreenshot
+ */
 function ContentScreenshot() {}
 
 
+/**
+ * Options of a page.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @type {Object}
+ */
 ContentScreenshot.pageOptions = {};
 
 
+/**
+ * Delay for screenshoting.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @type {Number}
+ */
+ContentScreenshot.screenshotDelay = 500;
+
+
+/**
+ * Delay to limit the time a screenshot is taken.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @type {Number}
+ */
+ContentScreenshot.errorDelay = 10000;
+
+
+/**
+ * Coordinate of an element on a page.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @constructor
+ * 
+ * @param {Number} [scrollX=0] 
+ * @param {Number} [scrollY=0]
+ * @param {Number} [width=0] 
+ * @param {Number} [height=0] 
+ * @param {Number} [offsetTop=0] 
+ */
 ContentScreenshot.Coordinate = function(scrollX, scrollY, width, height, offsetTop) {
     this.scrollX = scrollX || 0;
     this.scrollY = scrollY || 0;
@@ -13,6 +58,18 @@ ContentScreenshot.Coordinate = function(scrollX, scrollY, width, height, offsetT
 }
 
 
+/**
+ * Sorts coordinates.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * 
+ * @param {Array<ContentScreenshot.Coordinate>} coordinates 
+ * A coordiantes for sorting.
+ * 
+ * @param {String} property 
+ * A property for sorting.
+ */
 ContentScreenshot.sortCoordinates = function(coordinates, property) {
     coordinates.sort((a, b) => {
         return a[property] - b[property];
@@ -20,6 +77,15 @@ ContentScreenshot.sortCoordinates = function(coordinates, property) {
 }
 
 
+/**
+ * Creates screenshot of selected posts.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @async
+ * 
+ * @throws {Error} Throws an error if occurs.
+ */
 ContentScreenshot.createScreenshotOfPosts = function() {
     const thread = ContentAPI.getThread();
 
@@ -42,6 +108,15 @@ ContentScreenshot.createScreenshotOfPosts = function() {
 }
 
 
+/**
+ * Gets coordinates of selected posts.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * 
+ * @returns {Array<ContentScreenshot.Coordinate>}
+ * An array of sorted (by 'offsetTop') coordinates of selected posts.
+ */
 ContentScreenshot.getScrenshotCoordinates = function() {
     const postCoordinates = [];
 
@@ -64,6 +139,22 @@ ContentScreenshot.getScrenshotCoordinates = function() {
 }
 
 
+/**
+ * Groups and sends to background script the coordinates.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @async
+ * 
+ * @param {Array<ContentScreenshot.Coordinate>} coordinates 
+ * A coordinates for handling.
+ * 
+ * @returns {Promise<undefined>} 
+ * A promise for the handle that will resolve when all cordinates
+ * will be grouped and sended to background script.
+ * Resolve will contain undefined if success, 
+ * otherwise reject will contain an error.
+ */
 ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
     return new Promise((resolve, reject) => {
         const innerHeight = window.innerHeight;
@@ -102,7 +193,7 @@ ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
                             error.message = 'Timeout limit.';
 
                             return rej(error);
-                        }, 10000);
+                        }, this.errorDelay);
 
                         window.setTimeout(() => {
                             ContentAPI.sendMessageToBackground({
@@ -127,7 +218,7 @@ ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
                                     return rej();
                                 }
                             });
-                        }, 500);
+                        }, this.screenshotDelay);
                     }
                 });
             });
@@ -144,7 +235,7 @@ ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
                     error.message = 'Timeout limit.';
 
                     return rej(error);
-                }, 10000);
+                }, this.errorDelay);
 
                 window.setTimeout(() => {
                     ContentAPI.sendMessageToBackground({
@@ -159,15 +250,19 @@ ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
                             return rej();
                         }
                     });
-                }, 500);
+                }, this.screenshotDelay);
             });
         });
 
         promise.then(() => {
             return resolve();
-        }, () => {
+        }, (rejectError) => {
             const error = new Error();
             error.message = 'Failed to create posts screenshot.';
+
+            if (rejectError.message) {
+                error.message += ' ' + rejectError.message;
+            }
 
             return reject(error);
         });
@@ -175,9 +270,20 @@ ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
 }
 
 
-// This method will work fully, if handle (this.createScreenshotOfPosts()) 
-// a thread like all selected posts.
-// However, this method works faster and consumes less memory.
+/*
+ * This method will work fully, if handle a thread like all selected posts.
+ * However, this method works faster and consumes less memory.
+ */
+
+/**
+ * Creates screenshot of thread.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @async
+ * 
+ * @throws {Error} Throws an error if occurs.
+ */
 ContentScreenshot.createScreenshotOfThread = function() {
     const thread = ContentAPI.getThread();
 
@@ -200,6 +306,15 @@ ContentScreenshot.createScreenshotOfThread = function() {
 }
 
 
+/**
+ * Gets coordinates of thread.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * 
+ * @returns {Array<ContentScreenshot.Coordinate>}
+ * An array of coordinates of a thread.
+ */
 ContentScreenshot.getThreadCoordinates = function(thread) {
     const coordinates = [];
 
@@ -258,6 +373,22 @@ ContentScreenshot.getThreadCoordinates = function(thread) {
 }
 
 
+/**
+ * Sends to background script the coordinates.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * @async
+ * 
+ * @param {Array<ContentScreenshot.Coordinate>} coordinates 
+ * A coordinates for handling.
+ * 
+ * @returns {Promise<undefined>} 
+ * A promise for the handle that will resolve when 
+ * all cordinates will be sended to background script.
+ * Resolve will contain undefined if success, 
+ * otherwise reject will contain an error.
+ */
 ContentScreenshot.handleThreadCoordinates = function(coordinates) {
     return new Promise((resolve, reject) => {
         let promise = Promise.resolve();
@@ -270,7 +401,7 @@ ContentScreenshot.handleThreadCoordinates = function(coordinates) {
                         error.message = 'Timeout limit.';
 
                         return rej(error);
-                    }, 10000);
+                    }, this.errorDelay);
 
                     window.scrollTo(
                         coordinate.scrollX, 
@@ -291,16 +422,20 @@ ContentScreenshot.handleThreadCoordinates = function(coordinates) {
                                 return rej();
                             }
                         });
-                    }, 500);
+                    }, this.screenshotDelay);
                 });
             });
         }
 
         promise.then(() => {
             return resolve();
-        }, () => {
+        }, (rejectError) => {
             const error = new Error();
             error.message = 'Failed to create thread screenshot.';
+
+            if (rejectError.message) {
+                error.message += ' ' + rejectError.message;
+            }
 
             return reject(error);
         });
@@ -310,8 +445,12 @@ ContentScreenshot.handleThreadCoordinates = function(coordinates) {
 
 /**
  * Gets a default page options.
+ * Options will be setted to ContentScreenshot.pageOptions.
  * 
- * @returns {Object}
+ * @memberof ContentScreenshot
+ * @static
+ * 
+ * @param {HTMLElement} thread A thread on a page. 
  */
 ContentScreenshot.setPageOptions = function(thread) {
     const upNavArrow = document.getElementById('up-nav-arrow');
@@ -334,8 +473,13 @@ ContentScreenshot.setPageOptions = function(thread) {
 }
 
 
-/**
- * Changes a page options. 
+ /**
+ * Changes a page options on the options needed for screenshot.
+ * 
+ * @memberof ContentScreenshot
+ * @static
+ * 
+ * @param {HTMLElement} thread A thread on a page. 
  */
 ContentScreenshot.changePageOptions = function(thread) {
     // Try to make pages with bad scrolling work, e.g., ones with
@@ -366,9 +510,13 @@ ContentScreenshot.changePageOptions = function(thread) {
 
 
 /**
- * Set the page options.
+ * Restores default page options.
+ * Options will be taken from ContentScreenshot.pageOptions.
  * 
- * @param {Object} options 
+ * @memberof ContentScreenshot
+ * @static
+ * 
+ * @param {HTMLElement} thread A thread on a page. 
  */
 ContentScreenshot.restorePageOptions = function(thread) {
     const options = this.pageOptions;
