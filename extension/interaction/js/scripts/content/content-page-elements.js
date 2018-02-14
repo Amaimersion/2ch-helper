@@ -1,5 +1,5 @@
 /** 
- * The module that handle page elements.
+ * The module that handles page elements.
  * 
  * @module ContentPageElements
  */

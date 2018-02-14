@@ -1,5 +1,5 @@
 /** 
- * The module that handle messages.
+ * The module that handles messages.
  * Can handle messages of the following types: 'API'.
  * 
  * @module ContentMessage

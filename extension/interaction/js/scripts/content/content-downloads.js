@@ -1,5 +1,5 @@
 /** 
- * The module that handle download requests.
+ * The module that handles download requests.
  * 
  * @module ContentDownloads
  */
