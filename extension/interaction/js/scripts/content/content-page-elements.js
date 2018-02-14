@@ -80,7 +80,7 @@ ContentPageElements.eventForUncheckedCheckbox = function(checkbox) {
  * 
  * @param {HTMLInputElement} checkbox
  * 
- * @returns {HTMLElement} - A post (DIV).
+ * @returns {HTMLElement} A post (DIV).
  */
 ContentPageElements.getPostOfCheckbox = function(checkbox) {
     return ContentAPI.getParent(checkbox, (element) => {
