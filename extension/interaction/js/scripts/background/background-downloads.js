@@ -61,7 +61,7 @@ BackgroundDownloads.downloadThread = function() {
  * 
  * @param {Array<String>} urls An urls for download.
  *  
- * @returns {Promise<void>} 
+ * @returns {Promise<void | Error>} 
  * A promise for the download that will resolve when download are successfully completed.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
@@ -85,7 +85,7 @@ BackgroundDownloads.downloadImages = function(urls) {
  * 
  * @param {Array<String>} urls An urls for download.
  *  
- * @returns {Promise<void>} 
+ * @returns {Promise<void | Error>} 
  * A promise for the download that will resolve when download are successfully completed.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
@@ -148,7 +148,7 @@ BackgroundDownloads.download = function(options) {
  * An options for download.
  * See https://developer.chrome.com/extensions/downloads#method-download
  * 
- * @returns {Promise<void>} 
+ * @returns {Promise<void | Error>} 
  * A promise for the download that will resolve when download are successfully completed.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */

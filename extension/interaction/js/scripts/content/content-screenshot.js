@@ -149,7 +149,7 @@ ContentScreenshot.getScrenshotCoordinates = function() {
  * @param {Array<ContentScreenshot.Coordinate>} coordinates 
  * A coordinates for handling.
  * 
- * @returns {Promise<void>} 
+ * @returns {Promise<void | Error>} 
  * A promise for the handle that will resolve when all cordinates
  * will be grouped and sended to background script.
  * Resolve will contain nothing if success, 
@@ -383,7 +383,7 @@ ContentScreenshot.getThreadCoordinates = function(thread) {
  * @param {Array<ContentScreenshot.Coordinate>} coordinates 
  * A coordinates for handling.
  * 
- * @returns {Promise<void>} 
+ * @returns {Promise<void | Error>} 
  * A promise for the handle that will resolve when 
  * all cordinates will be sended to background script.
  * Resolve will contain nothing if success, 

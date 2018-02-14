@@ -52,7 +52,7 @@ BackgroundScreenshot.clearData = function() {
  * @param {ContentScreenshot.Coordinate} coordinate
  * Position of needed region to crop. 
  * 
- * @returns {Promise<void>} 
+ * @returns {Promise<void | Error>} 
  * A promise for the create that will resolve when create are successfully completed.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
@@ -113,7 +113,7 @@ BackgroundScreenshot.createTabScreenshot = function(options) {
  * @static
  * @async
  * 
- * @returns {Promise<String>} 
+ * @returns {Promise<String | Error>} 
  * A promise for the create that will resolve when create are successfully completed.
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
@@ -137,7 +137,7 @@ BackgroundScreenshot.createPostsImage = function() {
  * @static
  * @async
  * 
- * @returns {Promise<String>} 
+ * @returns {Promise<String | Error>} 
  * A promise for the create that will resolve when create are successfully completed.
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
@@ -163,7 +163,7 @@ BackgroundScreenshot.createThreadImage = function() {
  * @static
  * @async
  * 
- * @returns {Promise<String>} 
+ * @returns {Promise<String | Error>} 
  * A promise for the create that will resolve when create are successfully completed.
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
@@ -189,7 +189,7 @@ BackgroundScreenshot.createObjectImage = function() {
  * @static
  * @async
  * 
- * @returns {Promise<String>} 
+ * @returns {Promise<String | Error>} 
  * A promise for the create that will resolve when create are successfully completed.
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
@@ -218,7 +218,7 @@ BackgroundScreenshot.createImage = function() {
  * @static
  * @async
  * 
- * @returns {Promise<void>} 
+ * @returns {Promise<void | Error>} 
  * A promise for the create that will resolve when create are successfully completed.
  * Resolve will contain nothing if success, otherwise reject will contain an error. 
  */
