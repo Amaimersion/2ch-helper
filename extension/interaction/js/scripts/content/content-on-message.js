@@ -10,6 +10,9 @@ function ContentMessage() {}
 /**
  * Handles messages.
  * 
+ * @memberof ContentMessage
+ * @static
+ * 
  * @param {Object} request
  * @param {Object} sender 
  * @param {Object} sendResponse 
@@ -30,6 +33,10 @@ ContentMessage.onMessage = function(request, sender, sendResponse) {
 
 /**
  * Handles API type messages.
+ * 
+ * @memberof ContentMessage
+ * @static
+ * @async
  * 
  * @param {Object} request 
  * @param {Object} sendResponse 
@@ -53,6 +60,9 @@ ContentMessage.APIHandler = function(request, sendResponse) {
 
 /**
  * Handles unknown type messages.
+ * 
+ * @memberof ContentMessage
+ * @static
  * 
  * @param {Object} request 
  * @param {Object} sender 
