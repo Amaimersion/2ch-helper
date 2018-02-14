@@ -10,6 +10,8 @@
     "author": "Sergey Kuznetsov",
     "homepage_url": "https://github.com/Amaimersion/2ch-helper",
 
+    "options_page": "/interface/html/settings.html",
+
     "icons": {
         "16": "/interface/icons/icon-16.png",
         "32": "/interface/icons/icon-32.png",
