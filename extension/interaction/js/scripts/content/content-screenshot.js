@@ -149,10 +149,10 @@ ContentScreenshot.getScrenshotCoordinates = function() {
  * @param {Array<ContentScreenshot.Coordinate>} coordinates 
  * A coordinates for handling.
  * 
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the handle that will resolve when all cordinates
  * will be grouped and sended to background script.
- * Resolve will contain undefined if success, 
+ * Resolve will contain nothing if success, 
  * otherwise reject will contain an error.
  */
 ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
@@ -383,10 +383,10 @@ ContentScreenshot.getThreadCoordinates = function(thread) {
  * @param {Array<ContentScreenshot.Coordinate>} coordinates 
  * A coordinates for handling.
  * 
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the handle that will resolve when 
  * all cordinates will be sended to background script.
- * Resolve will contain undefined if success, 
+ * Resolve will contain nothing if success, 
  * otherwise reject will contain an error.
  */
 ContentScreenshot.handleThreadCoordinates = function(coordinates) {

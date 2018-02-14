@@ -64,9 +64,9 @@ ContentAPI.anotherAPI = {
  * @param {String} method 
  * A method of another content module.
  * 
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the execute that will resolve when injects and executes are successfully completed.
- * Resolve will contain undefined if success, otherwise reject will contain an error.
+ * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 ContentAPI.executeAnotherAPI = function(name, method) {
     return new Promise((resolve, reject) => {
@@ -100,9 +100,9 @@ ContentAPI.executeAnotherAPI = function(name, method) {
  * @param {String} name 
  * A name of another content module.
  * 
- * @returns {Promise<undefined>}
+ * @returns {Promise<null>}
  * A promise for the injection that will resolve when the module will injects.
- * Resolve will contain undefined if success, otherwise reject will contain an error. 
+ * Resolve will contain nothing if success, otherwise reject will contain an error. 
  */
 ContentAPI.injectAnotherAPI = function(name) {
     return new Promise((resolve, reject) => {
@@ -148,9 +148,9 @@ ContentAPI.injectAnotherAPI = function(name) {
  * @param {String} method 
  * A method of another content module.
  * 
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the execute that will resolve when the method will starts.
- * Resolve will contain undefined if success, otherwise reject will contain an error.
+ * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 ContentAPI.executeAnotherAPIMethod = function(name, method) {
     return new Promise((resolve, reject) => {

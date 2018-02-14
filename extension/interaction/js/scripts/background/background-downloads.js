@@ -23,9 +23,9 @@ BackgroundDownloads.downloadDelay = 500;
  * @static
  * @async
  * 
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the download that will resolve when download are successfully completed.
- * Resolve will contain undefined if success.
+ * Resolve will contain nothing if success.
  */
 BackgroundDownloads.downloadThread = function() {
     return new Promise((resolve, reject) => {
@@ -61,9 +61,9 @@ BackgroundDownloads.downloadThread = function() {
  * 
  * @param {Array<String>} urls An urls for download.
  *  
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the download that will resolve when download are successfully completed.
- * Resolve will contain undefined if success, otherwise reject will contain an error.
+ * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 BackgroundDownloads.downloadImages = function(urls) {
     return new Promise((resolve, reject) => {
@@ -85,9 +85,9 @@ BackgroundDownloads.downloadImages = function(urls) {
  * 
  * @param {Array<String>} urls An urls for download.
  *  
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the download that will resolve when download are successfully completed.
- * Resolve will contain undefined if success, otherwise reject will contain an error.
+ * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 BackgroundDownloads.downloadVideo = function(urls) {
     return new Promise((resolve, reject) => {
@@ -148,9 +148,9 @@ BackgroundDownloads.download = function(options) {
  * An options for download.
  * See https://developer.chrome.com/extensions/downloads#method-download
  * 
- * @returns {Promise<undefined>} 
+ * @returns {Promise<null>} 
  * A promise for the download that will resolve when download are successfully completed.
- * Resolve will contain undefined if success, otherwise reject will contain an error.
+ * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 BackgroundDownloads.downloadData = function(urls, fileName, fileFormat, downloadOptions) {
     return new Promise((resolve, reject) => {
