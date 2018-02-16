@@ -1,0 +1,83 @@
+/* Global. */
+
+@font-face {
+    font-family: 'Roboto';
+    src: url(/interface/fonts/Roboto-Regular.ttf);
+  }
+  
+  html {
+    min-height: 100%;
+    position: relative;
+  }
+  
+  body {
+    font-family: 'Roboto';
+    background-color: #EEE;
+  }
+  
+  html, 
+  body, 
+  h1, 
+  p {
+    margin: 0;
+    padding: 0;
+  }
+  
+  
+  /* Common. */
+  
+  .custom-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  
+  .custom-col-align-right {
+    padding-right: 0;
+    text-align: right;
+  }
+  
+  .custom-col-align-left {
+    padding-left: 0;
+    text-align: left;
+  }
+  
+  
+  /* Header. */
+  
+  .custom-header {
+    height: 80px;
+  }
+  
+  .custom-header-content {
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  
+  /* Main. */
+  
+  .custom-main {
+    padding-bottom: 40px;
+  }
+  
+  .custom-main-content {
+    padding-top: 20px;
+    text-align: center;
+  }
+  
+  
+  /* Footer. */
+  
+  .custom-footer {
+    position: absolute;
+    bottom: 0;
+    height: 40px;
+    width: 100%;
+  }
+  
+  .custom-footer-content {
+    line-height: 40px;
+    text-align: center;
+  }
