@@ -14,47 +14,41 @@
 </head>
 
 <body>
-  <div class="custom-container">
-    <form>
-      <div class="form-group">
-        <label for="formGroupExampleInput">Имя файла (для скриншота постов)</label>
-        <input type="text" class="form-control" id="formGroupExampleInput" placeholder="posts">
-      </div>
+  <main>
+    <div class="container custom-container">
+      <form>
+        <div class="form-group">
+          <label for="nameForPosts">Имя файла для скриншота постов</label>
+          <input type="text" class="form-control" id="nameForPosts" placeholder="Имя файла для скриншота постов" value="posts">
+        </div>
 
-      <div class="form-group">
-        <label for="formGroupExampleInput">Имя файла (для скриншота треда)</label>
-        <input type="text" class="form-control" id="formGroupExampleInput" placeholder="thread">
-      </div>
+        <div class="form-group">
+          <label for="nameForThread">Имя файла для скриншота треда</label>
+          <input type="text" class="form-control" id="nameForThread" placeholder="Имя файла для скриншота треда" value="thread">
+        </div>
 
-      <div class="form-group">
-        <label class="my-1 mr-2" for="inlineFormCustomSelectPref">Формат скриншота</label>
-        <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref">
-          <option selected value="jpeg">JPEG</option>
-          <option value="png">PNG</option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label for="screenshotFormat">Формат скриншота</label>
+          <select class="custom-select" id="screenshotFormat">
+            <option selected value="jpeg">JPEG</option>
+            <option value="png">PNG</option>
+          </select>
+        </div>
 
-      <div class="form-group">
-        <label for="formGroupExampleInput">Качество скриншота</label>
-        <input id="ex6" data-provide="slider" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3"
-        />
-        <span id="ex6CurrentSliderValLabel">Current Slider Value:
-          <span id="ex6SliderVal">3</span>
-        </span>
-      </div>
+        <div class="form-group">
+          <label class="d-block" for="screenshotQuality">Качество скриншота</label>
+          <input id="screenshotQuality" data-provide="slider" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="100" />
+          <span id="screenshotQualityValue" style="padding-left: 10px;"></span>
+        </div>
 
-      <div class="form-group">
-        <label for="formGroupExampleInput">Задержка</label>
-        <input id="ex7" data-provide="slider" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3"
-        />
-        <span id="ex7CurrentSliderValLabel">Current Slider Value:
-          <span id="ex7SliderVal">3</span>
-        </span>
-      </div>
-
-
-    </form>
-  </div>
+        <div class="form-group">
+          <label class="d-block" for="screenshotDelay">Задержка</label>
+          <input id="screenshotDelay" data-provide="slider" type="text" data-slider-min="500" data-slider-max="2000" data-slider-step="100" data-slider-value="500" />
+          <span id="screenshotDelayValue" style="padding-left: 10px;"></span>
+        </div>
+      </form>
+    </div>
+  </main>
 </body>
 
 </html>

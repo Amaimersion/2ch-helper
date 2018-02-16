@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Настройки - Загрузка</title>
+  <title>Настройки - Скриншот</title>
   <link rel="stylesheet" href="/interface/css/libs/bootstrap-4.0.0.min.css">
   <link rel="stylesheet" href="/interface/css/libs/bootstrap-slider.min.css">
   <link rel="stylesheet" href="/interface/css/styles/iframe.css">
@@ -14,22 +14,33 @@
 </head>
 
 <body>
-  <div class="custom-container">
-    <form>
-      <div class="form-group">
-        <label for="formGroupExampleInput">Имя файла</label>
-        <input type="text" class="form-control" id="formGroupExampleInput" placeholder="posts">
-      </div>
+  <main>
+    <div class="container custom-container">
+      <form>
+        <div class="form-group">
+          <label for="nameForPosts" style="display: block;">Имя файла</label>
 
-      <div class="form-group">
-        <label for="formGroupExampleInput">Задержка между загрузками</label>
-        <input id="ex6" data-provide="slider" type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="3" />
-        <span id="ex6CurrentSliderValLabel">Current Slider Value:
-          <span id="ex6SliderVal">3</span>
-        </span>
-      </div>
-    </form>
-  </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="downloadName" id="downloadNameAuto" value="option1">
+            <label class="form-check-label" for="downloadNameAuto">Автоопределение</label>
+          </div>
+
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="downloadName" id="downloadNameUser" value="option2">
+            <label class="form-check-label" for="downloadNameUser">Пользовательское</label>
+          </div>
+
+          <input type="text" class="form-control" id="nameForPosts" placeholder="Имя файла" value="Имя">
+        </div>
+
+        <div class="form-group">
+          <label class="d-block" for="downloadDelay">Задержка</label>
+          <input id="downloadDelay" data-provide="slider" type="text" data-slider-min="500" data-slider-max="2000" data-slider-step="100" data-slider-value="500" />
+          <span id="downloadDelayValue" style="padding-left: 10px;"></span>
+        </div>
+      </form>
+    </div>
+  </main>
 </body>
 
 </html>

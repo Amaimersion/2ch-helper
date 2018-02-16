@@ -68,9 +68,17 @@ p {
   text-align: center;
 }
 
-.custom-main-content iframe {
+.custom-main-iframes iframe {
   display: block;
   width: 100%;
+}
+
+.custom-main-iframes iframe:nth-child(1) {
+  height: 430px;
+}
+
+.custom-main-iframes iframe:nth-child(2) {
+  height: 220px;
 }
 
 
