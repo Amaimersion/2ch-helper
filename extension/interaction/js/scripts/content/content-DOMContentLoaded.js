@@ -41,7 +41,7 @@ ContentDOMContentLoaded.bindCheckboxes = function(checkboxesSelector) {
  * Adds event listener to the page. 
  */
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', main);
+    document.addEventListener('DOMContentLoaded', ContentDOMContentLoaded.main);
 } else {
     ContentDOMContentLoaded.main();
 }
