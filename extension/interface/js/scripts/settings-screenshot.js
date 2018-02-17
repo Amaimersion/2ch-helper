@@ -88,6 +88,7 @@ SettingsScreenshot.main = async function() {
     SettingsIframe.bindButtons(SettingsScreenshot.buttons);
     SettingsIframe.bindSliders(SettingsScreenshot.sliders, SettingsScreenshot.userSettingId);
     SettingsIframe.bindForms(SettingsScreenshot.forms, SettingsScreenshot.userSettingId);
+    SettingsScreenshot.customBind();
 }
 
 
@@ -98,6 +99,24 @@ SettingsScreenshot.buttonClick = function() {
 
 SettingsScreenshot.sliderChange = function(id, value) {
     document.getElementById(id).textContent = value;
+}
+
+
+SettingsScreenshot.customBind = function() {
+    const qualityElement = document.getElementById('quality');
+    const selectElement = document.getElementById('screenshotFormat');
+   
+    if (selectElement.value === 'png') {
+        qualityElement.style.display = 'none';
+    }
+
+    selectElement.addEventListener('change', (event) => {
+        if (event.target.value === 'jpeg') {
+            qualityElement.style.display = 'block';
+        } else if (event.target.value === 'png') {
+            qualityElement.style.display = 'none';
+        }
+    });
 }
 
 

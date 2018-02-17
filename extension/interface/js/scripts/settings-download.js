@@ -69,6 +69,7 @@ SettingsDownload.main = async function() {
     SettingsIframe.bindButtons(SettingsDownload.buttons);
     SettingsIframe.bindSliders(SettingsDownload.sliders, SettingsDownload.userSettingId);
     SettingsIframe.bindForms(SettingsDownload.forms, SettingsDownload.userSettingId);
+    SettingsDownload.customBind();
 }
 
 
@@ -79,6 +80,25 @@ SettingsDownload.buttonClick = function() {
 
 SettingsDownload.sliderChange = function(id, value) {
     document.getElementById(id).textContent = value;
+}
+
+
+SettingsDownload.customBind = function() {
+    const name = document.getElementById('downloadName');
+    const auto = document.getElementById('downloadNameAuto');
+    const user = document.getElementById('downloadNameUser');
+
+    if (auto.checked) {
+        name.style.display = 'none';
+    }
+
+    auto.addEventListener('click', () => {
+        name.style.display = 'none';
+    });
+
+    user.addEventListener('click', () => {
+        name.style.display = 'block';
+    });
 }
 
 

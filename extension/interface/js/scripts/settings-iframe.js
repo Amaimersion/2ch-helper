@@ -22,7 +22,6 @@ SettingsIframe.initUserSettings = function() {
 
 SettingsIframe.saveUserSettings = function(forms, settingField) {
     this.updateUserData(forms, settingField);
-    console.log(this.userSettings);
     chrome.storage.sync.set(this.userSettings);
 }
 
