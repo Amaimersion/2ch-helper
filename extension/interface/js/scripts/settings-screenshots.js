@@ -31,9 +31,9 @@ SettingsScreenshot.sliders = [
         },
         events: [
             {
-                name: 'slide',
+                name: 'change',
                 event: function(value) {
-                    document.getElementById('screenshotQualityValue').textContent = value;
+                    document.getElementById('screenshotQualityValue').textContent = value.newValue;
                 }
             }
         ]
@@ -46,9 +46,9 @@ SettingsScreenshot.sliders = [
         },
         events: [
             {
-                name: 'slide',
+                name: 'change',
                 event: function(value) {
-                    document.getElementById('screenshotDelayValue').textContent = value;
+                    document.getElementById('screenshotDelayValue').textContent = value.newValue;
                 }
             }
         ]
