@@ -19,32 +19,32 @@
       <form>
         <div class="form-group">
           <label for="nameForPosts">Имя файла для скриншота постов</label>
-          <input type="text" class="form-control" id="nameForPosts" placeholder="Имя файла для скриншота постов" value="posts">
+          <input class="form-control" id="nameForPosts" type="text" placeholder="Имя файла для скриншота постов">
         </div>
 
         <div class="form-group">
           <label for="nameForThread">Имя файла для скриншота треда</label>
-          <input type="text" class="form-control" id="nameForThread" placeholder="Имя файла для скриншота треда" value="thread">
+          <input class="form-control" id="nameForThread" type="text" placeholder="Имя файла для скриншота треда">
         </div>
 
         <div class="form-group">
           <label for="screenshotFormat">Формат скриншота</label>
           <select class="custom-select" id="screenshotFormat">
-            <option selected value="jpeg">JPEG</option>
+            <option value="jpeg">JPEG</option>
             <option value="png">PNG</option>
           </select>
         </div>
 
         <div class="form-group">
           <label class="d-block" for="screenshotQuality">Качество скриншота</label>
-          <input id="screenshotQuality" data-provide="slider" type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1"  />
+          <input id="screenshotQuality" type="text" data-provide="slider" data-slider-min="0" data-slider-max="100" data-slider-step="1" />
           <span id="screenshotQualityValue" style="padding-left: 10px;"></span>
           <span id="screenshotQualityUnit">%</span>
         </div>
 
         <div class="form-group">
           <label class="d-block" for="screenshotDelay">Задержка</label>
-          <input id="screenshotDelay" data-provide="slider" type="text" data-slider-min="500" data-slider-max="2000" data-slider-step="100" />
+          <input id="screenshotDelay" type="text" data-provide="slider" data-slider-min="500" data-slider-max="2000" data-slider-step="100" />
           <span id="screenshotDelayValue" style="padding-left: 10px;"></span>
           <span id="screenshotDelayUnit">мс</span>
         </div>

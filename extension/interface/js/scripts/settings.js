@@ -5,7 +5,7 @@ Settings.iframeData = [
     {
         navbarId: 'settings-screenshot-navbar',
         elementId: 'settings-screenshot',
-        height: '460px'
+        height: '470px'
     },
     {
         navbarId: 'settings-download-navbar',
@@ -34,7 +34,7 @@ Settings.bindElements = function() {
 }
 
 Settings.hideAllIframes = function() {
-    const iframes = document.querySelectorAll("iframe");
+    const iframes = document.querySelectorAll('iframe');
 
     for (let iframe of iframes) {
         iframe.style.display = 'none';

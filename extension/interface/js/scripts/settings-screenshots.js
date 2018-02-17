@@ -1,16 +1,38 @@
 function SettingsScreenshot() {}
 
 
+SettingsScreenshot.userSettingId = 'settings_screenshot';
+
+
+SettingsScreenshot.userSettings = {};
+
+
+SettingsScreenshot.buttons = [
+    {
+        id: 'save',
+        events: [
+            {
+                type: 'click',
+                event: function() {
+                    SettingsScreenshot.saveUserSettings();
+                }
+            }
+        ]
+    }
+];
+
+
 SettingsScreenshot.sliders = [
     {
         id: '#screenshotQuality',
+        settingId: 'quality',
         options: {
             tooltip: 'hide'
         },
         events: [
             {
                 name: 'slide',
-                action: function(value) {
+                event: function(value) {
                     document.getElementById('screenshotQualityValue').textContent = value;
                 }
             }
@@ -18,13 +40,14 @@ SettingsScreenshot.sliders = [
     },
     {
         id: '#screenshotDelay',
+        settingId: 'delay',
         options: {
             tooltip: 'hide'
         },
         events: [
             {
                 name: 'slide',
-                action: function(value) {
+                event: function(value) {
                     document.getElementById('screenshotDelayValue').textContent = value;
                 }
             }
@@ -32,115 +55,113 @@ SettingsScreenshot.sliders = [
     }
 ];
 
+
 SettingsScreenshot.forms = [
     {
-        name: 'input',
+        tag: 'input',
         data: [
             {elementId: 'nameForPosts', settingId: 'fileNamePosts'},
             {elementId: 'nameForThread', settingId: 'fileNameThread'}
         ]
     },
     {
-        name: 'select',
+        tag: 'select',
         data: [
             {elementId: 'screenshotFormat', settingId: 'format'}
         ]
     },
     {
-        name: 'span',
+        tag: 'span',
         data: [
-            {elementId: 'screenshotQualityValue', settingField: 'settings_screenshot', settingId: 'quality'},
-            {elementId: 'screenshotDelayValue', settingField: 'settings_screenshot', settingId: 'delay'}
-        ]
-    }
-];
-
-SettingsScreenshot.buttons = [
-    {
-        id: 'save',
-        events: [
-            {
-                name: 'click',
-                action: function() {
-                    SettingsScreenshot.saveUserData();
-                }
-            }
+            {elementId: 'screenshotQualityValue', settingId: 'quality'},
+            {elementId: 'screenshotDelayValue', settingId: 'delay'}
         ]
     }
 ];
 
 
 SettingsScreenshot.main = function() {
-    SettingsScreenshot.bindUserData();
-    SettingsScreenshot.bindSliders();
     SettingsScreenshot.bindButtons();
-}
 
+    const initPromise = SettingsScreenshot.initUserSettings();
 
-SettingsScreenshot.saveUserData = function() {
-    const data = this.createUserData();
-
-    chrome.storage.sync.set(data);
-
-}
-
-SettingsScreenshot.createUserData = function() {
-    const userData = {};
-
-    userData['settings_screenshot'] = {
-        fileNamePosts: document.getElementById('nameForPosts').value,
-        fileNameThread: document.getElementById('nameForThread').value,
-        format: document.getElementById('screenshotFormat').value,
-        quality: Number(document.getElementById('screenshotQualityValue').textContent),
-        delay: Number(document.getElementById('screenshotDelayValue').textContent)
-    };
-
-    return userData;
-}
-
-SettingsScreenshot.bindUserData = function() {
-    const promise = this.getUserData();
-
-    promise.then((settings) => {
-        for (let formData of this.forms) {
-            for (data of formData.data) {
-                const element = document.getElementById(data.elementId);
-
-                if (formData.name === 'input' || formData.name === 'select') {
-                    element.value = settings['settings_screenshot'][data.settingId];
-                } else if (formData.name === 'span') {
-                    console.log('check');
-                    element.textContent = settings['settings_screenshot'][data.settingId];
-                }
-            }
-        }
+    initPromise.then(() => {
+        SettingsScreenshot.bindSliders();
+        SettingsScreenshot.bindUserSettings();
     });
 }
 
-SettingsScreenshot.getUserData = function() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.sync.get("settings_screenshot", (data) => {
-            resolve(data);
-        });
-    });
-}
-
-SettingsScreenshot.bindSliders = function() {
-    for (let sliderData of this.sliders) {
-        const slider = new Slider(sliderData.id,  sliderData.options);
-
-        for (let event of sliderData.events) {
-            slider.on(event.name, event.action);
-        }
-    }
-}
 
 SettingsScreenshot.bindButtons = function() {
     for (let buttonData of this.buttons) {
         const element = document.getElementById(buttonData.id);
 
         for (let event of buttonData.events) {
-            element.addEventListener(event.name, event.action);
+            element.addEventListener(event.type, event.event);
+        }
+    }
+}
+
+
+SettingsScreenshot.bindSliders = function() {
+    for (let sliderData of this.sliders) {
+        const options = sliderData.options;
+        options['value'] = this.userSettings[this.userSettingId][sliderData.settingId];
+
+        const slider = new Slider(sliderData.id, options);
+
+        for (let event of sliderData.events) {
+            slider.on(event.name, event.event);
+        }
+    }
+}
+
+
+SettingsScreenshot.bindUserSettings = function() {
+    for (let formData of this.forms) {
+        for (let data of formData.data) {
+            const element = document.getElementById(data.elementId);
+            const value = this.userSettings[this.userSettingId][data.settingId];
+
+            if (formData.tag === 'input' || formData.tag === 'select') {
+                element.value = value;
+            } else if (formData.tag === 'span') {
+                element.textContent = value;
+            }
+        }
+    }
+}
+
+
+SettingsScreenshot.initUserSettings = function() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.sync.get(this.userSettingId, (data) => {
+            this.userSettings = data;
+            return resolve();
+        });
+    });
+}
+
+
+SettingsScreenshot.saveUserSettings = function() {
+    this.updateUserData();
+    chrome.storage.sync.set(this.userSettings);
+}
+
+
+SettingsScreenshot.updateUserData = function() {
+    for (let formData of this.forms) {
+        for (let data of formData.data) {
+            const element = document.getElementById(data.elementId);
+            let value = undefined;
+
+            if (formData.tag === 'input' || formData.tag === 'select') {
+                value = element.value;
+            } else if (formData.tag === 'span') {
+                value = Number(element.textContent);
+            }
+
+            this.userSettings[this.userSettingId][data.settingId] = value;
         }
     }
 }
