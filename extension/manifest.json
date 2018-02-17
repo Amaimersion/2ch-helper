@@ -29,8 +29,11 @@
             "/interaction/js/scripts/background/background-screenshot.js",
             "/interaction/js/scripts/background/background-downloads.js",
             "/interaction/js/scripts/background/background-on-message.js",
-            "/interaction/js/scripts/background/background-API.js"
-        ]
+            "/interaction/js/scripts/background/background-API.js",
+            "/interaction/js/scripts/background/background-user-profile.js",
+            "/interaction/js/scripts/background/background-events.js"
+        ],
+        "persistent": false
     },
 
     "content_scripts": [
@@ -48,6 +51,7 @@
     ],
 
     "permissions": [
+        "storage",
         "pageCapture",
         "downloads",
         "activeTab",
