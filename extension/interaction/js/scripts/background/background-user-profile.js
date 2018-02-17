@@ -2,21 +2,19 @@ function UserProfile() {}
 
 
 UserProfile.defaultProfile = {
-    settings: {
-        screenshot: {
-            fileNamePosts: 'posts',
-            fileNameThread: 'thread',
-            format: 'jpeg',
-            quality: 100,
-            delay: 500
-        },
-
-        download: {
-            autoDetectionName: true,
-            userName: false,
-            fileName: '',
-            delay: 500
-        }
+    settings_screenshot: {
+        fileNamePosts: 'posts',
+        fileNameThread: 'thread',
+        format: 'jpeg',
+        quality: 100,
+        delay: 500
+    },
+    
+    settings_download: {
+        autoDetectionName: true,
+        userName: false,
+        fileName: '',
+        delay: 500
     }
 };
 

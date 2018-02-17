@@ -73,6 +73,11 @@ p {
   width: 100%;
 }
 
+.custom-main-iframes iframe:nth-child(1) {
+  display: block;
+  height: 460px;
+}
+
 
 /* Footer. */
 

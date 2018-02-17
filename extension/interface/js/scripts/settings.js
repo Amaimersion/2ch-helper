@@ -1,15 +1,16 @@
 function Settings() {}
 
+
 Settings.iframeData = [
     {
         navbarId: 'settings-screenshot-navbar',
         elementId: 'settings-screenshot',
-        height: '430px'
+        height: '460px'
     },
     {
         navbarId: 'settings-download-navbar',
         elementId: 'settings-download',
-        height: '220px'
+        height: '250px'
     }
 ];
 
