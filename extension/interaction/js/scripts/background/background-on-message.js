@@ -91,7 +91,13 @@ BackgroundMessage.commandHandler = function(request, sendResponse) {
         const promise = BackgroundScreenshot.createPostsImage();
 
         promise.then((uri) => {
-            BackgroundDownloads.download({url: uri, filename: 'posts.jpg'});
+            const filename = (
+                BackgroundAPI.userSettings.settings_screenshot.fileNamePosts + 
+                '.' +
+                BackgroundAPI.userSettings.settings_screenshot.format
+            );
+
+            BackgroundDownloads.download({url: uri, filename: filename});
             BackgroundAPI.clearCashe();
             sendResponse({status: true});
         }, (error) => {
@@ -104,7 +110,13 @@ BackgroundMessage.commandHandler = function(request, sendResponse) {
         const promise = BackgroundScreenshot.createThreadImage();
 
         promise.then((uri) => {
-            BackgroundDownloads.download({url: uri, filename: 'thread.jpg'});
+            const filename = (
+                BackgroundAPI.userSettings.settings_screenshot.fileNameThread + 
+                '.' +
+                BackgroundAPI.userSettings.settings_screenshot.format
+            );
+
+            BackgroundDownloads.download({url: uri, filename: filename});
             BackgroundAPI.clearCashe();
             sendResponse({status: true});
         }, (error) => {

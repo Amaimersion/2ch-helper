@@ -15,6 +15,7 @@ function ContentDOMContentLoaded() {}
  */
 ContentDOMContentLoaded.main = function() {
     this.bindCheckboxes();
+    ContentAPI.getUserSettings();
 }
 
 

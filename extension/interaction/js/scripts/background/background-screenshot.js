@@ -5,6 +5,27 @@
  */
 function BackgroundScreenshot() {}
 
+/*
+BackgroundScreenshot.postsFileName = (
+    BackgroundAPI.userSettings.settings_screenshot.fileNamePosts || 'posts'
+);
+
+
+BackgroundScreenshot.threadFileName = (
+    BackgroundAPI.userSettings.settings_screenshot.fileNameThread || 'thread'
+);
+
+
+BackgroundScreenshot.screenshotFormat = (
+    BackgroundAPI.userSettings.settings_screenshot.format || 'jpeg'
+);
+
+
+BackgroundScreenshot.screenshotQuality = (
+    BackgroundAPI.userSettings.settings_screenshot.quality || 100
+);
+*/
+
 
 /**
  * Data for further handling.
@@ -96,7 +117,10 @@ BackgroundScreenshot.createScreenshot = function(coordinate) {
  * Resolve will contain uri if success.
  */
 BackgroundScreenshot.createTabScreenshot = function(options) {
-    options = options || {format: 'jpeg', quality: 100};
+    options = options || {
+        format: BackgroundAPI.userSettings.settings_screenshot.format, 
+        quality: BackgroundAPI.userSettings.settings_screenshot.quality
+    };
 
     return new Promise((resolve, reject) => {
         chrome.tabs.captureVisibleTab(options, (uri) => {
@@ -376,7 +400,10 @@ BackgroundScreenshot.createFullImageOfImages = function() {
         y += image.height;
     }
 
-    const url = canvas.toDataURL('image/jpeg', 1);
+    const url = canvas.toDataURL(
+        'image/' + BackgroundAPI.userSettings.settings_screenshot.format, 
+        BackgroundAPI.userSettings.settings_screenshot.quality / 100
+    );
 
     return url;
 }
@@ -420,7 +447,10 @@ BackgroundScreenshot.cropImage = function(image, coordinate) {
             coordinate.height  
         );
 
-        const url = canvas.toDataURL('image/jpeg', 1);
+        const url = canvas.toDataURL(
+            'image/' + BackgroundAPI.userSettings.settings_screenshot.format, 
+            BackgroundAPI.userSettings.settings_screenshot.quality / 100
+        );
         const loadPromise = this.loadImage(url);
         
         loadPromise.then((image) => {

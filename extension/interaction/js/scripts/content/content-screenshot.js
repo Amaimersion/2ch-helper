@@ -23,7 +23,9 @@ ContentScreenshot.pageOptions = {};
  * @static
  * @type {Number}
  */
-ContentScreenshot.screenshotDelay = 500;
+ContentScreenshot.screenshotDelay = (
+    ContentAPI.userSettings.settings_screenshot.delay || 500
+);
 
 
 /**
@@ -33,7 +35,7 @@ ContentScreenshot.screenshotDelay = 500;
  * @static
  * @type {Number}
  */
-ContentScreenshot.errorDelay = 10000;
+ContentScreenshot.errorDelay = ContentScreenshot.screenshotDelay * 10;
 
 
 /**

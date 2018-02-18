@@ -6,6 +6,9 @@
 function ContentAPI() {}
 
 
+ContentAPI.userSettings = {};
+
+
 /**
  * Information about other content modules.
  * 
@@ -169,6 +172,17 @@ ContentAPI.executeAnotherAPIMethod = function(name, method) {
 
             return reject(error);
         }
+    });
+}
+
+
+ContentAPI.getUserSettings = function() {
+    const settings = [
+        'settings_screenshot'
+    ];
+
+    chrome.storage.sync.get(settings, (data) => {
+        this.userSettings = data;
     });
 }
 

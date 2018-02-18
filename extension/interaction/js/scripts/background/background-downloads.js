@@ -160,25 +160,27 @@ BackgroundDownloads.downloadData = function(urls, fileName, fileFormat, download
         for (let url of urls) {
             downloadPromise = downloadPromise.then(() => {
                 return new Promise((res) => {
-                    const name = (
-                        fileName || 
-                        this.determineFileName(url) || 
-                        'undefined'
-                    ); 
                     const format = (
                         fileFormat || 
                         this.determineFileFormat(url) || 
                         ''
                     );
+                    let name = '';
+
+                    if (BackgroundAPI.userSettings.settings_download.autoDetectionName) {
+                        name = this.determineFileName(url) || 'undefined';
+                    } else {
+                        name = BackgroundAPI.userSettings.settings_download.fileName;
+                    }
 
                     downloadOptions.url = url;
                     downloadOptions.filename = name + format;
-
+                    
                     window.setTimeout(() => {
                         this.download(downloadOptions).then(() => {
                             return res();
                         });
-                    }, this.downloadDelay);
+                    }, BackgroundAPI.userSettings.settings_download.delay);
                 });
             });
         }

@@ -6,15 +6,30 @@
 function BackgroundAPI() {}
 
 
+BackgroundAPI.userSettings = {};
+
+
 /**
  * Clears a cashe of the background page.
- * It's just reload it, but it's works.
+ * It just reload a page, but it's works.
  * 
  * @memberof BackgroundAPI
  * @static
  */
 BackgroundAPI.clearCashe = function() {
     window.location.reload(true);
+}
+
+
+BackgroundAPI.getUserSettings = function() {
+    const settings = [
+        'settings_screenshot',
+        'settings_download'
+    ];
+
+    chrome.storage.sync.get(settings, (data) => {
+        this.userSettings = data;
+    });
 }
 
 
