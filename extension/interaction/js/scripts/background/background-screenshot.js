@@ -5,27 +5,6 @@
  */
 function BackgroundScreenshot() {}
 
-/*
-BackgroundScreenshot.postsFileName = (
-    BackgroundAPI.userSettings.settings_screenshot.fileNamePosts || 'posts'
-);
-
-
-BackgroundScreenshot.threadFileName = (
-    BackgroundAPI.userSettings.settings_screenshot.fileNameThread || 'thread'
-);
-
-
-BackgroundScreenshot.screenshotFormat = (
-    BackgroundAPI.userSettings.settings_screenshot.format || 'jpeg'
-);
-
-
-BackgroundScreenshot.screenshotQuality = (
-    BackgroundAPI.userSettings.settings_screenshot.quality || 100
-);
-*/
-
 
 /**
  * Data for further handling.
@@ -78,24 +57,26 @@ BackgroundScreenshot.clearData = function() {
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 BackgroundScreenshot.createScreenshot = function(coordinate) {
-    return new Promise((resolve, reject) => {
-        const screenshotPromise = this.createTabScreenshot();
+    return new Promise(async (resolve, reject) => {
+        let uri = '';
 
-        screenshotPromise.then((uri) => {
-            this.data.push({
-                coordinate: coordinate, 
-                uri: uri
-            });
-
-            return resolve();
-        }, () => {
+        try {
+            uri = await this.createTabScreenshot();
+        } catch (e) {
             this.clearData();
 
             const error = new Error();
             error.message = 'Failed to create screenshot.';
             
             return reject(error);
+        }
+
+        this.data.push({
+            coordinate: coordinate, 
+            uri: uri
         });
+
+        return resolve();
     });
 }
 
@@ -117,12 +98,12 @@ BackgroundScreenshot.createScreenshot = function(coordinate) {
  * Resolve will contain uri if success.
  */
 BackgroundScreenshot.createTabScreenshot = function(options) {
-    options = options || {
-        format: BackgroundAPI.userSettings.settings_screenshot.format, 
-        quality: BackgroundAPI.userSettings.settings_screenshot.quality
-    };
-
     return new Promise((resolve, reject) => {
+        options = options || {
+            format: BackgroundAPI.userSettings.settings_screenshot.format, 
+            quality: BackgroundAPI.userSettings.settings_screenshot.quality
+        };
+
         chrome.tabs.captureVisibleTab(options, (uri) => {
             return resolve(uri);
         });
@@ -141,15 +122,17 @@ BackgroundScreenshot.createTabScreenshot = function(options) {
  * A promise for the create that will resolve when create are successfully completed.
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
-BackgroundScreenshot.createPostsImage = function() {
-    return new Promise((resolve, reject) => {
-        const createPromise = this.createObjectImage();
+BackgroundScreenshot.createPostsImage = async function() {
+    return new Promise(async (resolve, reject) => {
+        let uri = '';
 
-        createPromise.then((uri) => {
-            return resolve(uri);
-        }, (error) => {
+        try {
+            uri = await this.createObjectImage();
+        } catch (error) {
             return reject(error);
-        });
+        }
+
+        return resolve(uri);
     });
 }
 
@@ -166,14 +149,16 @@ BackgroundScreenshot.createPostsImage = function() {
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
 BackgroundScreenshot.createThreadImage = function() {
-    return new Promise((resolve, reject) => {
-        const createPromise = this.createObjectImage();
+    return new Promise(async (resolve, reject) => {
+        let uri = '';
 
-        createPromise.then((uri) => {
-            return resolve(uri);
-        }, (error) => {
+        try {
+            uri = await this.createObjectImage();
+        } catch (error) {
             return reject(error);
-        });
+        }
+
+        return resolve(uri);
     });
 }
 
@@ -192,16 +177,19 @@ BackgroundScreenshot.createThreadImage = function() {
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
 BackgroundScreenshot.createObjectImage = function() {
-    return new Promise((resolve, reject) => {
-        const createPromise = this.createImage();
+    return new Promise(async (resolve, reject) => {
+        let uri = '';
 
-        createPromise.then((uri) => {
-            this.clearData();
-            return resolve(uri);
-        }, (error) => {
+        try {
+            uri = await this.createImage();
+        } catch (error) {
             this.clearData();
             return reject(error);
-        });
+        }
+
+        this.clearData();
+
+        return resolve(uri);
     });
 }
 
@@ -218,19 +206,19 @@ BackgroundScreenshot.createObjectImage = function() {
  * Resolve will contain uri if success, otherwise reject will contain an error. 
  */
 BackgroundScreenshot.createImage = function() {
-    return new Promise((resolve, reject) => {
-        const dataLoadPromise = this.createImagesOfData();
-
-        dataLoadPromise.then(() => {
-            const fullImageURI = this.createFullImageOfImages();
-
-            return resolve(fullImageURI);
-        }, () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await this.createImagesOfData();
+        } catch (e) {
             const error = new Error();
             error.message = 'Failed to create full image.';
 
             return reject(error);
-        });
+        }
+
+        const fullImageURI = this.createFullImageOfImages();
+
+        return resolve(fullImageURI);
     });
 }
 
@@ -267,6 +255,8 @@ BackgroundScreenshot.createImagesOfData = function() {
 
                             handlerPromise.then(() => {
                                 return res();
+                            }, () => {
+                                return rej();
                             });
                         // if it's a thread coordinate.
                         } else {
@@ -277,6 +267,8 @@ BackgroundScreenshot.createImagesOfData = function() {
 
                             handlerPromise.then(() => {
                                 return res();
+                            }, () => {
+                                return rej();
                             });
                         }
                     });
@@ -327,6 +319,8 @@ BackgroundScreenshot.arrayHandler = function(image, coordinates) {
 
                     singlePromise.then(() => {
                         return res();
+                    }, () => {
+                        return rej();
                     });
                 });
             });
@@ -334,6 +328,8 @@ BackgroundScreenshot.arrayHandler = function(image, coordinates) {
 
         handlePromise.then(() => {
             return resolve();
+        }, () => {
+            return reject();
         });
     });
 }
@@ -358,16 +354,18 @@ BackgroundScreenshot.arrayHandler = function(image, coordinates) {
  * Resolve will contain nothing if success. 
  */
 BackgroundScreenshot.singleHandler = function(image, coordinate) {
-    return new Promise((resolve, reject) => {
-        const cropPromise = this.cropImage(
-            image, 
-            coordinate
-        );
+    return new Promise(async (resolve, reject) => {
+        let cropImage;
 
-        cropPromise.then((image) => {
-            this.images.push(image);
-            return resolve();
-        });
+        try {
+            cropImage = await this.cropImage(image, coordinate);
+        } catch (e) {
+            return reject();
+        }
+
+        this.images.push(cropImage);
+
+        return resolve();
     });
 }
 
@@ -428,7 +426,7 @@ BackgroundScreenshot.createFullImageOfImages = function() {
  * Resolve will contain cropped image if success. 
  */
 BackgroundScreenshot.cropImage = function(image, coordinate) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
 
@@ -451,11 +449,9 @@ BackgroundScreenshot.cropImage = function(image, coordinate) {
             'image/' + BackgroundAPI.userSettings.settings_screenshot.format, 
             BackgroundAPI.userSettings.settings_screenshot.quality / 100
         );
-        const loadPromise = this.loadImage(url);
-        
-        loadPromise.then((image) => {
-            return resolve(image);
-        })
+        const croppedImage = await this.loadImage(url);
+
+        return resolve(croppedImage);
     });
 }
 

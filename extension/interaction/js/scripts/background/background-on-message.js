@@ -43,100 +43,104 @@ BackgroundMessage.onMessage = function(request, sender, sendResponse) {
  * 
  * @throws {Error} Throws an error if occurs.
  */
-BackgroundMessage.commandHandler = function(request, sendResponse) {
+BackgroundMessage.commandHandler = async function(request, sendResponse) {
     const command = request.command;
 
     if (command === 'downloadThread') {
-        const promise = BackgroundDownloads.downloadThread();
-
-        promise.then(() => {
-            sendResponse({status: true});
-        }, (error) => {
+        try {
+            await BackgroundDownloads.downloadThread();
+        } catch (error) {
             sendResponse({status: false, error: error});
             throw error;
-        });
+        }
+
+        sendResponse({status: true});
 
     } else if (command === 'downloadImages') {
-        const promise = BackgroundDownloads.downloadImages(request.data);
-
-        promise.then(() => {
-            sendResponse({status: true});
-        }, (error) => {
+        try {
+            await BackgroundDownloads.downloadImages(request.data);
+        } catch (error) {
             sendResponse({status: false, error: error});
             throw error;
-        });
+        }
+
+        sendResponse({status: true});
 
     } else if (command === 'downloadVideo') {
-        const promise = BackgroundDownloads.downloadVideo(request.data);
-
-        promise.then(() => {
-            sendResponse({status: true});
-        }, (error) => {
+        try {
+            await BackgroundDownloads.downloadVideo(request.data);
+        } catch (error) {
             sendResponse({status: false, error: error});
             throw error;
-        });
+        }
+
+        sendResponse({status: true});
 
     } else if (command === "createScreenshot") {
-        const promise = BackgroundScreenshot.createScreenshot(request.coordinate);
-
-        promise.then(() => {
-            sendResponse({status: true});
-        }, (error) => {
+        try {
+            await BackgroundScreenshot.createScreenshot(request.coordinate);
+        } catch (error) {
             BackgroundAPI.clearCashe();
             sendResponse({status: false});
             throw error;
-        })
+        }
+
+        sendResponse({status: true});
 
     } else if (command === "createPostsImage") {
-        const promise = BackgroundScreenshot.createPostsImage();
+        let uri = '';
 
-        promise.then((uri) => {
-            const filename = (
-                BackgroundAPI.userSettings.settings_screenshot.fileNamePosts + 
-                '.' +
-                BackgroundAPI.userSettings.settings_screenshot.format
-            );
-
-            BackgroundDownloads.download({url: uri, filename: filename});
-            BackgroundAPI.clearCashe();
-            sendResponse({status: true});
-        }, (error) => {
+        try {
+            uri = await BackgroundScreenshot.createPostsImage();
+        } catch (error) {
             BackgroundAPI.clearCashe();
             sendResponse({status: false, error: error});
             throw error;
-        });
+        }
+
+        const filename = (
+            BackgroundAPI.userSettings.settings_screenshot.fileNamePosts + 
+            '.' +
+            BackgroundAPI.userSettings.settings_screenshot.format
+        );
+
+        BackgroundDownloads.download({url: uri, filename: filename});
+        BackgroundAPI.clearCashe();
+        sendResponse({status: true});
 
     } else if (command === "createThreadImage") {
-        const promise = BackgroundScreenshot.createThreadImage();
+        let uri = '';
 
-        promise.then((uri) => {
-            const filename = (
-                BackgroundAPI.userSettings.settings_screenshot.fileNameThread + 
-                '.' +
-                BackgroundAPI.userSettings.settings_screenshot.format
-            );
-
-            BackgroundDownloads.download({url: uri, filename: filename});
-            BackgroundAPI.clearCashe();
-            sendResponse({status: true});
-        }, (error) => {
+        try {
+            uri = await BackgroundScreenshot.createThreadImage();
+        } catch (error) {
             BackgroundAPI.clearCashe();
             sendResponse({status: false, error: error});
             throw error;
-        });
+        }
+
+        const filename = (
+            BackgroundAPI.userSettings.settings_screenshot.fileNameThread + 
+            '.' +
+            BackgroundAPI.userSettings.settings_screenshot.format
+        );
+
+        BackgroundDownloads.download({url: uri, filename: filename});
+        BackgroundAPI.clearCashe();
 
     } else if (command === 'injectScript') {
         const options = {
             file: request.path
         };
-        const promise = BackgroundAPI.injectScript(options);
 
-        promise.then(() => {
-            sendResponse({status: true});
-        }, (error) => {
+        try {
+            await BackgroundAPI.injectScript(options);
+        } catch (error) {
             sendResponse({status: false, error: error});
             throw error;
-        });
+        }
+
+        sendResponse({status: true});
     }
 }
 

@@ -7,16 +7,6 @@ function BackgroundDownloads() {}
 
 
 /**
- * Delay for downloading.
- * 
- * @memberof BackgroundDownloads
- * @static
- * @type {Number}
- */
-BackgroundDownloads.downloadDelay = 500;
-
-
-/**
  * Downloads a thread.
  * 
  * @memberof BackgroundDownloads
@@ -36,16 +26,16 @@ BackgroundDownloads.downloadThread = function() {
             let name = (tabs[0].title || 'thread') + '.mhtml';
             name = this.fixFileName(name);
 
-            chrome.pageCapture.saveAsMHTML(captureOptions, (mhtml) => {
+            chrome.pageCapture.saveAsMHTML(captureOptions, async (mhtml) => {
                 const url = URL.createObjectURL(mhtml);
                 const downloadOptions = {
                     url: url,
                     filename: name
                 };
 
-                this.download(downloadOptions).then(() => {
-                    return resolve();
-                });
+                await this.download(downloadOptions);
+
+                return resolve();
             });
         });
     });
@@ -66,12 +56,14 @@ BackgroundDownloads.downloadThread = function() {
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 BackgroundDownloads.downloadImages = function(urls) {
-    return new Promise((resolve, reject) => {
-        this.downloadData(urls).then(() => {
-            return resolve();
-        }, (error) => {
-            return reject(error);
-        });
+    return new Promise(async (resolve, reject) => {
+        try {
+            await this.downloadData(urls);
+        } catch (error) {
+            return reject(error); 
+        }
+
+        return resolve();
     });
 }
 
@@ -90,12 +82,14 @@ BackgroundDownloads.downloadImages = function(urls) {
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 BackgroundDownloads.downloadVideo = function(urls) {
-    return new Promise((resolve, reject) => {
-        this.downloadData(urls).then(() => {
-            return resolve();
-        }, (error) => {
-            return reject(error);
-        });
+    return new Promise(async (resolve, reject) => {
+        try {
+            await this.downloadData(urls);
+        } catch (error) {
+            return reject(error); 
+        }
+
+        return resolve();
     });
 }
 

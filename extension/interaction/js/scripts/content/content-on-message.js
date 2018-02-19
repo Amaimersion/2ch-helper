@@ -43,18 +43,18 @@ ContentMessage.onMessage = function(request, sender, sendResponse) {
  * 
  * @throws {Error} Throws an error if occurs.
  */
-ContentMessage.APIHandler = function(request, sendResponse) {
-    const promise = ContentAPI.executeAnotherAPI(
-        request.name, 
-        request.method
-    );
-
-    promise.then(() => {
-        sendResponse({status: true});
-    }, (error) => {
+ContentMessage.APIHandler = async function(request, sendResponse) {
+    try {
+        await ContentAPI.executeAnotherAPI(
+            request.name, request.method
+        );
+    }
+    catch (error) {
         sendResponse({status: false, error: error});
         throw error;
-    });
+    }
+
+    sendResponse({status: true});
 }
 
 

@@ -6,6 +6,13 @@
 function BackgroundAPI() {}
 
 
+/**
+ * Settings of user.
+ * 
+ * @memberof BackgroundAPI
+ * @static
+ * @type {Object}
+ */
 BackgroundAPI.userSettings = {};
 
 
@@ -21,7 +28,16 @@ BackgroundAPI.clearCashe = function() {
 }
 
 
+/**
+ * Gets an user settings from chome storage.
+ * After getting they will be setted to BackgroundAPI.userSettings.
+ * 
+ * @memberof BackgroundAPI
+ * @static
+ * @async
+ */
 BackgroundAPI.getUserSettings = function() {
+    // what settings to receive.
     const settings = [
         'settings_screenshot',
         'settings_download'

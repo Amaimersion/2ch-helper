@@ -6,6 +6,13 @@
 function ContentAPI() {}
 
 
+/**
+ * Settings of user.
+ * 
+ * @memberof ContentAPI
+ * @static
+ * @type {Object}
+ */
 ContentAPI.userSettings = {};
 
 
@@ -72,23 +79,20 @@ ContentAPI.anotherAPI = {
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
 ContentAPI.executeAnotherAPI = function(name, method) {
-    return new Promise((resolve, reject) => {
-        const injectPromise = this.injectAnotherAPI(name);
-
-        injectPromise.then(() => {
-            const executePromise = this.executeAnotherAPIMethod(
-                name, 
-                method
-            );
-
-            executePromise.then(() => {
-                return resolve();
-            }, (error) => {
-                return reject(error);
-            });
-        }, (error) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await this.injectAnotherAPI(name);
+        } catch (error) {
             return reject(error);
-        });
+        }
+
+        try {
+            await this.executeAnotherAPIMethod(name, method);
+        } catch (error) {
+            return reject(error);
+        }
+
+        return resolve();
     });
 }
 
@@ -176,7 +180,16 @@ ContentAPI.executeAnotherAPIMethod = function(name, method) {
 }
 
 
+/**
+ * Gets an user settings from chome storage.
+ * After getting they will be setted to ContentAPI.userSettings.
+ * 
+ * @memberof ContentAPI
+ * @static
+ * @async
+ */
 ContentAPI.getUserSettings = function() {
+    // what settings to receive.
     const settings = [
         'settings_screenshot'
     ];

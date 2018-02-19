@@ -88,24 +88,25 @@ ContentScreenshot.sortCoordinates = function(coordinates, property) {
  * 
  * @throws {Error} Throws an error if occurs.
  */
-ContentScreenshot.createScreenshotOfPosts = function() {
+ContentScreenshot.createScreenshotOfPosts = async function() {
     const thread = ContentAPI.getThread();
 
     this.setPageOptions(thread);
     this.changePageOptions(thread);
 
     const coordinates = this.getScrenshotCoordinates(thread);
-    const promise = this.handleScreenshotCoordinates(coordinates);
-    
-    promise.then(() => {
-        this.restorePageOptions(thread);
-        ContentAPI.sendMessageToBackground({
-            type: 'command',
-            command: 'createPostsImage'
-        });
-    }, (error) => {
+
+    try {
+        await this.handleScreenshotCoordinates(coordinates);
+    } catch (error) {
         this.restorePageOptions(thread);
         throw error;
+    }
+
+    this.restorePageOptions(thread);
+    ContentAPI.sendMessageToBackground({
+        type: 'command',
+        command: 'createPostsImage'
     });
 }
 
@@ -226,6 +227,7 @@ ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
             });
         }
 
+        // unsent coordinates.
         promise = promise.then(() => {
             return new Promise((res, rej) => {
                 if (!visibleCoordinates.length) {
@@ -286,24 +288,25 @@ ContentScreenshot.handleScreenshotCoordinates = function(coordinates) {
  * 
  * @throws {Error} Throws an error if occurs.
  */
-ContentScreenshot.createScreenshotOfThread = function() {
+ContentScreenshot.createScreenshotOfThread = async function() {
     const thread = ContentAPI.getThread();
 
     this.setPageOptions(thread);
     this.changePageOptions(thread);
 
     const coordinates = this.getThreadCoordinates(thread);
-    const promise = this.handleThreadCoordinates(coordinates);
-    
-    promise.then(() => {
-        this.restorePageOptions(thread);
-        ContentAPI.sendMessageToBackground({
-            type: 'command',
-            command: 'createThreadImage'
-        });
-    }, (error) => {
+
+    try {
+        await this.handleThreadCoordinates(coordinates);
+    } catch (error) {
         this.restorePageOptions(thread);
         throw error;
+    }
+    
+    this.restorePageOptions(thread);
+    ContentAPI.sendMessageToBackground({
+        type: 'command',
+        command: 'createThreadImage'
     });
 }
 
