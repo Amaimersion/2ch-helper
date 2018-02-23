@@ -1,6 +1,25 @@
+/** 
+ * The module that handles messages.
+ * Can handle messages of the following types: 'API'.
+ * 
+ * @module ContentMessage
+ */
 function ContentMessage() {}
 
 
+/**
+ * Handles messages.
+ * 
+ * @memberof ContentMessage
+ * @static
+ * 
+ * @param {Object} request
+ * @param {Object} sender 
+ * @param {Object} sendResponse 
+ * 
+ * @returns {Boolean} 
+ * Returns true because there will be an asynchronous response.
+ */
 ContentMessage.onMessage = function(request, sender, sendResponse) {
     if (request.type === 'API') {
         ContentMessage.APIHandler(request, sendResponse);
@@ -12,21 +31,45 @@ ContentMessage.onMessage = function(request, sender, sendResponse) {
 }
 
 
-ContentMessage.APIHandler = function(request, sendResponse) {
-    const promise = ContentAPI.executeAnotherAPI(
-        request.name, 
-        request.method
-    );
-
-    promise.then(() => {
-        sendResponse({status: true});
-    }, (error) => {
+/**
+ * Handles API type messages.
+ * 
+ * @memberof ContentMessage
+ * @static
+ * @async
+ * 
+ * @param {Object} request 
+ * @param {Object} sendResponse 
+ * 
+ * @throws {Error} Throws an error if occurs.
+ */
+ContentMessage.APIHandler = async function(request, sendResponse) {
+    try {
+        await ContentAPI.executeAnotherAPI(
+            request.name, request.method
+        );
+    }
+    catch (error) {
         sendResponse({status: false, error: error});
         throw error;
-    });
+    }
+
+    sendResponse({status: true});
 }
 
 
+/**
+ * Handles unknown type messages.
+ * 
+ * @memberof ContentMessage
+ * @static
+ * 
+ * @param {Object} request 
+ * @param {Object} sender 
+ * @param {Object} sendResponse
+ * 
+ * @throws {Error} Throws an error with request information.
+ */
 ContentMessage.errorHandler = function(request, sender, sendResponse) {
     console.log(
         'An unknown request was received.\n',
@@ -50,4 +93,7 @@ ContentMessage.errorHandler = function(request, sender, sendResponse) {
 }
 
 
+/** 
+ * Sets a message handler. 
+ */
 chrome.runtime.onMessage.addListener(ContentMessage.onMessage);

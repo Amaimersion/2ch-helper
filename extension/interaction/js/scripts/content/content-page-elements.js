@@ -1,14 +1,26 @@
-/**
- * @file Binds an events to the elements on a page.
+/** 
+ * The module that handles page elements.
+ * 
+ * @module ContentPageElements
  */
 function ContentPageElements() {}
 
 
+/**
+ * Selected posts of a thread.
+ * 
+ * @memberof ContentPageElements
+ * @static
+ * @type {Array<HTMLElement>}
+ */
 ContentPageElements.activePosts = [];
 
 
 /**
  * Binds an events to the checkboxes.
+ * 
+ * @memberof ContentPageElements
+ * @static
  * 
  * @param {NodeList<HTMLInputElement>} checkboxes
  * A checkboxes for binding.
@@ -30,6 +42,9 @@ ContentPageElements.addEventsToCheckboxes = function(checkboxes) {
  * Receives a post of the checkbox and
  * adds this post to the active posts.
  * 
+ * @memberof ContentPageElements
+ * @static
+ * 
  * @param {HTMLInputElement} checkbox 
  */
 ContentPageElements.eventForCheckedCheckbox = function(checkbox) {
@@ -41,6 +56,9 @@ ContentPageElements.eventForCheckedCheckbox = function(checkbox) {
 /**
  * Receives a post of the checkbox and
  * removes this post from the active posts.
+ * 
+ * @memberof ContentPageElements
+ * @static
  * 
  * @param {HTMLInputElement} checkbox 
  */
@@ -57,9 +75,12 @@ ContentPageElements.eventForUncheckedCheckbox = function(checkbox) {
 /**
  * Gets a post of the checkbox.
  * 
+ * @memberof ContentPageElements
+ * @static
+ * 
  * @param {HTMLInputElement} checkbox
  * 
- * @returns {HTMLElement} - A post (DIV).
+ * @returns {HTMLElement} A post (DIV).
  */
 ContentPageElements.getPostOfCheckbox = function(checkbox) {
     return ContentAPI.getParent(checkbox, (element) => {

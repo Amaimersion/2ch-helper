@@ -1,28 +1,65 @@
+/** 
+ * The module that handles download requests.
+ * 
+ * @module ContentDownloads
+ */
 function ContentDownloads() {}
 
 
+/**
+ * Downloads images.
+ * 
+ * @memberof ContentDownloads
+ * @static
+ * @async
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that executes after download and handles the response.
+ */
 ContentDownloads.downloadImages = function(callback) {
     callback = callback || function() {};
 
     this.processDownload(
         'img.preview:not(.webm-file)',
         'downloadImages',
+        null,
         callback
     );
 }
 
 
+/**
+ * Downloads video.
+ * 
+ * @memberof ContentDownloads
+ * @static
+ * @async
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that executes after download and handles the response.
+ */
 ContentDownloads.downloadVideo = function(callback) {
     callback = callback || function() {};
     
     this.processDownload(
         'img.webm-file',
         'downloadVideo',
+        null,
         callback
     );
 }
 
 
+/**
+ * Downloads media content.
+ * 
+ * @memberof ContentDownloads
+ * @static
+ * @async
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that executes after download and handles the response.
+ */
 ContentDownloads.downloadMedia = function(callback) {
     callback = callback || function() {};
  
@@ -32,39 +69,19 @@ ContentDownloads.downloadMedia = function(callback) {
 }
 
 
+/**
+ * Downloads thread.
+ * 
+ * @memberof ContentDownloads
+ * @static
+ * @async
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that executes after download and handles the response.
+ */
 ContentDownloads.downloadThread = function(callback) {
     callback = callback || function() {};
     const message = {type: 'command', command: 'downloadThread'};
-
-    ContentAPI.sendMessageToBackground(message, () => {
-        callback();
-    });
-}
-
-
-// я не указываю параметр condition.
-// если в странице изменится структура, 
-// то этот параметер может понадобиться.
-ContentDownloads.processDownload = function(query, command, callback) {
-    const thread = ContentAPI.getThread();
-    let previewElements = thread.querySelectorAll(query);
-    const fullElements = [];
-
-    for (let element of previewElements) {
-        let fullElement = ContentAPI.getParent(element, (elem) => {
-            return (elem.tagName === 'A');
-        });
-
-        fullElements.push(fullElement.href);
-    }
-
-    previewElements = [];
-    callback = callback || function() {};
-    const message = {
-        type: 'command',
-        command: command,
-        data: fullElements
-    };
 
     ContentAPI.sendMessageToBackground(message, (response) => {
         callback(response);
@@ -72,82 +89,48 @@ ContentDownloads.processDownload = function(query, command, callback) {
 }
 
 
-// It is for archiving files into a .zip archive.
-// However, it is sucks on a large pages.
-// The current version is very raw and try not to use it.
-// I'll turn off it for now. 
-// So, someday i either modify it or delete it.
-/*
-function downloadImagesZip() {
-    var thread = document.getElementById('posts-form');
+/**
+ * Downloads an elements.
+ * 
+ * @memberof ContentDownloads
+ * @static
+ * @async 
+ * 
+ * @param {String} selector 
+ * A query selector for getting preview elements.
+ * 
+ * @param {String} command 
+ * A command that executes download process in background script.
+ * Can be 'downloadThread', or 'downloadImages', or 'downloadVideo'.
+ * 
+ * @param {function(HTMLElement) => Boolean} [condition] 
+ * A condition for getting element href. 
+ * Defaults to (return element.tagName === 'A').
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that executes after download and handles the response.
+ */
+ContentDownloads.processDownload = function(selector, command, condition, callback) {
+    const thread = ContentAPI.getThread();
+    let previewElements = thread.querySelectorAll(selector);
 
-    var previewImages = thread.getElementsByTagName('img');
-    var fullImages = [];
-    var i = 0;
+    const fullElementsHrefs = [];
+    condition = condition || function(element) {return element.tagName === 'A'};
 
-    while (i != previewImages.length) {
-        var fullImage = ContentAPI.getParent(previewImages[i], function(element) {
-            return element.tagName === 'A';
-        });
-
-        fullImages[i] = fullImage.href;
-        i++;
+    for (let element of previewElements) {
+        let fullElement = ContentAPI.getParent(element, condition);
+        fullElementsHrefs.push(fullElement.href);
     }
 
-    previewImages = null;
-    var zip = new JSZip();
-    i = 0;
-    var num = 0;
-
-    while (i != fullImages.length) {
-        toDataURL(fullImages[i], 'image/jpeg', function(uri) {
-            zip.file(String(num) + '.png', uri.slice(22), {base64: true});
-            num++;
-
-            if (num === fullImages.length) {
-                fullImages = null;
-
-                if (JSZip.support.uint8array) {
-                    promise = zip.generateAsync({type : 'blob'});
-                } else {
-                    promise = zip.generateAsync({type : 'string'});
-                }
-
-                promise.then(function(blob) {
-                    var url = URL.createObjectURL(blob);
-                    ContentAPI.sendMessageToBackground({command: 'downloadZip', url: url});
-                });
-            }
-        });
-
-        i++;
-    }
-}
-
-function toDataURL(src, outputFormat, callback) {
-    var img = new Image();
-    img.crossOrigin = 'Anonymous';
-
-    img.onload = function() {
-        var canvas = document.createElement('CANVAS');
-        var ctx = canvas.getContext('2d');
-        var dataURL;
-        canvas.height = this.naturalHeight;
-        canvas.width = this.naturalWidth;
-        ctx.drawImage(this, 0, 0);
-        dataURL = canvas.toDataURL(outputFormat, 1.0);
-        callback(dataURL);
+    previewElements = [];
+    callback = callback || function() {};
+    const message = {
+        type: 'command',
+        command: command,
+        data: fullElementsHrefs
     };
 
-    img.src = src;
-}
-
-
-// function to create a file in the HTML5 temporary filesystem
-function createFile(filename, callback) {
-    webkitRequestFileSystem(TEMPORARY, 4 * 1024 * 1024, function(fs) {
-      fs.root.getFile(filename, { create : true }, callback);
+    ContentAPI.sendMessageToBackground(message, (response) => {
+        callback(response);
     });
-  }
-
-*/
+}
