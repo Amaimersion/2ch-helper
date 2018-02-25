@@ -1,74 +1,92 @@
 /**
- * @file Script for popup.html. Event handling from a user.
+ * Script for popup.html. Event handling from a user.
+ * 
+ * @module Popup
  */
+function Popup() {}
 
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', main);
-} else {
-    main();
+Popup.Message = function(type, name, method) {
+    this.type = type || undefined;
+    this.name = name || undefined;
+    this.method = method || undefined;
 }
+
+
+Popup.elementsEvents = [
+    {
+        id: 'screenshot-of-posts',
+        type: 'onclick',
+        event: function() {
+            Popup.sendMessageToContent(
+                new Popup.Message('API', 'screenshot', 'createScreenshotOfPosts')
+            );
+        }
+    },
+    {
+        id: 'screenshot-of-thread',
+        type: 'onclick',
+        event: function() {
+            Popup.sendMessageToContent(
+                new Popup.Message('API', 'screenshot', 'createScreenshotOfThread')
+            );
+        }
+    },
+    {
+        id: 'download-images',
+        type: 'onclick',
+        event: function() {
+            Popup.sendMessageToContent(
+                new Popup.Message('API', 'download', 'downloadImages')
+            );
+        }
+    },
+    {
+        id: 'download-video',
+        type: 'onclick',
+        event: function() {
+            Popup.sendMessageToContent(
+                new Popup.Message('API', 'download', 'downloadVideo')
+            );
+        }
+    },
+    {
+        id: 'download-media',
+        type: 'onclick',
+        event: function() {
+            Popup.sendMessageToContent(
+                new Popup.Message('API', 'download', 'downloadMedia')
+            );
+        }
+    },
+    {
+        id: 'download-thread',
+        type: 'onclick',
+        event: function() {
+            Popup.sendMessageToContent(
+                new Popup.Message('API', 'download', 'downloadThread')
+            );
+        }
+    }
+];
 
 
 /**
  * Starts when the popup.html has the status 'DOMContentLoaded'.
  */
-function main() {
-    bindEvents();
+Popup.main = function() {
+    Popup.bindEvents();
 }
 
 
 /**
  * Binds onclick events on an HTML elements.
  */
-function bindEvents() {
-    document.getElementById('screenshot-of-posts').onclick = function() {
-        sendMessageToContent({
-            type: 'API',
-            name: 'screenshot',
-            method: 'createScreenshotOfPosts'
-        });
-    };
-
-    document.getElementById('screenshot-of-thread').onclick = function() {
-        sendMessageToContent({
-            type: 'API',
-            name: 'screenshot',
-            method: 'createScreenshotOfThread'
-        });
+Popup.bindEvents = function() {
+    for (let elementEvent of Popup.elementsEvents) {
+        const element = document.getElementById(elementEvent.id);
+        element[elementEvent.type] = elementEvent.event;
     }
-
-    document.getElementById('download-images').onclick = function() {
-        sendMessageToContent({
-            type: 'API',
-            name: 'download',
-            method: 'downloadImages'
-        });
-    };
-
-    document.getElementById('download-video').onclick  = function() {
-        sendMessageToContent({
-            type: 'API',
-            name: 'download',
-            method: 'downloadVideo'
-        });
-    };
-
-    document.getElementById('download-media').onclick  = function() {
-        sendMessageToContent({
-            type: 'API',
-            name: 'download',
-            method: 'downloadMedia'
-        });
-    };
-
-    document.getElementById('download-thread').onclick = function() {
-        sendMessageToContent({
-            type: 'API',
-            name: 'download',
-            method: 'downloadThread'
-        });
-    };
 }
 
 
@@ -81,7 +99,7 @@ function bindEvents() {
  * @param {function(Object)} callback
  * A callback that handles the response.
  */
-function sendMessageToContent(message, callback) {
+Popup.sendMessageToContent = function(message, callback) {
     callback = callback || function() {};
 
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -91,3 +109,12 @@ function sendMessageToContent(message, callback) {
     });
 }
 
+
+/** 
+ * Adds event listener to the page. 
+ */
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', Popup.main);
+} else {
+    Popup.main();
+}
