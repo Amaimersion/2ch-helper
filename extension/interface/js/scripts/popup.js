@@ -1,11 +1,28 @@
 /**
- * Script for popup.html. Event handling from a user.
+ * Script for popup.html.
  * 
  * @module Popup
  */
 function Popup() {}
 
 
+/**
+ * Message template.
+ * 
+ * @memberof Popup
+ * @static
+ * @constructor
+ * 
+ * @param {String} type
+ * A type of the message.
+ * Can be: 'API'.
+ * 
+ * @param {String} name
+ * If type === 'API', then a name of another content module.
+ * 
+ * @param {String} method
+ * If type === 'API', then a method of another content module.
+ */
 Popup.Message = function(type, name, method) {
     this.type = type || undefined;
     this.name = name || undefined;
@@ -13,6 +30,13 @@ Popup.Message = function(type, name, method) {
 }
 
 
+/** 
+ * Events for the page elements.
+ * 
+ * @memberof Popup
+ * @static
+ * @type {Array<Object>}
+ */
 Popup.elementsEvents = [
     {
         id: 'screenshot-of-posts',
@@ -73,6 +97,9 @@ Popup.elementsEvents = [
 
 /**
  * Starts when the popup.html has the status 'DOMContentLoaded'.
+ * 
+ * @memberof Popup
+ * @static
  */
 Popup.main = function() {
     Popup.bindEvents();
@@ -80,7 +107,11 @@ Popup.main = function() {
 
 
 /**
- * Binds onclick events on an HTML elements.
+ * Binds events on an elements of the page.
+ * Elements and events are taken from Popup.elementsEvents.
+ * 
+ * @memberof Popup
+ * @static
  */
 Popup.bindEvents = function() {
     for (let elementEvent of Popup.elementsEvents) {
@@ -93,6 +124,9 @@ Popup.bindEvents = function() {
 /**
  * Sends the message to the content scripts.
  * 
+ * @memberof Popup
+ * @static
+ * 
  * @param {Object} message
  * A message for sending.
  * 
@@ -102,8 +136,8 @@ Popup.bindEvents = function() {
 Popup.sendMessageToContent = function(message, callback) {
     callback = callback || function() {};
 
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
             callback(response);
         });
     });
