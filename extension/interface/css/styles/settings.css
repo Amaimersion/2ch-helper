@@ -50,7 +50,7 @@ a {
 /* Header. */
 
 .custom-header {
-  height: 70px;
+  height: 71px; /* +1px because 1px border. */
 }
 
 .custom-header-content {
@@ -71,7 +71,7 @@ a {
 }
 
 .custom-main-navbar {
-  height: 40px;
+  height: 51px; /* +1px because 1px border. */
   line-height: 40px;
   padding-top: 10px;
 }
