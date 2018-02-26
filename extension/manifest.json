@@ -13,10 +13,10 @@
     "options_page": "/interface/html/settings.html",
 
     "icons": {
-        "16": "/interface/icons/icon-16.png",
-        "32": "/interface/icons/icon-32.png",
-        "48": "/interface/icons/icon-48.png",
-        "128": "/interface/icons/icon-128.png"
+        "16": "/interface/icons/logo-16.png",
+        "32": "/interface/icons/logo-32.png",
+        "48": "/interface/icons/logo-48.png",
+        "128": "/interface/icons/logo-128.png"
     },
 
     "browser_action": {
