@@ -197,6 +197,19 @@ ContentAPI.getUserSettings = function() {
     chrome.storage.sync.get(settings, (data) => {
         this.userSettings = data;
     });
+
+}
+
+
+/**
+ * Updates user settings.
+ * 
+ * @memberof ContentAPI
+ * @static
+ * @async
+ */
+ContentAPI.updateUserSettings = function() {
+    this.getUserSettings();
 }
 
 

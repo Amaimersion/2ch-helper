@@ -50,6 +50,18 @@ BackgroundAPI.getUserSettings = function() {
 
 
 /**
+ * Updates user settings.
+ * 
+ * @memberof BackgroundAPI
+ * @static
+ * @async
+ */
+BackgroundAPI.updateUserSettings = function() {
+    this.getUserSettings();
+}
+
+
+/**
  * Injects a script into the page.
  * 
  * @memberof BackgroundAPI

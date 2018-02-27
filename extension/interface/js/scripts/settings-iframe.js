@@ -181,3 +181,49 @@ SettingsIframe.bindSliders = function(sliders, settingField) {
         }
     }
 }
+
+
+/**
+ * Sends a message to the content scripts.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Object} message
+ * A message for sending.
+ * 
+ * @param {function(Object)} callback
+ * A callback that handles the response.
+ */
+SettingsIframe.sendMessageToContent = function(message, callback) {
+    callback = callback || function() {};
+
+    chrome.tabs.query({url: '*://2ch.hk/*/res/*'}, (tabs) => {
+        for (let tab of tabs) {
+            chrome.tabs.sendMessage(tab.id, message, (response) => {
+                callback(response);
+            });
+        }
+    });
+}
+
+
+/**
+ * Sends a message to the background scripts.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Object} message 
+ * A message for sending.
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that handle the response.
+ */
+SettingsIframe.sendMessageToBackground = function(message, callback) {
+    callback = callback || function() {};
+ 
+    chrome.runtime.sendMessage(message, (response) => {
+        callback(response);
+    });
+}

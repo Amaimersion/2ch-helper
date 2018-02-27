@@ -120,7 +120,15 @@ SettingsDownload.main = async function() {
  * @static
  */
 SettingsDownload.buttonClickEvent = function() {
-    SettingsIframe.saveUserSettings(SettingsDownload.forms, SettingsDownload.userSettingId);
+    SettingsIframe.saveUserSettings(
+        SettingsDownload.forms, SettingsDownload.userSettingId
+    );
+    SettingsIframe.sendMessageToContent(
+        {type: 'command', command: 'updateUserSettings'}
+    );
+    SettingsIframe.sendMessageToBackground(
+        {type: 'command', command: 'updateUserSettings'}
+    );
 }
 
 

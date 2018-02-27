@@ -139,7 +139,15 @@ SettingsScreenshot.main = async function() {
  * @static
  */
 SettingsScreenshot.buttonClickEvent = function() {
-    SettingsIframe.saveUserSettings(SettingsScreenshot.forms, SettingsScreenshot.userSettingId);
+    SettingsIframe.saveUserSettings(
+        SettingsScreenshot.forms, SettingsScreenshot.userSettingId
+    );
+    SettingsIframe.sendMessageToContent(
+        {type: 'command', command: 'updateUserSettings'}
+    );
+    SettingsIframe.sendMessageToBackground(
+        {type: 'command', command: 'updateUserSettings'}
+    );
 }
 
 
