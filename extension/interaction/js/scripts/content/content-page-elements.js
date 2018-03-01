@@ -106,10 +106,10 @@ ContentPageElements.getPostOfCheckbox = function(checkbox) {
     let post = document.getElementById('post-' + checkbox.value);
 
     if (!post) {
+        const postsClasses = ['post-wrapper', 'oppost-wrapper'];
+
         post = ContentAPI.getParent(checkbox, (element) => {
-            return (
-                element.classList.contains('post-wrapper')
-            );
+            return postsClasses.includes(element.className);
         });
     }
 
