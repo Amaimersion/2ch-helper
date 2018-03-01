@@ -115,3 +115,20 @@ ContentPageElements.getPostOfCheckbox = function(checkbox) {
 
     return post;
 }
+
+
+/**
+ * Turn offs a checkboxes of an active posts and
+ * clears ContentPageElements.activePosts.
+ * 
+ * @memberof ContentPageElements
+ * @static
+ */
+ContentPageElements.turnOffPosts = function() {
+    for (let post of this.activePosts) {
+        const checkbox = post.querySelector('input[type="checkbox"]');
+        checkbox.checked = false;
+    }
+
+    this.activePosts = [];
+}

@@ -17,7 +17,7 @@ Settings.iframeData = [
     {
         navbarId: 'settings-screenshot-navbar',
         iframeId: 'settings-screenshot',
-        height: '470px'
+        height: '524px'
     },
     {
         navbarId: 'settings-download-navbar',

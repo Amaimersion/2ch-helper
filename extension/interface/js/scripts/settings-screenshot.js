@@ -65,6 +65,13 @@ SettingsScreenshot.forms = [
             {elementId: 'screenshotQualityValue', settingId: 'quality'},
             {elementId: 'screenshotDelayValue', settingId: 'delay'}
         ]
+    },
+    {
+        type: 'checkbox',
+        data: [
+            {elementId: 'turnOffTrue', settingId: 'turnOffPostsYes'},
+            {elementId: 'turnOffFalse', settingId: 'turnOffPostsNo'}
+        ]
     }
 ];
 

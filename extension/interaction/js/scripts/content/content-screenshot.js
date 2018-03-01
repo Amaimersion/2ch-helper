@@ -103,11 +103,15 @@ ContentScreenshot.createScreenshotOfPosts = async function() {
         throw error;
     }
 
-    this.restorePageOptions(thread);
     ContentAPI.sendMessageToBackground({
         type: 'command',
         command: 'createPostsImage'
     });
+    this.restorePageOptions(thread);
+
+    if (ContentAPI.userSettings.settings_screenshot.turnOffPostsYes) {
+        ContentPageElements.turnOffPosts();
+    }
 }
 
 
