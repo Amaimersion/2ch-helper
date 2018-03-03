@@ -25,7 +25,8 @@ SettingsIframe.userSettings = {};
  */
 SettingsIframe.userSettingIds = [
     'settings_screenshot',
-    'settings_download'
+    'settings_download',
+    'statistics'
 ];
 
 

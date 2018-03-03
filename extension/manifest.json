@@ -31,7 +31,8 @@
             "/interaction/js/scripts/background/background-downloads.js",
             "/interaction/js/scripts/background/background-on-message.js",
             "/interaction/js/scripts/background/background-user-profile.js",
-            "/interaction/js/scripts/background/background-events.js"
+            "/interaction/js/scripts/background/background-events.js",
+            "/interaction/js/scripts/background/background-statistics.js"
         ],
         "persistent": false
     },
@@ -46,6 +47,15 @@
                 "/interaction/js/scripts/content/content-page-elements.js",
                 "/interaction/js/scripts/content/content-DOMContentLoaded.js",
                 "/interaction/js/scripts/content/content-on-message.js"
+            ]
+        },
+        {
+            "matches": [
+                "*://2ch.hk/*"
+            ],
+            "js": [
+                "/interaction/js/scripts/content/content-API.js",
+                "/interaction/js/scripts/content/content-statistics.js"
             ]
         }
     ],

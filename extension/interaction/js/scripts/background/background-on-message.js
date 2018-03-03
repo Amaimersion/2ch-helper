@@ -145,6 +145,15 @@ BackgroundMessage.commandHandler = async function(request, sendResponse) {
     } else if (command === 'updateUserSettings') {
         BackgroundAPI.updateUserSettings();
         sendResponse({status: true});
+
+    } else if (command === 'updateStatistics') {
+        try {
+            await BackgroundStatistics.updateStatistics(
+                request.field, request.data
+            );
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

@@ -31,6 +31,10 @@ UserProfile.defaultProfile = {
         userName: false,
         fileName: '',
         delay: 500
+    },
+
+    statistics: {
+        totalSecondsSpent: 0
     }
 };
 

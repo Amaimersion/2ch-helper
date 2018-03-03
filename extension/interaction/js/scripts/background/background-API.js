@@ -40,7 +40,8 @@ BackgroundAPI.getUserSettings = function() {
     // what settings to receive.
     const settings = [
         'settings_screenshot',
-        'settings_download'
+        'settings_download',
+        'statistics'
     ];
 
     chrome.storage.sync.get(settings, (data) => {
@@ -58,6 +59,31 @@ BackgroundAPI.getUserSettings = function() {
  */
 BackgroundAPI.updateUserSettings = function() {
     this.getUserSettings();
+}
+
+
+/**
+ * Saves user settings.
+ * If field passed, then saves certain field settings, else saves all settings.
+ * 
+ * @memberof BackgroundAPI
+ * @static
+ * 
+ * @param {String} [field]
+ * A field of settings for saving.
+ * If passed, then other settings will not be saved.
+ *  
+ * @param {function()} [callback]
+ * A callback that executes after saving. 
+ */
+BackgroundAPI.saveUserSettings = function(field, callback) {
+    callback = callback || function() {};
+
+    if (field) {
+        chrome.storage.sync.set(this.userSettings[field], callback);
+    } else {
+        chrome.storage.sync.set(this.userSettings, callback);
+    }
 }
 
 
