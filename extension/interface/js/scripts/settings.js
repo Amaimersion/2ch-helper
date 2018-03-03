@@ -1,47 +1,102 @@
+/**
+ * Script for settings.html.
+ * 
+ * @module Settings
+ */
 function Settings() {}
 
 
+/** 
+ * Iframes on the page.
+ * 
+ * @memberof Settings
+ * @static
+ * @type {Array<Object>}
+ */
 Settings.iframeData = [
     {
         navbarId: 'settings-screenshot-navbar',
-        elementId: 'settings-screenshot',
-        height: '470px'
+        iframeId: 'settings-screenshot',
+        height: '524px'
     },
     {
         navbarId: 'settings-download-navbar',
-        elementId: 'settings-download',
+        iframeId: 'settings-download',
         height: '250px'
     }
 ];
 
 
+/**
+ * Starts when the page has the status 'DOMContentLoaded'.
+ * 
+ * @memberof Settings
+ * @static
+ */
 Settings.main = function() {
-    Settings.bindElements();
+    Settings.bindEvents();
 }
 
 
-Settings.bindElements = function() {
-    for (let element of Settings.iframeData) {
-        document.getElementById(element.navbarId).onclick = function() {
-            Settings.hideAllIframes();
-
-            const iframe = document.getElementById(element.elementId);
-            
-            iframe.style.display = 'block';
-            iframe.style.height = element.height;
-        }
+/**
+ * Binds onclick events.
+ * Elements data are taken from Settings.iframeData.
+ * 
+ * @memberof Settings
+ * @static
+ */
+Settings.bindEvents = function() {
+    for (let iframeData of Settings.iframeData) {
+        document.getElementById(iframeData.navbarId).onclick = function() {
+            Settings.iframeClickEvent(iframeData.navbarId, iframeData.iframeId, iframeData.height)
+        };
     }
 }
 
-Settings.hideAllIframes = function() {
-    const iframes = document.querySelectorAll('iframe');
 
-    for (let iframe of iframes) {
+/**
+ * Disables all iframes.
+ * Elements data are taken from Settings.iframeData.
+ * 
+ * @memberof Settings
+ * @static
+ */
+Settings.disableAllIframes = function() {
+    for (let iframeData of Settings.iframeData) {
+        const navbar = document.getElementById(iframeData.navbarId);
+        const iframe = document.getElementById(iframeData.iframeId);
+
+        navbar.classList.remove('custom-border-bottom');
         iframe.style.display = 'none';
     }
 }
 
 
+/**
+ * Click event for an iframe.
+ * 
+ * @memberof Settings
+ * @static
+ * 
+ * @param {String} navbarId An id of navbar of the iframe.
+ * @param {String} iframeId An id of the iframe.
+ * @param {String} iframeHeight A height of the iframe.
+ */
+Settings.iframeClickEvent = function(navbarId, iframeId, iframeHeight) {
+    Settings.disableAllIframes();
+
+    const navbar = document.getElementById(navbarId);
+    const iframe = document.getElementById(iframeId);
+    
+    navbar.classList.add('custom-border-bottom');
+    iframe.style.display = 'block';
+    iframe.style.height = iframeHeight;
+}
+
+
+/** 
+ * Adds event listener to the page. 
+ */
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', Settings.main);
 } else {

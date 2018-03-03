@@ -8,6 +8,7 @@ function ContentPageElements() {}
 
 /**
  * Selected posts of a thread.
+ * Cannot contain duplicates.
  * 
  * @memberof ContentPageElements
  * @static
@@ -27,14 +28,28 @@ ContentPageElements.activePosts = [];
  */
 ContentPageElements.addEventsToCheckboxes = function(checkboxes) {
     for (let checkbox of checkboxes) {
-        checkbox.addEventListener('change', (event) => {
-            if (event.target.checked) {
-                this.eventForCheckedCheckbox(event.target);
-            } else {
-                this.eventForUncheckedCheckbox(event.target);
-            }
-        });
+        this.bindCheckbox(checkbox);
     }
+}
+
+
+/**
+ * Binds an events to the checkbox.
+ * 
+ * @memberof ContentPageElements
+ * @static
+ * 
+ * @param {HTMLInputElement} checkbox
+ * A checkbox for binding.
+ */
+ContentPageElements.bindCheckbox = function(checkbox) {
+    checkbox.addEventListener('change', (event) => {
+        if (event.target.checked) {
+            this.eventForCheckedCheckbox(event.target);
+        } else {
+            this.eventForUncheckedCheckbox(event.target);
+        }
+    });
 }
 
 
@@ -48,8 +63,11 @@ ContentPageElements.addEventsToCheckboxes = function(checkboxes) {
  * @param {HTMLInputElement} checkbox 
  */
 ContentPageElements.eventForCheckedCheckbox = function(checkbox) {
-    const post = ContentPageElements.getPostOfCheckbox(checkbox);
-    ContentPageElements.activePosts.push(post);
+    const post = this.getPostOfCheckbox(checkbox);
+
+    if (!this.activePosts.includes(post)) {
+        this.activePosts.push(post);
+    }
 }
 
 
@@ -63,11 +81,11 @@ ContentPageElements.eventForCheckedCheckbox = function(checkbox) {
  * @param {HTMLInputElement} checkbox 
  */
 ContentPageElements.eventForUncheckedCheckbox = function(checkbox) {
-    const post = ContentPageElements.getPostOfCheckbox(checkbox);
+    const post = this.getPostOfCheckbox(checkbox);
     const index = this.activePosts.indexOf(post);
 
     if (index !== -1) {
-        ContentPageElements.activePosts.splice(index, 1);
+        this.activePosts.splice(index, 1);
     }
 }
 
@@ -79,14 +97,38 @@ ContentPageElements.eventForUncheckedCheckbox = function(checkbox) {
  * @static
  * 
  * @param {HTMLInputElement} checkbox
+ * A checkbox for getting a post.
  * 
- * @returns {HTMLElement} A post (DIV).
+ * @returns {HTMLElement} 
+ * The post (DIV).
  */
 ContentPageElements.getPostOfCheckbox = function(checkbox) {
-    return ContentAPI.getParent(checkbox, (element) => {
-        return (
-            (element.className === 'post-wrapper') || 
-            (element.className === 'oppost-wrapper')
-        );
-    });
+    let post = document.getElementById('post-' + checkbox.value);
+
+    if (!post) {
+        const postsClasses = ['post-wrapper', 'oppost-wrapper'];
+
+        post = ContentAPI.getParent(checkbox, (element) => {
+            return postsClasses.includes(element.className);
+        });
+    }
+
+    return post;
+}
+
+
+/**
+ * Turn offs a checkboxes of an active posts and
+ * clears ContentPageElements.activePosts.
+ * 
+ * @memberof ContentPageElements
+ * @static
+ */
+ContentPageElements.turnOffPosts = function() {
+    for (let post of this.activePosts) {
+        const checkbox = post.querySelector('input[type="checkbox"]');
+        checkbox.checked = false;
+    }
+
+    this.activePosts = [];
 }

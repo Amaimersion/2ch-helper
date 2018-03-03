@@ -21,6 +21,8 @@ UserProfile.defaultProfile = {
         fileNameThread: 'thread',
         format: 'jpeg',
         quality: 100,
+        turnOffPostsYes: true,
+        turnOffPostsNo: false,
         delay: 500
     },
     
@@ -29,6 +31,10 @@ UserProfile.defaultProfile = {
         userName: false,
         fileName: '',
         delay: 500
+    },
+
+    statistics: {
+        totalSecondsSpent: 0
     }
 };
 

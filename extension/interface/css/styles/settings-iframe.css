@@ -11,7 +11,7 @@ html {
 }
 
 body {
-  font-family: 'Roboto';
+  font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
   background-color: #EEE;
 }
 
@@ -20,7 +20,7 @@ body {
   margin: 0;
   padding: 0;
 }
-  
+
 .custom-container {
-  padding-top: 20px;
+  padding-top: 10px;
 }

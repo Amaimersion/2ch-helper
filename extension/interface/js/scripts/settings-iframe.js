@@ -1,15 +1,47 @@
+/**
+ * Script for iframe.
+ * 
+ * @module SettingsIframe
+ */
 function SettingsIframe() {}
 
 
+/** 
+ *  User settings.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * @type {Object}
+ */
 SettingsIframe.userSettings = {};
 
 
+/** 
+ *  What settings to receive.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * @type {Array<String>}
+ */
 SettingsIframe.userSettingIds = [
     'settings_screenshot',
-    'settings_download'
+    'settings_download',
+    'statistics'
 ];
 
 
+/**
+ * Gets and inits user settings.
+ * Data for receiving settings are getting from SettingsIframe.userSettingIds.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * @async
+ * 
+ * @returns {Promise<void>}
+ * A promise for the init that will resolve when receive and initialize are successfully completed.
+ * Resolve will contain nothing if success. 
+ */
 SettingsIframe.initUserSettings = function() {
     return new Promise((resolve, reject) => {
         chrome.storage.sync.get(this.userSettingId, (data) => {
@@ -20,12 +52,19 @@ SettingsIframe.initUserSettings = function() {
 }
 
 
-SettingsIframe.saveUserSettings = function(forms, settingField) {
-    this.updateUserData(forms, settingField);
-    chrome.storage.sync.set(this.userSettings);
-}
-
-
+/**
+ * Updates SettingsIframe.userSettings.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Array<Object>} forms
+ * The forms for getting information about settings.
+ * Expects: SettingsScreenshot.forms or SettingsDownload.forms.
+ * 
+ * @param {String} settingField
+ * In what field of settings to save. 
+ */
 SettingsIframe.updateUserData = function(forms, settingField) {
     for (let formData of forms) {
         for (let data of formData.data) {
@@ -46,6 +85,37 @@ SettingsIframe.updateUserData = function(forms, settingField) {
 }
 
 
+/**
+ * Saves current SettingsIframe.userSettings to settings on the field.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Array<Object>} forms
+ * The forms for getting information about settings.
+ * Expects: SettingsScreenshot.forms or SettingsDownload.forms.
+ * 
+ * @param {String} settingField
+ * In what field of settings to save. 
+ */
+SettingsIframe.saveUserSettings = function(forms, settingField) {
+    // first, update the SettingsIframe.userSettings.
+    this.updateUserData(forms, settingField);
+    // then save it.
+    chrome.storage.sync.set(this.userSettings);
+}
+
+
+/**
+ * Binds buttons.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Array<Object>} buttons 
+ * A buttons for binding.
+ * Expects: SettingsScreenshot.buttons or SettingsDownload.buttons.
+ */
 SettingsIframe.bindButtons = function(buttons) {
     for (let buttonData of buttons) {
         const element = document.getElementById(buttonData.id);
@@ -57,19 +127,19 @@ SettingsIframe.bindButtons = function(buttons) {
 }
 
 
-SettingsIframe.bindSliders = function(sliders, settingField) {
-    for (let sliderData of sliders) {
-        const options = sliderData.options;
-        options['value'] = this.userSettings[settingField][sliderData.settingId];
-        const slider = new Slider(sliderData.id, options);
-
-        for (let event of sliderData.events) {
-            slider.on(event.name, event.event);
-        }
-    }
-}
-
-
+/**
+ * Binds forms.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Array<Object>} forms 
+ * A forms for binding.
+ * Expects: SettingsScreenshot.forms or SettingsDownload.forms.
+ * 
+ * @param {String} settingField
+ * From what field of settings to read parameters.
+ */
 SettingsIframe.bindForms = function(forms, settingField) {
     for (let formData of forms) {
         for (let data of formData.data) {
@@ -85,4 +155,76 @@ SettingsIframe.bindForms = function(forms, settingField) {
             }
         }
     }
+}
+
+
+/**
+ * Binds sliders (bootstrap-slider.min.js).
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Array<Object>} sliders 
+ * A sliders for binding.
+ * Expects: SettingsScreenshot.sliders or SettingsDownload.sliders.
+ * 
+ * @param {String} settingField
+ * From what field of settings to read parameters.
+ */
+SettingsIframe.bindSliders = function(sliders, settingField) {
+    for (let sliderData of sliders) {
+        const options = sliderData.options;
+        options['value'] = this.userSettings[settingField][sliderData.settingId];
+        const slider = new Slider(sliderData.id, options);
+
+        for (let event of sliderData.events) {
+            slider.on(event.name, event.event);
+        }
+    }
+}
+
+
+/**
+ * Sends a message to the content scripts.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Object} message
+ * A message for sending.
+ * 
+ * @param {function(Object)} callback
+ * A callback that handles the response.
+ */
+SettingsIframe.sendMessageToContent = function(message, callback) {
+    callback = callback || function() {};
+
+    chrome.tabs.query({url: '*://2ch.hk/*/res/*'}, (tabs) => {
+        for (let tab of tabs) {
+            chrome.tabs.sendMessage(tab.id, message, (response) => {
+                callback(response);
+            });
+        }
+    });
+}
+
+
+/**
+ * Sends a message to the background scripts.
+ * 
+ * @memberof SettingsIframe
+ * @static
+ * 
+ * @param {Object} message 
+ * A message for sending.
+ * 
+ * @param {function(Object)} [callback] 
+ * A callback that handle the response.
+ */
+SettingsIframe.sendMessageToBackground = function(message, callback) {
+    callback = callback || function() {};
+ 
+    chrome.runtime.sendMessage(message, (response) => {
+        callback(response);
+    });
 }

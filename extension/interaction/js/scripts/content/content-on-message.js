@@ -1,6 +1,6 @@
 /** 
  * The module that handles messages.
- * Can handle messages of the following types: 'API'.
+ * Can handle messages of the following types: 'API', 'command'.
  * 
  * @module ContentMessage
  */
@@ -23,6 +23,9 @@ function ContentMessage() {}
 ContentMessage.onMessage = function(request, sender, sendResponse) {
     if (request.type === 'API') {
         ContentMessage.APIHandler(request, sendResponse);
+        return true;
+    } else if (request.type === 'command') {
+        ContentMessage.commandHandler(request, sendResponse);
         return true;
     } else {
         ContentMessage.errorHandler(request, sender, sendResponse);
@@ -48,13 +51,32 @@ ContentMessage.APIHandler = async function(request, sendResponse) {
         await ContentAPI.executeAnotherAPI(
             request.name, request.method
         );
-    }
-    catch (error) {
+    } catch (error) {
         sendResponse({status: false, error: error});
         throw error;
     }
 
     sendResponse({status: true});
+}
+
+
+/**
+ * Handles command type messages.
+ * 
+ * @memberof ContentMessage
+ * @static
+ * @async
+ * 
+ * @param {Object} request 
+ * @param {Object} sendResponse 
+ * 
+ * @throws {Error} Throws an error if occurs.
+ */
+ContentMessage.commandHandler = function(request, sendResponse) {
+    if (request.command === 'updateUserSettings') {
+        ContentAPI.updateUserSettings();
+        sendResponse({status: true});
+    }
 }
 
 
