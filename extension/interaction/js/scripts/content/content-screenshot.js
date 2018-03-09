@@ -96,9 +96,14 @@ ContentScreenshot.createScreenshotOfPosts = async function() {
 
     const coordinates = this.getScrenshotCoordinates(thread);
 
+    if (!coordinates.length) {
+        alert('Не выбраны посты.');
+    }
+
     try {
         await this.handleScreenshotCoordinates(coordinates);
     } catch (error) {
+        alert('Ошибка: не удалось обработать координаты.');
         this.restorePageOptions(thread);
         throw error;
     }
@@ -106,7 +111,12 @@ ContentScreenshot.createScreenshotOfPosts = async function() {
     ContentAPI.sendMessageToBackground({
         type: 'command',
         command: 'createPostsImage'
+    }, (response) => {
+        if (!response.status) {
+            alert('Ошибка: не удалось создать полное изображение.');
+        }
     });
+
     this.restorePageOptions(thread);
 
     if (ContentAPI.userSettings.settings_screenshot.turnOffPostsYes) {
@@ -300,9 +310,14 @@ ContentScreenshot.createScreenshotOfThread = async function() {
 
     const coordinates = this.getThreadCoordinates(thread);
 
+    if (!coordinates.length) {
+        alert('Ошибка: не удалось получить координаты треда.');
+    }
+
     try {
         await this.handleThreadCoordinates(coordinates);
     } catch (error) {
+        alert('Ошибка: не удалось обработать координаты.');
         this.restorePageOptions(thread);
         throw error;
     }
@@ -311,6 +326,10 @@ ContentScreenshot.createScreenshotOfThread = async function() {
     ContentAPI.sendMessageToBackground({
         type: 'command',
         command: 'createThreadImage'
+    }, (response) => {
+        if (!response.status) {
+            alert('Ошибка: не удалось создать полное изображение.');
+        }
     });
 }
 
