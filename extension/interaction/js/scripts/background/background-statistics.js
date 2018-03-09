@@ -121,7 +121,6 @@ BackgroundStatistics.updateStatisticsField = function(field, value) {
     return new Promise((resolve, reject) => {
         const mainField = this.fields.main;
         const errorOccurrence = this.createErrorOccurrence(reject);
-        console.log(errorOccurrence);
 
         BackgroundAPI.userSettings[mainField][field] = value;
 

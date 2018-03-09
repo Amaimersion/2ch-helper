@@ -27,6 +27,7 @@ Statistics.main = async function() {
  */
 Statistics.bindTime = function() {
     const element = document.getElementById('statistics-time');
+    console.log(SettingsIframe.userSettings.statistics);
     let time = SettingsIframe.userSettings.statistics.totalSecondsSpent / 3600;
     time = Math.round(time);
     element.textContent = time;
