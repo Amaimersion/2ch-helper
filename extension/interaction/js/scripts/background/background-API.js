@@ -80,7 +80,7 @@ BackgroundAPI.saveUserSettings = function(field, callback) {
     callback = callback || function() {};
 
     if (field) {
-        chrome.storage.sync.set(this.userSettings[field], callback);
+        chrome.storage.sync.set({[field]: this.userSettings[field]}, callback);
     } else {
         chrome.storage.sync.set(this.userSettings, callback);
     }

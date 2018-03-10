@@ -132,5 +132,9 @@ ContentDownloads.processDownload = function(selector, command, condition, callba
 
     ContentAPI.sendMessageToBackground(message, (response) => {
         callback(response);
+
+        if (!response.status) {
+            alert('Ошибка: не удалось выполнить загрузку.');
+        }
     });
 }

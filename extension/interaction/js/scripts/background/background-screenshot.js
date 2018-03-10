@@ -271,6 +271,8 @@ BackgroundScreenshot.createImagesOfData = function() {
                                 return rej();
                             });
                         }
+                    }, () => {
+                        return rej();
                     });
                 });
             });
