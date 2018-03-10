@@ -45,8 +45,9 @@ UserProfile.defaultProfile = {
  * @memberof UserProfile
  * @static
  */
-UserProfile.createProfile = function() {
-    chrome.storage.sync.set(this.defaultProfile);
+UserProfile.createProfile = function(callback) {
+    callback = callback || function() {};
+    chrome.storage.sync.set(this.defaultProfile, callback);
 }
 
 
@@ -56,7 +57,7 @@ UserProfile.createProfile = function() {
  * @memberof UserProfile
  * @static
  */
-UserProfile.deleteProfile = function() {
+UserProfile.deleteProfile = function(callback) {
     chrome.storage.sync.clear();
 }
 

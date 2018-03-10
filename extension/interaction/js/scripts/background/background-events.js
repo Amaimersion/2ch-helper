@@ -25,7 +25,7 @@ BackgroundEvents.DOMContentLoaded = function() {
  * @static
  */
 BackgroundEvents.firstInstall = function() {
-    UserProfile.createProfile(); 
+    UserProfile.createProfile(this.DOMContentLoaded); 
 }
 
 
