@@ -41,8 +41,8 @@ BackgroundStatistics.updateStatistics = function(field, data) {
         if (field === 'totalSecondsSpent') {
             try {
                 await this.updateTotalSecondsSpent(
-                    data.loadedDate,
-                    data.closedDate
+                    data.focusOnTime,
+                    data.focusOffTime
                 );
             } catch (error) {
                 return reject(error);
@@ -66,22 +66,26 @@ BackgroundStatistics.updateStatistics = function(field, data) {
  * @static
  * @async
  * 
- * @param {Number} loadedMs
- * A time of opening the page in milliseconds. 
+ * @param {Number} focusOnMs
+ * A time when the page got focus.
+ * A number is represented in milliseconds elapsed between 
+ * 1 January 1970 00:00:00 UTC and the current date.
  * 
- * @param {Number} closedMs 
- * A time of closing the page in milliseconds. 
+ * @param {Number} focusOffMs 
+ * A time when the page lost focus.
+ * A number is represented in milliseconds elapsed between 
+ * 1 January 1970 00:00:00 UTC and the current date.
  * 
  * @returns {Promise<void | Error>} 
  * A promise for the update that will resolve when the update will end.
  * Resolve will contain nothing if success, otherwise reject will contain an error.
  */
-BackgroundStatistics.updateTotalSecondsSpent = function(loadedMs, closedMs) {
+BackgroundStatistics.updateTotalSecondsSpent = function(focusOnMs, focusOffMs) {
     return new Promise(async (resolve, reject) => {
         let seconds = 0;
 
-        seconds = closedMs - loadedMs;
-        seconds /= 1000;
+        seconds = focusOffMs - focusOnMs;
+        seconds /= 1000; // from ms to seconds.
         seconds = Math.round(seconds);
 
         const mainField = this.fields.main;

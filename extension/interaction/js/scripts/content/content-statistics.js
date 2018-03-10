@@ -1,5 +1,5 @@
 /** 
- * The module that handles statistics requests.
+ * A module for work with statistics.
  * 
  * @module ContentStatistics
  */
@@ -7,63 +7,113 @@ function ContentStatistics() {}
 
 
 /**
- * A date of the opening page in milliseconds
+ * A time when the page got focus.
+ * A number is represented in milliseconds elapsed between 
+ * 1 January 1970 00:00:00 UTC and the current date.
  * 
  * @memberof ContentStatistics
  * @static
  * @type {Number}
  */
-ContentStatistics.loadedDate = 0;
+ContentStatistics.focusOnTime = 0;
 
 
 /**
- * A date of the closing page in milliseconds
+ * A time when the page lost focus.
+ * A number is represented in milliseconds elapsed between 
+ * 1 January 1970 00:00:00 UTC and the current date.
  * 
  * @memberof ContentStatistics
  * @static
  * @type {Number}
  */
-ContentStatistics.closedDate = 0;
+ContentStatistics.focusOffTime = 0;
 
 
 /**
- * The event for 'DOMContentLoaded'.
+ * An event when the page was opened.
  * 
  * @memberof ContentStatistics
  * @static
  */
-ContentStatistics.pageLoaded = function() {
-    ContentStatistics.loadedDate = new Date().getTime();
+ContentStatistics.pageOpened = function() {
+    if (document.hasFocus()) {
+        ContentStatistics.pageGotFocus();
+    }
+
+    ContentStatistics.bindEvents();
 }
 
 
 /**
- * The event for 'beforeunload'.
+ * An event when the page was closed.
  * 
  * @memberof ContentStatistics
  * @static
  */
 ContentStatistics.pageClosed = function() {
-    ContentStatistics.closedDate = new Date().getTime();
+    if (ContentStatistics.focusOnTime) {
+        ContentStatistics.pageLostFocus();
+    }
+}
+
+
+/**
+ * An event when the page got focus.
+ * 
+ * @memberof ContentStatistics
+ * @static
+ */
+ContentStatistics.pageGotFocus = function() {
+    ContentStatistics.focusOnTime = new Date().getTime();
+}
+
+
+/**
+ * An event when the page lost focus.
+ * 
+ * @memberof ContentStatistics
+ * @static
+ */
+ContentStatistics.pageLostFocus = function() {
+    ContentStatistics.focusOffTime = new Date().getTime();
+
     ContentAPI.sendMessageToBackground({
         type: 'command',
         command: 'updateStatistics',
         field: 'totalSecondsSpent',
         data: {
-            loadedDate: ContentStatistics.loadedDate,
-            closedDate: ContentStatistics.closedDate
+            focusOnTime: ContentStatistics.focusOnTime,
+            focusOffTime: ContentStatistics.focusOffTime
         }
     });
+
+    // if focusOnTime not equal to zero,
+    // then when the page will be closed
+    // pageLostFocus event will be called.
+    ContentStatistics.focusOnTime = 0;
+    ContentStatistics.focusOffTime = 0;
+}
+
+
+/**
+ * Binds an events to the page.
+ * 
+ * @memberof ContentStatistics
+ * @static
+ */
+ContentStatistics.bindEvents = function() {
+    window.addEventListener('beforeunload', this.pageClosed);
+    window.addEventListener('focus', this.pageGotFocus);
+    window.addEventListener('blur', this.pageLostFocus);
 }
 
 
 /** 
- * Adds events listeners to the page. 
+ * Adds events listener to the page. 
  */
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', ContentStatistics.pageLoaded);
+    document.addEventListener('DOMContentLoaded', ContentStatistics.pageOpened);
 } else {
-    ContentStatistics.pageLoaded();
+    ContentStatistics.pageOpened();
 }
-
-window.addEventListener('beforeunload', ContentStatistics.pageClosed);
