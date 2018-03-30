@@ -1,0 +1,18 @@
+{
+    "name": "2ch-helper",
+    "version": "1.0.0-beta.6",
+    "description": "A browser extension which facilitates interaction with the imageboard 2ch.hk.",
+    "author": {
+        "name": "Sergey Kuznetsov",
+        "url": "https://github.com/Amaimersion"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Amaimersion/2ch-helper"
+    },
+    "bugs": {
+        "url": "https://github.com/Amaimersion/2ch-helper/issues"
+    },
+    "license": "MIT",
+    "private": true
+}
