@@ -14,5 +14,8 @@
         "url": "https://github.com/Amaimersion/2ch-helper/issues"
     },
     "license": "MIT",
-    "private": true
+    "private": true,
+    "devDependencies": {
+        "webpack": "^4.4.1"
+    }
 }
