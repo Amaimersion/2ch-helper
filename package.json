@@ -20,6 +20,7 @@
     "private": true,
     "dependencies": {},
     "devDependencies": {
+        "@types/chrome": "0.0.63",
         "clean-webpack-plugin": "^0.1.19",
         "copy-webpack-plugin": "^4.5.1",
         "css-loader": "^0.28.11",
