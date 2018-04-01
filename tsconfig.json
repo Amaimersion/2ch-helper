@@ -3,6 +3,9 @@
         "sourceMap": true,
         "types": [
             "chrome"
+        ],
+        "lib": [
+            "es2015"
         ]
     }
 }
