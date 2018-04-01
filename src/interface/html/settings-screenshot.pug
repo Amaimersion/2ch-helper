@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+html(lang="ru")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    title="Настройки – Скриншот"
+    link(rel="stylesheet" href="/interface/css/libs/bootstrap-4.0.0.min.css")
+    link(rel="stylesheet" href="/interface/css/libs/bootstrap-slider.min.css")
+    link(rel="stylesheet" href="/interface/css/styles/settings-iframe.css")
+    script(async src="/interface/js/libs/bootstrap-slider.min.js")
+    script(async src="/interface/js/scripts/settings-iframe.js")
+    script(async src="/interface/js/scripts/settings-screenshot.js")
+
+  body
+    main
+      div(class="container custom-container")
+        form
+          div(class="form-group")
+            label(for="nameForPosts")="Имя файла для скриншота постов"
+            input(class="form-control" id="nameForPosts" type="text" placeholder="Имя файла для скриншота постов")
+
+          div(class="form-group")
+            label(for="nameForThread")="Имя файла для скриншота треда"
+            input(class="form-control" id="nameForThread" type="text" placeholder="Имя файла для скриншота треда")
+
+          div(class="form-group")
+            label(for="screenshotFormat")="Формат скриншота"
+            select(class="custom-select" id="screenshotFormat")
+              option(value="jpeg")="JPEG"
+              option(value="png")="PNG"
+
+          div(class="form-group" id="quality")
+            label(class="d-block" for="screenshotQuality")="Качество скриншота"
+            input(id="screenshotQuality" type="text" data-provide="slider" data-slider-min="0" data-slider-max="100" data-slider-step="1")
+            span(class="pl-2" id="screenshotQualityValue")
+            span(id="screenshotQualityUnit")="%"
+
+          div(class="form-group")
+            label(class="d-block" for="screenshotDelay")="Задержка"
+            input(id="screenshotDelay" type="text" data-provide="slider" data-slider-min="500" data-slider-max="2000" data-slider-step="100")
+            span(class="pl-2" id="screenshotDelayValue")
+            span(id="screenshotDelayUnit")="мс"
+
+          div(class="form-group")
+            label(class="d-block" for="turnOffPosts")="Выключать активные посты после создания скриншота"
+
+            div(class="form-check form-check-inline")
+              input(class="form-check-input" id="turnOffTrue" type="radio" name="turnOffPosts")
+              label(class="form-check-label" for="turnOffTrue")="Да"
+
+            div(class="form-check form-check-inline")
+              input(class="form-check-input" id="turnOffFalse" type="radio" name="turnOffPosts")
+              label(class="form-check-label" for="turnOffFalse")="Нет"
+
+          button(class="btn btn-primary" id="save" type="button")="Сохранить"
