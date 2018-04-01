@@ -1,0 +1,68 @@
+@import "./font.scss";
+
+
+/* Global. */
+
+html,
+body,
+h1,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #EEE;
+  color: #FF7000;
+  font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
+  height: auto;
+  width: 200px;
+}
+
+
+/* Common. */
+
+.custom-border-bottom {
+  border-bottom: 1px solid #333;
+}
+
+.custom-content {
+  padding: 5px 0;
+  text-align: center;
+}
+
+
+/* Main. */
+
+.custom-main-content {
+  padding: 0;
+}
+
+.custom-options-border-bottom {
+  border-bottom: 1px solid #DDD;
+}
+
+.custom-item {
+  color: #FF7000;
+  cursor: pointer;
+  display: block;
+  font-size: 15px;
+  padding: 5px 0;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #DDD;
+  }
+
+  &,
+  &:hover {
+    transition: .2s;
+  }
+}
+
+
+/* Footer. */
+
+.custom-version {
+  font-weight: bold;
+}

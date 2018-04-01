@@ -1,0 +1,76 @@
+-var content = {
+-  main: {
+-    screenshots: [
+-      {
+-        id: "screenshot-of-posts",
+-        name: "Скриншот постов"
+-      },
+-      {
+-        id: "screenshot-of-thread",
+-        name: "Скриншот треда"
+-      }
+-    ],
+-    downloads: [
+-      {
+-        id: "download-images",
+-        name: "Скачать изображения"
+-      },
+-      {
+-        id: "download-video",
+-        name: "Скачать видео"
+-      },
+-      {
+-        id: "download-media",
+-        name: "Скачать медиаконтент"
+-      },
+-      {
+-        id: "download-thread",
+-        name: "Скачать тред"
+-      }
+-    ],
+-    options: [
+-      {
+-        href: "statistics.html",
+-        name: "Статистика"
+-      },
+-      {
+-        href: "settings.html",
+-        name: "Настройки"
+-      }
+-    ]
+-  }
+-};
+
+<!DOCTYPE html>
+html(lang="ru")
+
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(http-equiv="X-UA-Compatible", content="ie=edge")
+    title="2ch-helper"
+    link(rel="stylesheet", href="/interface/css/styles/popup.css")
+    script(async, src="/interface/js/scripts/popup.js")
+
+  body
+    header(class="custom-header custom-border-bottom")
+      div(class="custom-header-content custom-content")
+        h1="2ch-helper"
+
+    main(class="custom-main custom-border-bottom")
+      div(class="custom-main-content custom-content")
+        div(class="custom-screenshots custom-options-border-bottom")
+          each item in content.main.screenshots
+            div(class="custom-item" id=item.id)=item.name
+
+        div(class="custom-downloads custom-options-border-bottom")
+          each item in content.main.downloads
+            div(class="custom-item" id=item.id)=item.name
+
+        div(class="custom-options")
+          each item in content.main.options
+            a(class="custom-item" href=item.href target="_blank")=item.name
+
+    footer(class="custom-footer")
+      div(class="custom-footer-content custom-content")
+        p(class="custom-version")="1.0.0-beta.6"
