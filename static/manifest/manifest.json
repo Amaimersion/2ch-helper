@@ -21,7 +21,8 @@
 
     "background": {
         "scripts": [
-            "/interaction/js/scripts/background/background-user-profile.js"
+            "/interaction/js/scripts/background/background-user-profile.js",
+            "/interaction/js/scripts/background/background-events.js"
         ],
         "persistent": false
     },
