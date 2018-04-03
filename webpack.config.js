@@ -3,10 +3,19 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
+const {TsConfigPathsPlugin} = require('awesome-typescript-loader');
+
 
 module.exports = {
+    mode: 'development',
+
     entry: {
-        '/interface/js/scripts/popup': './src/interface/popup-build.js'
+        '/interface/js/scripts/popup': './src/interface/popup-build.js',
+        '/interface/js/scripts/settings': './src/interface/settings-build.js',
+        '/interface/js/scripts/settings-screenshot': './src/interface/settings-screenshot-build.js',
+        '/interface/js/scripts/settings-download': './src/interface/settings-download-build.js',
+        '/interface/js/scripts/statistics': './src/interface/statistics-build.js',
+        '/interface/js/scripts/settings-iframe': './src/interface/settings-iframe-build.js'
     },
 
     output: {
@@ -27,7 +36,7 @@ module.exports = {
             },
             {
                 test: /\.tsx?$/,
-                loader: 'ts-loader'
+                loader: 'awesome-typescript-loader'
             }
         ]
     },
@@ -46,12 +55,53 @@ module.exports = {
             }
         ]),
         new ExtractTextPlugin({
-            filename: '/interface/css/styles/popup.css',
+            filename: (getPath) => {
+                const pathName = getPath('[name]');
+
+                if (pathName === '/interface/js/scripts/popup') {
+                    return '/interface/css/styles/popup.css';
+                } else if (pathName === '/interface/js/scripts/settings') {
+                    return '/interface/css/styles/settings.css';
+                } else if (pathName === '/interface/js/scripts/settings-iframe') {
+                    return '/interface/css/styles/settings-iframe.css';
+                } else if (pathName === '/interface/js/scripts/statistics') {
+                    return '/interface/css/styles/statistics.css';
+                } else {
+                    return '/interface/css/styles/undefined.css';
+                }
+            }
         }),
         new HTMLWebpackPlugin({
             template: './src/interface/html/popup.pug',
             filename: '/interface/html/popup.html',
             inject: false
+        }),
+        new HTMLWebpackPlugin({
+            template: './src/interface/html/settings.pug',
+            filename: '/interface/html/settings.html',
+            inject: false
+        }),
+        new HTMLWebpackPlugin({
+            template: './src/interface/html/settings-download.pug',
+            filename: '/interface/html/settings-download.html',
+            inject: false
+        }),
+        new HTMLWebpackPlugin({
+            template: './src/interface/html/settings-screenshot.pug',
+            filename: '/interface/html/settings-screenshot.html',
+            inject: false
+        }),
+        new HTMLWebpackPlugin({
+            template: './src/interface/html/statistics.pug',
+            filename: '/interface/html/statistics.html',
+            inject: false
         })
-    ]
+    ],
+
+    resolve: {
+        plugins: [
+            new TsConfigPathsPlugin()
+        ],
+        extensions: ['.d.ts', '.ts', 'js', '.jsx', '.tsx']
+    }
 };
