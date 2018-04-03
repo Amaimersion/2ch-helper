@@ -8,6 +8,7 @@ const {TsConfigPathsPlugin} = require('awesome-typescript-loader');
 
 module.exports = {
     mode: 'development',
+    devtool: 'cheap-module-source-map', // if mode = development, then this option must be enabled. otherwise will be security policy error.
 
     entry: {
         '/interface/js/scripts/popup': './src/interface/popup-build.js',
