@@ -3,7 +3,7 @@
     "version": "1.0.0-beta.6",
     "description": "A browser extension which facilitates interaction with the imageboard 2ch.hk.",
     "scripts": {
-        "build": "webpack --config webpack.config.js --display-error-details"
+        "build": "webpack --config webpack.config.js --display-error-details --progress"
     },
     "author": {
         "name": "Sergey Kuznetsov",
@@ -21,6 +21,7 @@
     "dependencies": {},
     "devDependencies": {
         "@types/chrome": "0.0.63",
+        "awesome-typescript-loader": "^4.0.1",
         "clean-webpack-plugin": "^0.1.19",
         "copy-webpack-plugin": "^4.5.1",
         "css-loader": "^0.28.11",
@@ -30,7 +31,6 @@
         "pug": "^2.0.3",
         "pug-loader": "^2.4.0",
         "sass-loader": "^6.0.7",
-        "ts-loader": "^4.1.0",
         "typescript": "^2.8.1",
         "webpack": "^4.4.1",
         "webpack-cli": "^2.0.13"
