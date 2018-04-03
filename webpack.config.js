@@ -53,6 +53,10 @@ module.exports = {
             {
                 from: './static/interface',
                 to: './interface'
+            },
+            {
+                from: './static/interaction',
+                to: '/interaction'
             }
         ]),
         new ExtractTextPlugin({

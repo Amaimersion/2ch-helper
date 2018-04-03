@@ -19,6 +19,13 @@
         "128": "/interface/icons/logo/logo-128.png"
     },
 
+    "background": {
+        "scripts": [
+            "/interaction/js/scripts/background/background-user-profile.js"
+        ],
+        "persistent": false
+    },
+
     "browser_action": {
         "default_title": "2ch-helper",
         "default_popup": "/interface/html/popup.html"
