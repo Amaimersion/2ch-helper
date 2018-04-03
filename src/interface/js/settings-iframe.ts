@@ -1,4 +1,4 @@
-import Slider from "./libs/slider";
+import Slider from "@libs/slider";
 
 
 export default class SettingsIframe {
