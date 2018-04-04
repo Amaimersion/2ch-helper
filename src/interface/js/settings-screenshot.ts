@@ -110,7 +110,7 @@ SettingsScreenshot.sliders = [
 SettingsScreenshot.main = async function() {
     await SettingsIframe.initUserSettings();
     SettingsIframe.bindButtons(SettingsScreenshot.buttons);
-    SettingsIframe.bindSliders(SettingsScreenshot.sliders, SettingsScreenshot.userSettingId);
+    //SettingsIframe.bindSliders(SettingsScreenshot.sliders, SettingsScreenshot.userSettingId);
     SettingsIframe.bindForms(SettingsScreenshot.forms, SettingsScreenshot.userSettingId);
     SettingsScreenshot.customBind();
 }
