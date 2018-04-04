@@ -107,6 +107,6 @@ module.exports = {
         plugins: [
             new TsConfigPathsPlugin()
         ],
-        extensions: ['.d.ts', '.ts', 'js', '.jsx', '.tsx']
+        extensions: ['.d.ts', '.ts', '.js', '.jsx', '.tsx']
     }
 };
