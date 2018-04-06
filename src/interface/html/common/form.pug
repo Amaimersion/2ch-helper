@@ -1,0 +1,30 @@
+extends ./html5
+
+
+block append head
+  +link("/interface/css/libs/bootstrap-4.0.0.min.css")
+
+
+block append mixins
+  mixin form-group(object={})
+    div(class="form-group")
+      block
+
+  mixin label(object={})
+    label(class=object.class ? object.class : "d-block" for=object.for)&attributes(attributes)=object.name
+
+  mixin input(object={})
+    input(class=object.class ? object.class : "form-control" id=object.id type="text" placeholder=object.name)&attributes(attributes)
+
+  mixin form-check-inline(object)
+    div(class="form-check form-check-inline")
+      input(class="form-check-input" id=object.inputId type="radio" name=object.inputName)
+      label(class="form-check-label" for=object.inputId)=object.labelName
+
+  mixin button(object={})
+    button(class=object.class ? object.class : "btn btn-primary" id=object.id type="button")&attributes(attributes)=object.name
+
+  mixin select(object={})
+    select(class=object.class ? object.class : "custom-select" id=object.id)&attributes(attributes)
+      each option in object.options
+        option(value=option.value)=option.name

@@ -1,39 +1,19 @@
-<!DOCTYPE html>
+extends ./common/extra
 
-html(lang="ru")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    meta(http-equiv="X-UA-Compatible", content="ie=edge")
-    title="Статистика"
-    link(rel="stylesheet" href="/interface/css/libs/bootstrap-4.0.0.min.css")
-    link(rel="stylesheet" href="/interface/css/styles/statistics.css")
-    script(defer src="/interface/js/scripts/settings-iframe.js")
-    script(defer src="/interface/js/scripts/statistics.js")
 
-  body
-    header(class="custom-header custom-border-bottom")
-      div(class="custom-header-content")
-        div(class="row custom-row")
-          div(class="custom-header-logo")
-            img(src="/interface/icons/logo/logo-48.png" alt="")
-            h1="2ch-helper"
+block append vars
+  - var title = "Статистика";
 
-    main(class="custom-main custom-container")
-      div(class="custom-main-content")
-        div(class="custom-statistics")
-            h1(id="statistics-time-description")="Количество часов, проведенных на дваче:"
-            h1(id="statistics-time")
 
-    footer(class="custom-footer custom-border-top")
-      div(class="custom-footer-content")
-        div(class="row custom-row")
-          div(class="col")
-            p="2018"
+block append head
+  +link("/interface/css/styles/statistics.css")
+  +script("/interface/js/scripts/settings-iframe.js")
+  +script("/interface/js/scripts/statistics.js")
 
-          div(class="col")
-            p(id="version")="1.0.0-beta.6"
 
-          div(class="col")
-            a(href="https://github.com/Amaimersion/2ch-helper" target="_blank")
-              img(src="/interface/icons/stuff/github.png" alt="GitHub")
+block main
+  main(class="custom-main custom-container")
+    div(class="custom-main-content")
+      div(class="custom-statistics")
+        h1(id="statistics-time-description")="Количество проведенных часов:"
+        h1(id="statistics-time")

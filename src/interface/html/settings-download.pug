@@ -1,37 +1,23 @@
-<!DOCTYPE html>
+extends ./common/form
 
-html(lang="ru")
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    meta(http-equiv="X-UA-Compatible", content="ie=edge")
-    title="Настройки – Загрузка"
-    link(rel="stylesheet" href="/interface/css/libs/bootstrap-4.0.0.min.css")
-    link(rel="stylesheet" href="/interface/css/styles/settings-iframe.css")
-    script(defer src="/interface/js/scripts/settings-iframe.js")
-    script(defer src="/interface/js/scripts/settings-download.js")
 
-  body
-    main
-      div(class="container custom-container")
-        form
-          div(class="form-group")
-            label(class="d-block" for="nameForPosts")="Имя файла"
+block append vars
+  - var title = "Настройки – Загрузка";
 
-            div(class="form-check form-check-inline")
-              input(class="form-check-input" id="downloadNameAuto" type="radio" name="downloadNameMode")
-              label(class="form-check-label" for="downloadNameAuto")="Автоопределение"
 
-            div(class="form-check form-check-inline")
-              input(class="form-check-input" id="downloadNameUser" type="radio" name="downloadNameMode")
-              label(class="form-check-label" for="downloadNameUser")="Пользовательское"
+block append head
+  +link("/interface/css/styles/settings-iframe.css")
+  +script("/interface/js/scripts/settings-iframe.js")
+  +script("/interface/js/scripts/settings-download.js")
 
-            input(class="form-control mt-1" id="downloadName" type="text" placeholder="Имя файла")
 
-          div(class="form-group")
-            label(class="d-block" for="downloadDelay")="Задержка"
-            input(id="downloadDelay" data-provide="slider" type="text" data-slider-min="500" data-slider-max="2000" data-slider-step="100")
-            span(class="pl-2" id="downloadDelayValue")
-            span(id="downloadDelayUnit")="мс"
+block main
+  div(class="container custom-container")
+    form
+      +form-group()
+        +label({for: "nameForPosts", name: "Имя файла"})
+        +form-check-inline({inputId: "downloadNameAuto", inputName: "downloadNameMode", labelName: "Автоопределение"})
+        +form-check-inline({inputId: "downloadNameUser", inputName: "downloadNameMode", labelName: "Пользовательское"})
+        +input({id: "downloadName", name: "Имя файла"})(class="mt-1")
 
-          button(class="btn btn-primary" id="save" type="button")="Сохранить"
+      +button({id: "save", name: "Сохранить"})

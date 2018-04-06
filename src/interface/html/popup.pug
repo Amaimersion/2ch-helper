@@ -1,76 +1,89 @@
--var content = {
--  main: {
--    screenshots: [
--      {
--        id: "screenshot-of-posts",
--        name: "Скриншот постов"
--      },
--      {
--        id: "screenshot-of-thread",
--        name: "Скриншот треда"
--      }
--    ],
--    downloads: [
--      {
--        id: "download-images",
--        name: "Скачать изображения"
--      },
--      {
--        id: "download-video",
--        name: "Скачать видео"
--      },
--      {
--        id: "download-media",
--        name: "Скачать медиаконтент"
--      },
--      {
--        id: "download-thread",
--        name: "Скачать тред"
--      }
--    ],
--    options: [
--      {
--        href: "statistics.html",
--        name: "Статистика"
--      },
--      {
--        href: "settings.html",
--        name: "Настройки"
--      }
--    ]
--  }
--};
+extends ./common/html5
 
-<!DOCTYPE html>
-html(lang="ru")
 
-  head
-    meta(charset="UTF-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    meta(http-equiv="X-UA-Compatible", content="ie=edge")
-    title="2ch-helper"
-    link(rel="stylesheet", href="/interface/css/styles/popup.css")
-    script(defer, src="/interface/js/scripts/popup.js")
+block append vars
+  - var content = {
+  -  main: {
+  -    screenshots: [
+  -      {
+  -        id: "screenshot-of-posts",
+  -        name: "Скриншот постов"
+  -      },
+  -      {
+  -        id: "screenshot-of-thread",
+  -        name: "Скриншот треда"
+  -      }
+  -    ],
+  -    downloads: [
+  -      {
+  -        id: "download-images",
+  -        name: "Скачать изображения"
+  -      },
+  -      {
+  -        id: "download-video",
+  -        name: "Скачать видео"
+  -      },
+  -      {
+  -        id: "download-media",
+  -        name: "Скачать медиаконтент"
+  -      },
+  -      {
+  -        id: "download-thread",
+  -        name: "Скачать тред"
+  -      }
+  -    ],
+  -    extra: [
+  -      {
+  -        href: "statistics.html",
+  -        name: "Статистика"
+  -      },
+  -      {
+  -        href: "settings.html",
+  -        name: "Настройки"
+  -      }
+  -    ]
+  -  }
+  -};
 
-  body
-    header(class="custom-header custom-border-bottom")
-      div(class="custom-header-content custom-content")
-        h1="2ch-helper"
 
-    main(class="custom-main custom-border-bottom")
-      div(class="custom-main-content custom-content")
+block append mixins
+  mixin custom-item(object)
+    if object.id
+      div(class="custom-item" id=object.id)&attributes(attributes)=object.name
+    else
+      a(class="custom-item" href=object.href target="_blank")&attributes(attributes)=object.name
+
+
+block append head
+  +link("/interface/css/styles/popup.css")
+  +script("/interface/js/scripts/popup.js")
+
+
+block header
+  header(class="custom-header custom-border-bottom")
+    div(class="custom-header-content custom-content")
+      h1="2ch-helper"
+
+
+block main
+  main(class="custom-main" class=version ? "custom-border-bottom" : "")
+    div(class="custom-main-content custom-content")
+      div(class="custom-options")
         div(class="custom-screenshots custom-options-border-bottom")
           each item in content.main.screenshots
-            div(class="custom-item" id=item.id)=item.name
+            +custom-item({id: item.id, name: item.name})
 
         div(class="custom-downloads custom-options-border-bottom")
           each item in content.main.downloads
-            div(class="custom-item" id=item.id)=item.name
+            +custom-item({id: item.id, name: item.name})
 
-        div(class="custom-options")
-          each item in content.main.options
-            a(class="custom-item" href=item.href target="_blank")=item.name
+        div(class="custom-extra-options")
+          each item in content.main.extra
+            +custom-item({href: item.href, name: item.name})
 
+
+block footer
+  if version
     footer(class="custom-footer")
       div(class="custom-footer-content custom-content")
-        p(class="custom-version")="1.0.0-beta.6"
+        p(class="custom-version")=version
