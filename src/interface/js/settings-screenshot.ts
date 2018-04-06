@@ -50,6 +50,7 @@ SettingsScreenshot.forms = [
             {elementId: 'screenshotFormat', settingId: 'format'}
         ]
     },
+    /*
     {
         type: 'span',
         data: [
@@ -57,6 +58,7 @@ SettingsScreenshot.forms = [
             {elementId: 'screenshotDelayValue', settingId: 'delay'}
         ]
     },
+    */
     {
         type: 'checkbox',
         data: [

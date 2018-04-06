@@ -39,12 +39,14 @@ SettingsDownload.forms = [
             {elementId: 'downloadName', settingId: 'fileName'}
         ]
     },
+    /*
     {
         type: 'span',
         data: [
             {elementId: 'downloadDelayValue', settingId: 'delay'}
         ]
     },
+    */
     {
         type: 'checkbox',
         data: [
