@@ -16,15 +16,18 @@ block append mixins
   mixin input(object={})
     input(class=object.class ? object.class : "form-control" id=object.id type="text" placeholder=object.name)&attributes(attributes)
 
-  mixin form-check-inline(object)
-    div(class="form-check form-check-inline")
-      input(class="form-check-input" id=object.inputId type="radio" name=object.inputName)
-      label(class="form-check-label" for=object.inputId)=object.labelName
-
   mixin button(object={})
     button(class=object.class ? object.class : "btn btn-primary" id=object.id type="button")&attributes(attributes)=object.name
+
+  mixin span(object={})
+    span(id=object.id)&attributes(attributes)=object.name
 
   mixin select(object={})
     select(class=object.class ? object.class : "custom-select" id=object.id)&attributes(attributes)
       each option in object.options
         option(value=option.value)=option.name
+
+  mixin form-check-inline(object)
+    div(class="form-check form-check-inline")
+      input(class="form-check-input" id=object.inputId type="radio" name=object.inputName)
+      label(class="form-check-label" for=object.inputId)=object.labelName

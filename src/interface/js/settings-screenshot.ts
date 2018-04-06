@@ -1,4 +1,4 @@
-import SettingsIframe from "./settings-iframe";
+import SettingsIframe from "./settings-iframe"; // double export of bootstrap-slider because of this.
 
 
 export default class SettingsScreenshot {
@@ -50,7 +50,6 @@ SettingsScreenshot.forms = [
             {elementId: 'screenshotFormat', settingId: 'format'}
         ]
     },
-    /*
     {
         type: 'span',
         data: [
@@ -58,7 +57,6 @@ SettingsScreenshot.forms = [
             {elementId: 'screenshotDelayValue', settingId: 'delay'}
         ]
     },
-    */
     {
         type: 'checkbox',
         data: [
@@ -112,7 +110,7 @@ SettingsScreenshot.sliders = [
 SettingsScreenshot.main = async function() {
     await SettingsIframe.initUserSettings();
     SettingsIframe.bindButtons(SettingsScreenshot.buttons);
-    //SettingsIframe.bindSliders(SettingsScreenshot.sliders, SettingsScreenshot.userSettingId);
+    SettingsIframe.bindSliders(SettingsScreenshot.sliders, SettingsScreenshot.userSettingId);
     SettingsIframe.bindForms(SettingsScreenshot.forms, SettingsScreenshot.userSettingId);
     SettingsScreenshot.customBind();
 }

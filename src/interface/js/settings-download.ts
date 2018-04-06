@@ -1,4 +1,4 @@
-import SettingsIframe from "./settings-iframe";
+import SettingsIframe from "./settings-iframe"; // double export of bootstrap-slider because of this.
 
 
 export default class SettingsDownload {
@@ -39,14 +39,12 @@ SettingsDownload.forms = [
             {elementId: 'downloadName', settingId: 'fileName'}
         ]
     },
-    /*
     {
         type: 'span',
         data: [
             {elementId: 'downloadDelayValue', settingId: 'delay'}
         ]
     },
-    */
     {
         type: 'checkbox',
         data: [
@@ -84,7 +82,7 @@ SettingsDownload.sliders = [
 SettingsDownload.main = async function() {
     await SettingsIframe.initUserSettings();
     SettingsIframe.bindButtons(SettingsDownload.buttons);
-    //SettingsIframe.bindSliders(SettingsDownload.sliders, SettingsDownload.userSettingId);
+    SettingsIframe.bindSliders(SettingsDownload.sliders, SettingsDownload.userSettingId);
     SettingsIframe.bindForms(SettingsDownload.forms, SettingsDownload.userSettingId);
     SettingsDownload.customBind();
 }

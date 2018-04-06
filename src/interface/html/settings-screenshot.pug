@@ -6,6 +6,7 @@ block append vars
 
 
 block append head
+  +link("/interface/css/libs/bootstrap-slider.min.css")
   +link("/interface/css/styles/settings-iframe.css")
   +script("/interface/js/scripts/settings-iframe.js")
   +script("/interface/js/scripts/settings-screenshot.js")
@@ -25,6 +26,18 @@ block main
       +form-group()
         +label({for: "screenshotFormat", name: "Формат скриншота"})
         +select({id: "screenshotFormat", options: [{value: "jpeg", name: "JPEG"}, {value: "png", name: "PNG"}]})
+
+      +form-group()
+        +label({for: "screenshotQuality", name: "Качество скриншота"})
+        +input()(id="screenshotQuality" type="text" data-provide="slider" data-slider-min="0" data-slider-max="100" data-slider-step="1")
+        +span({id: "screenshotQualityValue"})(class="pl-2")
+        +span({id: "screenshotQualityUnit", name: "%"})
+
+      +form-group()
+        +label({for: "screenshotDelay", name: "Задержка"})
+        +input()(id="screenshotDelay" type="text" data-provide="slider" data-slider-min="500" data-slider-max="2000" data-slider-step="100")
+        +span({id: "screenshotDelayValue"})(class="pl-2")
+        +span({cid: "screenshotDelayUnit", name: "мс"})
 
       +form-group()
         +label({for: "turnOffPosts", name: "Выключать активные посты после создания скриншота"})

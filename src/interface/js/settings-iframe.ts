@@ -1,3 +1,6 @@
+import * as Slider from 'bootstrap-slider';
+
+
 export default class SettingsIframe {
     static userSettings: any;
     static userSettingIds: Array<string>;
@@ -84,6 +87,19 @@ SettingsIframe.bindForms = function(forms, settingField) {
             } else if (formData.type === 'checkbox') {
                 element.checked = value;
             }
+        }
+    }
+}
+
+
+SettingsIframe.bindSliders = function(sliders, settingField) {
+    for (let sliderData of sliders) {
+        const options = sliderData.options;
+        options['value'] = this.userSettings[settingField][sliderData.settingId];
+        const slider = new Slider(sliderData.id, options);
+
+        for (let event of sliderData.events) {
+            slider.on(event.name, event.event);
         }
     }
 }
