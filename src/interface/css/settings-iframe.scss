@@ -1,21 +1,11 @@
-@import "./font.scss";
+@import "./common/font";
+@import "./common/global";
+
 
 /* Global. */
 
 html {
-  min-height: 100%;
   position: relative;
-}
-
-body {
-  font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
-  background-color: #EEE;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
 }
 
 .custom-container {

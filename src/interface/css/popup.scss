@@ -1,20 +1,11 @@
-@import "./font.scss";
+@import "./common/font";
+@import "./common/global";
 
 
 /* Global. */
 
-html,
-body,
-h1,
-p {
-  margin: 0;
-  padding: 0;
-}
-
 body {
-  background-color: #EEE;
   color: #FF7000;
-  font-family: 'Roboto', Tahoma, Verdana, Segoe, sans-serif;
   height: auto;
   width: 200px;
 }
@@ -23,7 +14,7 @@ body {
 /* Common. */
 
 .custom-border-bottom {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid rgba(51, 51, 51, 0.5);
 }
 
 .custom-content {
@@ -51,7 +42,7 @@ body {
   text-decoration: none;
 
   &:hover {
-    background-color: #DDD;
+    background-color: rgba(221, 221, 221, 0.7);
   }
 
   &,

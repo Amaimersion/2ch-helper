@@ -1,0 +1,96 @@
+@import "./font";
+@import "./global";
+
+
+/* Global. */
+
+html {
+  position: relative;
+}
+
+
+/* Common. */
+
+.custom-container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 50vw;
+  width: 100%;
+}
+
+.custom-row {
+  margin: 0;
+}
+
+.custom-border-top {
+  border-top: 1px solid;
+}
+
+.custom-border-bottom {
+  border-bottom: 1px solid;
+}
+
+.custom-border-top,
+.custom-border-bottom {
+  border-color: #DDD;
+}
+
+
+/* Main. */
+
+.custom-main {
+  padding-top: 1vh;
+}
+
+.custom-main-content {
+  text-align: center;
+}
+
+
+/* Header. */
+
+.custom-header {
+  height: 70px;
+}
+
+.custom-header-content {
+  padding-top: 10px;
+  text-align: center;
+}
+
+.custom-header-logo {
+  display: inline-flex;
+  margin: 0 auto;
+}
+
+
+/* Footer. */
+
+.custom-footer {
+  bottom: 0;
+  height: 40px;
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+}
+
+.custom-footer-content {
+  line-height: 40px;
+  overflow: hidden;
+  text-align: center;
+}
+
+/*
+.custom-footer-icon {
+  opacity: .7;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &,
+  &:hover {
+    transition: opacity .2s;
+  }
+}
+*/
