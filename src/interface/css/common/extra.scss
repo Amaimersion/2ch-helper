@@ -12,8 +12,10 @@ html {
 /* Common. */
 
 .custom-container {
-  margin-left: auto;
-  margin-right: auto;
+  margin: {
+    left: auto;
+    right: auto;
+  }
   max-width: 50vw;
   width: 100%;
 }
@@ -22,17 +24,12 @@ html {
   margin: 0;
 }
 
-.custom-border-top {
-  border-top: 1px solid;
-}
-
-.custom-border-bottom {
-  border-bottom: 1px solid;
-}
-
-.custom-border-top,
-.custom-border-bottom {
-  border-color: #DDD;
+.custom-border {
+  @each $border in ("top", "bottom") {
+    &-#{$border} {
+      border-#{$border}: 1px solid #DDD;
+    }
+  }
 }
 
 
@@ -66,16 +63,18 @@ html {
 
 /* Footer. */
 
+$footer-height: 40px;
+
 .custom-footer {
   bottom: 0;
-  height: 40px;
+  height: $footer-height;
   overflow: hidden;
   position: absolute;
   width: 100%;
 }
 
 .custom-footer-content {
-  line-height: 40px;
+  line-height: $footer-height;
   overflow: hidden;
   text-align: center;
 }
