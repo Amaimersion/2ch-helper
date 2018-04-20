@@ -1,17 +1,29 @@
 {
     "compilerOptions": {
-        "sourceMap": true,
-        "types": [
-            "chrome"
-        ],
+        "target": "ES2018",
+        "module": "ES6",
+        "moduleResolution": "node",
         "lib": [
-            "es2015",
+            "es2018",
             "dom"
         ],
-        "moduleResolution": "node",
         "baseUrl": "./",
         "paths": {
             "@libs/*": ["src/interface/js/libs/*"]
-        }
+        },
+        "alwaysStrict": true,
+        "disableSizeLimit": true,
+        "downlevelIteration": true,
+        "noErrorTruncation": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictPropertyInitialization": true,
+        "removeComments": true, // only for production.
+        "sourceMap": true // only for development.
+    },
+    "awesomeTypescriptLoaderOptions": {
+        "useCache": true
     }
 }
