@@ -107,7 +107,7 @@ module.exports = {
         alias: {
             // bootstrap-slider.js have optional jquery dependency.
             // so, in order to not include jquery we redirect to the stub file.
-            'jquery': path.resolve(__dirname, './src/jquery-stub.js')
+            'jquery': path.resolve(__dirname, './src/common/js/libs/jquery-stub.js')
         },
         plugins: [
             new TsConfigPathsPlugin()
