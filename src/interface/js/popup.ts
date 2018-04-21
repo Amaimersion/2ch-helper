@@ -1,63 +1,57 @@
 import {Page} from "@modules/Communication";
 
 
-class PopupElementEvent {
-    public id: string;
-    public type: string;
-    public event: () => void;
-
-    constructor(id: string, type: string, event: () => void) {
-        this.id = id;
-        this.type = type;
-        this.event = event;
-    }
+interface PopupElementEvent {
+    id: string;
+    type: string;
+    event: () => void;
 }
 
 
 class Popup {
     static elementsEvents: PopupElementEvent[] = [
-        new PopupElementEvent(
-            "screenshot-of-posts",
-            "onclick",
-            function() {
+        {
+            id: "screenshot-of-posts",
+            type: "onclick",
+            event: function() {
                 Page.sendMessageToContent({type: "API", name: "screenshot", method: "createScreenshotOfPosts"})
             }
-        ),
-        new PopupElementEvent(
-            "screenshot-of-thread",
-            "onclick",
-            function() {
+        },
+        {
+            id: "screenshot-of-thread",
+            type: "onclick",
+            event: function() {
                 Page.sendMessageToContent({type: "API", name: "screenshot", method: "createScreenshotOfThread"})
             }
-        ),
-        new PopupElementEvent(
-            "download-images",
-            "onclick",
-            function() {
+        },
+        {
+            id: "download-images",
+            type: "onclick",
+            event: function() {
                 Page.sendMessageToContent({type: "API", name: "download", method: "downloadImages"})
             }
-        ),
-        new PopupElementEvent(
-            "download-video",
-            "onclick",
-            function() {
+        },
+        {
+            id: "download-video",
+            type: "onclick",
+            event: function() {
                 Page.sendMessageToContent({type: "API", name: "download", method: "downloadVideo"})
             }
-        ),
-        new PopupElementEvent(
-            "download-media",
-            "onclick",
-            function() {
+        },
+        {
+            id: "download-media",
+            type: "onclick",
+            event: function() {
                 Page.sendMessageToContent({type: "API", name: "download", method: "downloadMedia"})
             }
-        ),
-        new PopupElementEvent(
-            "download-thread",
-            "onclick",
-            function() {
+        },
+        {
+            id: "download-thread",
+            type: "onclick",
+            event: function() {
                 Page.sendMessageToContent({type: "API", name: "download", method: "downloadThread"})
             }
-        )
+        }
     ];
 
     static main(): void {
