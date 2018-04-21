@@ -1,103 +1,80 @@
-export default class Popup {
-    static Message: (type: string, name: string, method: string) => void;
-    static elementsEvents: Array<{id: string, type: string, event: () => void}>;
-    static main: () => void;
-    static bindEvents: () => void;
-    static sendMessageToContent: (message: Object, callback?: (response: any) => void) => void;
-}
+import {Page} from "@modules/Communication";
 
 
-Popup.Message = function(type: string, name: string, method: string): void {
-    this.type = type || undefined;
-    this.name = name || undefined;
-    this.method = method || undefined;
-}
+class PopupElementEvent {
+    public id: string;
+    public type: string;
+    public event: () => void;
 
-
-Popup.elementsEvents = [
-    {
-        id: 'screenshot-of-posts',
-        type: 'onclick',
-        event: function() {
-            Popup.sendMessageToContent(
-                new Popup.Message('API', 'screenshot', 'createScreenshotOfPosts')
-            );
-        }
-    },
-    {
-        id: 'screenshot-of-thread',
-        type: 'onclick',
-        event: function() {
-            Popup.sendMessageToContent(
-                new Popup.Message('API', 'screenshot', 'createScreenshotOfThread')
-            );
-        }
-    },
-    {
-        id: 'download-images',
-        type: 'onclick',
-        event: function() {
-            Popup.sendMessageToContent(
-                new Popup.Message('API', 'download', 'downloadImages')
-            );
-        }
-    },
-    {
-        id: 'download-video',
-        type: 'onclick',
-        event: function() {
-            Popup.sendMessageToContent(
-                new Popup.Message('API', 'download', 'downloadVideo')
-            );
-        }
-    },
-    {
-        id: 'download-media',
-        type: 'onclick',
-        event: function() {
-            Popup.sendMessageToContent(
-                new Popup.Message('API', 'download', 'downloadMedia')
-            );
-        }
-    },
-    {
-        id: 'download-thread',
-        type: 'onclick',
-        event: function() {
-            Popup.sendMessageToContent(
-                new Popup.Message('API', 'download', 'downloadThread')
-            );
-        }
-    }
-];
-
-
-Popup.main = function() {
-    Popup.bindEvents();
-}
-
-
-Popup.bindEvents = function() {
-    for (let elementEvent of Popup.elementsEvents) {
-        const element = document.getElementById(elementEvent.id);
-        element[elementEvent.type] = elementEvent.event;
+    constructor(id: string, type: string, event: () => void) {
+        this.id = id;
+        this.type = type;
+        this.event = event;
     }
 }
 
 
-Popup.sendMessageToContent = function(message: Object, callback?: (response: any) => void): void {
-    callback = callback || function() {};
+class Popup {
+    static elementsEvents: PopupElementEvent[] = [
+        new PopupElementEvent(
+            "screenshot-of-posts",
+            "onclick",
+            function() {
+                Page.sendMessageToContent({type: "API", name: "screenshot", method: "createScreenshotOfPosts"})
+            }
+        ),
+        new PopupElementEvent(
+            "screenshot-of-thread",
+            "onclick",
+            function() {
+                Page.sendMessageToContent({type: "API", name: "screenshot", method: "createScreenshotOfThread"})
+            }
+        ),
+        new PopupElementEvent(
+            "download-images",
+            "onclick",
+            function() {
+                Page.sendMessageToContent({type: "API", name: "download", method: "downloadImages"})
+            }
+        ),
+        new PopupElementEvent(
+            "download-video",
+            "onclick",
+            function() {
+                Page.sendMessageToContent({type: "API", name: "download", method: "downloadVideo"})
+            }
+        ),
+        new PopupElementEvent(
+            "download-media",
+            "onclick",
+            function() {
+                Page.sendMessageToContent({type: "API", name: "download", method: "downloadMedia"})
+            }
+        ),
+        new PopupElementEvent(
+            "download-thread",
+            "onclick",
+            function() {
+                Page.sendMessageToContent({type: "API", name: "download", method: "downloadThread"})
+            }
+        )
+    ];
 
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
-            callback(response);
-        });
-    });
+    static main(): void {
+        Popup.bindEvents();
+    }
+
+    static bindEvents(): void {
+        for (let elementEvent of Popup.elementsEvents) {
+            const element = document.getElementById(elementEvent.id);
+            element[elementEvent.type] = elementEvent.event;
+        }
+    }
 }
 
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', Popup.main);
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", Popup.main);
 } else {
     Popup.main();
 }
