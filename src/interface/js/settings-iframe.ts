@@ -25,8 +25,8 @@ SettingsIframe.userSettingIds = [
 ];
 
 
-SettingsIframe.initUserSettings = function() {
-    return new Promise((resolve, reject) => {
+SettingsIframe.initUserSettings = function(this: any) {
+    return new Promise((resolve) => {
         chrome.storage.sync.get(this.userSettingId, (data) => {
             this.userSettings = data;
             return resolve();
@@ -114,14 +114,5 @@ SettingsIframe.sendMessageToContent = function(message, callback) {
                 callback(response);
             });
         }
-    });
-}
-
-
-SettingsIframe.sendMessageToBackground = function(message, callback) {
-    callback = callback || function() {};
-
-    chrome.runtime.sendMessage(message, (response) => {
-        callback(response);
     });
 }
