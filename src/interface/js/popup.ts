@@ -1,4 +1,4 @@
-import {Page} from "@modules/Communication";
+import {Page, Message} from "@modules/Communication";
 
 
 interface PopupElementEvent {
@@ -13,49 +13,57 @@ class Popup {
         {
             id: "screenshot-of-posts",
             type: "onclick",
-            event: function() {
-                Page.sendMessageToContent({type: "API", name: "screenshot", method: "createScreenshotOfPosts"})
-            }
+            event: Popup.defaultElementEvent({type: "API", name: "screenshot", method: "createScreenshotOfPosts"})
         },
         {
             id: "screenshot-of-thread",
             type: "onclick",
-            event: function() {
-                Page.sendMessageToContent({type: "API", name: "screenshot", method: "createScreenshotOfThread"})
-            }
+            event: Popup.defaultElementEvent({type: "API", name: "screenshot", method: "createScreenshotOfThread"})
         },
         {
             id: "download-images",
             type: "onclick",
-            event: function() {
-                Page.sendMessageToContent({type: "API", name: "download", method: "downloadImages"})
-            }
+            event: Popup.defaultElementEvent({type: "API", name: "download", method: "downloadImages"})
         },
         {
             id: "download-video",
             type: "onclick",
-            event: function() {
-                Page.sendMessageToContent({type: "API", name: "download", method: "downloadVideo"})
-            }
+            event: Popup.defaultElementEvent({type: "API", name: "download", method: "downloadVideo"})
         },
         {
             id: "download-media",
             type: "onclick",
-            event: function() {
-                Page.sendMessageToContent({type: "API", name: "download", method: "downloadMedia"})
-            }
+            event: Popup.defaultElementEvent({type: "API", name: "download", method: "downloadMedia"})
         },
         {
             id: "download-thread",
             type: "onclick",
-            event: function() {
-                Page.sendMessageToContent({type: "API", name: "download", method: "downloadThread"})
-            }
+            event: Popup.defaultElementEvent({type: "API", name: "download", method: "downloadThread"})
         }
     ];
 
     static main(): void {
         Popup.bindEvents();
+    }
+
+    static defaultElementEvent(message: Message): () => void {
+        return function() {
+            Page.sendMessageToContent(message, (response) => {
+                if (!response || response.error) {
+                    const version = document.getElementById("version");
+
+                    if (!version) return;
+
+                    const oldText = version.innerText;
+
+                    version.innerText = "Ошибка";
+
+                    window.setTimeout(() => {
+                        version.innerText = oldText;
+                    }, 5000);
+                }
+            });
+        }
     }
 
     static bindEvents(): void {
