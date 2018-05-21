@@ -1,3 +1,6 @@
+import {DOMLoaded} from "@modules/DOM";
+
+
 interface IframeData {
     iframeId: string;
     navbarId: string;
@@ -29,37 +32,67 @@ class Settings {
             const navbarId = iframeData.navbarId;
             const height = iframeData.height;
 
-            document.getElementById(navbarId).onclick = () => {
+            const navbar = document.getElementById(navbarId);
+
+            if (!navbar) {
+                console.error(`Could not find a navbar with the id - "${navbarId}".`);
+                continue;
+            }
+
+            navbar.onclick = () => {
                 Settings.iframeClickEvent({iframeId, navbarId, height});
             };
         }
     }
 
+    static iframeClickEvent(iframeData: IframeData): void {
+        const iframeId = iframeData.iframeId;
+        const navbarId = iframeData.navbarId;
+        const height = iframeData.height;
+
+        Settings.disableAllIframes();
+
+        const navbar = document.getElementById(navbarId);
+        const iframe = document.getElementById(iframeId);
+
+        if (!navbar) {
+            console.error(`Could not find a navbar with the id - "${navbarId}".`);
+            return;
+        }
+
+        if (!iframe) {
+            console.error(`Could not find an iframe with the id - "${iframeId}".`);
+            return;
+        }
+
+        navbar.classList.add("custom-border-bottom");
+        iframe.style.display = "block";
+        iframe.style.height = height;
+    }
+
     static disableAllIframes(): void {
         for (let iframeData of Settings.iframeData) {
-            const navbar = document.getElementById(iframeData.navbarId);
-            const iframe = document.getElementById(iframeData.iframeId);
+            const iframeId = iframeData.iframeId;
+            const navbarId = iframeData.navbarId;
+
+            const navbar = document.getElementById(navbarId);
+            const iframe = document.getElementById(iframeId);
+
+            if (!navbar) {
+                console.error(`Could not find a navbar with the id - "${navbarId}".`);
+                continue;
+            }
+
+            if (!iframe) {
+                console.error(`Could not find an iframe with the id - "${iframeId}".`);
+                continue;
+            }
 
             navbar.classList.remove("custom-border-bottom");
             iframe.style.display = "none";
         }
     }
-
-    static iframeClickEvent(iframeData: IframeData): void {
-        Settings.disableAllIframes();
-
-        const navbar = document.getElementById(iframeData.navbarId);
-        const iframe = document.getElementById(iframeData.iframeId);
-
-        navbar.classList.add("custom-border-bottom");
-        iframe.style.display = "block";
-        iframe.style.height = iframeData.height;
-    }
 }
 
 
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", Settings.main);
-} else {
-    Settings.main();
-}
+DOMLoaded.runFunction(Settings.main);
