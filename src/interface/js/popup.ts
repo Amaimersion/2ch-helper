@@ -107,12 +107,12 @@ class Popup {
     }
 
     static defaultElementEvent(message: Message, errorArgs?: ErrorArguments): () => void {
-        return function() {
-            Page.sendMessageToContentScript(message, (response) => {
-                if (!response || response.error) {
-                    Popup.displayError(errorArgs || {});
-                }
-            });
+        return async function() {
+            const response = await Page.sendMessageToContentScript(message);
+
+            if (!response || response.error) {
+                Popup.displayError(errorArgs || {});
+            }
         }
     }
 }

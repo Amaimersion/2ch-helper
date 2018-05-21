@@ -6,6 +6,16 @@ export interface Message {
 
 
 export class Page {
+    static sendMessageToContentScript(message: Message): Promise<any> {
+        return new Promise((resolve) => {
+            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+                chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
+                    return resolve(response);
+                });
+            })
+        });
+    }
+    /*
     static sendMessageToContentScript(message: Message, responseCallback?: (response: any) => void): void {
         responseCallback = responseCallback || function() {};
 
@@ -15,7 +25,8 @@ export class Page {
             });
         })
     }
-
+    */
+    /*
     static sendMessage(message: Message, responseCallback?: (response: any) => void): void {
         responseCallback = responseCallback || function() {};
 
@@ -23,6 +34,7 @@ export class Page {
             responseCallback(response);
         });
     }
+    */
 }
 
 
