@@ -71,10 +71,12 @@ class Popup {
         for (let elementEvent of Popup.elementsEvents) {
             const element = document.getElementById(elementEvent.id);
 
-            if (element)
-                element[elementEvent.type] = elementEvent.event;
-            else
+            if (!element) {
                 console.error(`Could not find an element with the id - "${elementEvent.id}".`);
+                continue;
+            }
+
+            element[elementEvent.type] = elementEvent.event;
         }
     }
 
