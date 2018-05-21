@@ -6,7 +6,7 @@ export interface Message {
 
 
 export class Page {
-    static sendMessageToContent(message: Message, responseCallback?: (response: any) => void): void {
+    static sendMessageToContentScript(message: Message, responseCallback?: (response: any) => void): void {
         responseCallback = responseCallback || function() {};
 
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
