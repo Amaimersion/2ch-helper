@@ -55,7 +55,8 @@ export class BackgroundScript extends Script {
         queryInfo.active = true;
         queryInfo.currentWindow = true;
 
-        const tabId = await this.createQuery(queryInfo)[0].id;
+        const tabs = await this.createQuery(queryInfo);
+        const tabId = tabs[0].id;
         const response = await this.sendMessageToTab(message, tabId);
 
         return response;
