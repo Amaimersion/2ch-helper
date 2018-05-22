@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "esbenp.prettier-vscode",
+        "EditorConfig.editorconfig",
+        "mrmlnc.vscode-jade-snippets",
+        "mrmlnc.vscode-scss",
+        "christian-kohler.npm-intellisense"
+    ]
+}
