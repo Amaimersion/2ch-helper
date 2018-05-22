@@ -1,14 +1,12 @@
-/*
-import {Page, Message} from "@modules/Communication";
 import {DOMLoaded} from "@modules/DOM";
+import {Message, BackgroundScript} from "@modules/Communication";
 
 
 interface PopupElementEvent {
     id: string;
     type: string;
-    event: () => void;
+    event: (...args: any[]) => any;
 }
-
 
 interface ErrorArguments {
     errorText?: string;
@@ -17,59 +15,75 @@ interface ErrorArguments {
 }
 
 
-class Popup {
-    static elementsEvents: PopupElementEvent[] = [
+abstract class PageInfo {
+    public static elementsEvents: PopupElementEvent[] = [
         {
             id: "screenshot-of-posts",
-            type: "onclick",
-            event: Popup.defaultElementEvent(
-                {type: "API", name: "screenshot", method: "createScreenshotOfPosts"}
-            )
+            type: "click",
+            event: function() {
+                Popup.defaultElementEvent(
+                    {type: "API", name: "screenshot", method: "createScreenshotOfPosts"}
+                );
+            }
         },
         {
             id: "screenshot-of-thread",
-            type: "onclick",
-            event: Popup.defaultElementEvent(
-                {type: "API", name: "screenshot", method: "createScreenshotOfThread"}
-            )
+            type: "click",
+            event: function() {
+                Popup.defaultElementEvent(
+                    {type: "API", name: "screenshot", method: "createScreenshotOfThread"}
+                );
+            }
         },
         {
             id: "download-images",
-            type: "onclick",
-            event: Popup.defaultElementEvent(
-                {type: "API", name: "download", method: "downloadImages"}
-            )
+            type: "click",
+            event: function() {
+                Popup.defaultElementEvent(
+                    {type: "API", name: "download", method: "downloadImages"}
+                );
+            }
         },
         {
             id: "download-video",
-            type: "onclick",
-            event: Popup.defaultElementEvent(
-                {type: "API", name: "download", method: "downloadVideo"}
-            )
+            type: "click",
+            event: function() {
+                Popup.defaultElementEvent(
+                    {type: "API", name: "download", method: "downloadVideo"}
+                );
+            }
         },
         {
             id: "download-media",
-            type: "onclick",
-            event: Popup.defaultElementEvent(
-                {type: "API", name: "download", method: "downloadMedia"}
-            )
+            type: "click",
+            event: function() {
+                Popup.defaultElementEvent(
+                    {type: "API", name: "download", method: "downloadMedia"}
+                );
+            }
         },
         {
             id: "download-thread",
-            type: "onclick",
-            event: Popup.defaultElementEvent(
-                {type: "API", name: "download", method: "downloadThread"}
-            )
+            type: "click",
+            event: function() {
+                Popup.defaultElementEvent(
+                    {type: "API", name: "download", method: "downloadThread"}
+                )
+            }
         }
     ];
-    static timeoutId: number = null;
+}
 
-    static main(): void {
-        Popup.bindEvents();
+
+abstract class Popup {
+    private static timeoutId: number = null;
+
+    public static main(): void {
+        this.bindEvents();
     }
 
-    static bindEvents(): void {
-        for (let elementEvent of Popup.elementsEvents) {
+    public static bindEvents(): void {
+        for (let elementEvent of PageInfo.elementsEvents) {
             const element = document.getElementById(elementEvent.id);
 
             if (!element) {
@@ -77,16 +91,16 @@ class Popup {
                 continue;
             }
 
-            element[elementEvent.type] = elementEvent.event;
+            element.addEventListener(elementEvent.type, elementEvent.event);
         }
     }
 
-    static displayError(args: ErrorArguments): void {
+    public static displayError(args: ErrorArguments): void {
         const errorText = args.errorText || "Error";
         const displayTime = args.displayTime || 2000;
         const notificationElementId = args.notificationElementId || "version";
 
-        if (Popup.timeoutId != null) {
+        if (this.timeoutId != null) {
             console.warn("Created timeout is still running.");
             console.error(errorText);
             return;
@@ -103,23 +117,19 @@ class Popup {
         const oldText = notificationElement.innerText;
         notificationElement.innerText = errorText;
 
-        Popup.timeoutId = window.setTimeout(() => {
+        this.timeoutId = window.setTimeout(() => {
             notificationElement.innerText = oldText;
-            Popup.timeoutId = null;
+            this.timeoutId = null;
         }, displayTime);
     }
 
-    static defaultElementEvent(message: Message, errorArgs?: ErrorArguments): () => void {
-        return async function() {
-            const response = await Page.sendMessageToContentScript(message);
+    public static async defaultElementEvent(message: Message, errorArgs?: ErrorArguments): Promise<void> {
+        const response = await BackgroundScript.sendMessageToActiveContentScript(message);
 
-            if (!response || response.error) {
-                Popup.displayError(errorArgs || {});
-            }
-        }
+        if (!response || response.error)
+            this.displayError(errorArgs || {});
     }
 }
 
 
-DOMLoaded.runFunction(Popup.main);
-*/
+DOMLoaded.runFunction(() => Popup.main());
