@@ -180,4 +180,8 @@ export abstract class Iframe {
         // then save it.
         chrome.storage.sync.set(this.userSettings);
     }
+
+    public static getValueOfUserSettings(mainField: string, field: string): any {
+        return this.userSettings[mainField][field];
+    }
 }
