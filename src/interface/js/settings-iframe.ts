@@ -1,4 +1,4 @@
-import {ContentScript, BackgroundScript} from "@modules/Communication";
+import {ContentScript, BackgroundScript} from "@modules/communication";
 import * as Slider from "bootstrap-slider";
 
 

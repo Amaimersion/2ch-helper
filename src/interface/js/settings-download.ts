@@ -1,4 +1,4 @@
-import {DOMLoaded} from "@modules/DOM";
+import {DOMLoaded} from "@modules/dom";
 import {ElementsInfo, ElementsEvent, Iframe} from "./settings-iframe"; // double export of bootstrap-slider because of this?
 
 

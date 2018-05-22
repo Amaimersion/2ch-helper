@@ -1,4 +1,4 @@
-import {DOMLoaded} from "@modules/DOM";
+import {DOMLoaded} from "@modules/dom";
 
 
 interface IframeData {
