@@ -3,7 +3,8 @@
     "version": "1.0.0-beta.6",
     "description": "A browser extension which facilitates interaction with the imageboard 2ch.hk.",
     "scripts": {
-        "build": "webpack --config webpack.config.js --display-error-details --progress"
+        "build": "webpack --config webpack.config.js --display-error-details --progress",
+        "watch": "webpack --watch"
     },
     "author": {
         "name": "Sergey Kuznetsov",
