@@ -1,5 +1,5 @@
 export class DOMLoaded {
-    static runFunction(method: () => any): void {
+    static runFunction(method: (...args: any[]) => any): void {
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", method);
         } else {
