@@ -1,71 +1,73 @@
-export interface Message {
-    type: string;
-    name: string;
+//#region Message Interfaces
+
+export interface Message extends ContentMessage, BackgroundMessage {}
+
+export interface ContentMessage {
+    type?: string;
+    name?: string;
     method?: string;
 }
 
+export interface BackgroundMessage {
+    type?: string;
+    command?: string;
+    data?: any;
+}
 
-export class Page {
-    static sendMessageToContentScript(message: Message): Promise<any> {
+//#endregion
+
+
+//#region Message Interaction Classes
+
+export class Script {
+    static sendMessageToTab(message: Message, tabId: number = undefined): Promise<any> {
         return new Promise((resolve) => {
-            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
+            if (tabId !== undefined) {
+                chrome.tabs.sendMessage(tabId, message, (response) => {
                     return resolve(response);
                 });
-            })
+            } else {
+                chrome.runtime.sendMessage(message, (response) => {
+                    return resolve(response);
+                })
+            }
         });
     }
-    /*
-    static sendMessageToContentScript(message: Message, responseCallback?: (response: any) => void): void {
-        responseCallback = responseCallback || function() {};
 
-        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
-                responseCallback(response);
+    static createQuery(queryInfo: chrome.tabs.QueryInfo = {}): Promise<chrome.tabs.Tab[]> {
+        return new Promise((resolve) => {
+            chrome.tabs.query(queryInfo, (tabs) => {
+                return resolve(tabs);
             });
-        })
-    }
-    */
-    /*
-    static sendMessage(message: Message, responseCallback?: (response: any) => void): void {
-        responseCallback = responseCallback || function() {};
-
-        chrome.runtime.sendMessage(message, (response) => {
-            responseCallback(response);
         });
     }
-    */
 }
 
-
-
-//export class Content extends PageInterface {}
-
-
-//export class Background extends PageInterface {}
-
-
-/*
-Popup.sendMessageToContent = function(message: Object, callback?: (response: any) => void): void {
-    callback = callback || function() {};
-
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, message, (response) => {
-            callback(response);
-        });
-    });
+export class ContentScript extends Script {
+    static async sendMessageToBackgroundScript(message: Message): Promise<any> {
+        const response = await this.sendMessageToTab(message);
+        return response;
+    }
 }
 
+export class BackgroundScript extends Script {
+    static async sendMessageToActiveContentScript(message: Message, queryInfo: chrome.tabs.QueryInfo = {}): Promise<any> {
+        queryInfo.active = true;
+        queryInfo.currentWindow = true;
 
-SettingsIframe.sendMessageToContent = function(message, callback) {
-    callback = callback || function() {};
+        const tabId = await this.createQuery(queryInfo)[0].id;
+        const response = await this.sendMessageToTab(message, tabId);
 
-    chrome.tabs.query({url: '*://2ch.hk/*//*'}, (tabs) => {
+        return response;
+    }
+
+    static async sendMessageToAllContentScripts(message: Message, queryInfo: chrome.tabs.QueryInfo = {}): Promise<void> {
+        const tabs = await this.createQuery(queryInfo);
+
         for (let tab of tabs) {
-            chrome.tabs.sendMessage(tab.id, message, (response) => {
-                callback(response);
-            });
+            this.sendMessageToTab(message, tab.id);
         }
-    });
+    }
 }
-*/
+
+//#endregion
