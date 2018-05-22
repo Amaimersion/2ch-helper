@@ -8,8 +8,8 @@ interface IframeData {
 }
 
 
-class Settings {
-    static iframeData: IframeData[] = [
+abstract class PageInfo {
+    public static iframeData: IframeData[] = [
         {
             iframeId: "settings-screenshot",
             navbarId: "settings-screenshot-navbar",
@@ -21,13 +21,16 @@ class Settings {
             height: "250px"
         }
     ];
+}
 
-    static main(): void {
-        Settings.bindEvents();
+
+abstract class Settings {
+    public static main(): void {
+        this.bindEvents();
     }
 
-    static bindEvents(): void {
-        for (let iframeData of Settings.iframeData) {
+    public static bindEvents(): void {
+        for (let iframeData of PageInfo.iframeData) {
             const iframeId = iframeData.iframeId;
             const navbarId = iframeData.navbarId;
             const height = iframeData.height;
@@ -39,21 +42,21 @@ class Settings {
                 continue;
             }
 
-            navbar.onclick = () => {
-                Settings.iframeClickEvent({iframeId, navbarId, height});
-            };
+            navbar.addEventListener("click", () => {
+                this.iframeClickEvent({iframeId, navbarId, height});
+            });
         }
     }
 
-    static iframeClickEvent(iframeData: IframeData): void {
+    public static iframeClickEvent(iframeData: IframeData): void {
         const iframeId = iframeData.iframeId;
         const navbarId = iframeData.navbarId;
         const height = iframeData.height;
 
-        Settings.disableAllIframes();
+        this.disableAllIframes();
 
         const navbar = document.getElementById(navbarId);
-        const iframe = document.getElementById(iframeId);
+        const iframe = <HTMLIFrameElement>document.getElementById(iframeId);
 
         if (!navbar) {
             console.error(`Could not find a navbar with the id - "${navbarId}".`);
@@ -70,13 +73,13 @@ class Settings {
         iframe.style.height = height;
     }
 
-    static disableAllIframes(): void {
-        for (let iframeData of Settings.iframeData) {
+    public static disableAllIframes(): void {
+        for (let iframeData of PageInfo.iframeData) {
             const iframeId = iframeData.iframeId;
             const navbarId = iframeData.navbarId;
 
             const navbar = document.getElementById(navbarId);
-            const iframe = document.getElementById(iframeId);
+            const iframe = <HTMLIFrameElement>document.getElementById(iframeId);
 
             if (!navbar) {
                 console.error(`Could not find a navbar with the id - "${navbarId}".`);
@@ -95,4 +98,4 @@ class Settings {
 }
 
 
-DOMLoaded.runFunction(Settings.main);
+DOMLoaded.runFunction(() => Settings.main());
