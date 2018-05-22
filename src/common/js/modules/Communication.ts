@@ -19,8 +19,8 @@ export interface BackgroundMessage {
 
 //#region Message Interaction Classes
 
-export class Script {
-    static sendMessageToTab(message: Message, tabId: number = undefined): Promise<any> {
+export abstract class Script {
+    public static sendMessageToTab(message: Message, tabId: number = undefined): Promise<any> {
         return new Promise((resolve) => {
             if (tabId !== undefined) {
                 chrome.tabs.sendMessage(tabId, message, (response) => {
@@ -34,7 +34,7 @@ export class Script {
         });
     }
 
-    static createQuery(queryInfo: chrome.tabs.QueryInfo = {}): Promise<chrome.tabs.Tab[]> {
+    public static createQuery(queryInfo: chrome.tabs.QueryInfo = {}): Promise<chrome.tabs.Tab[]> {
         return new Promise((resolve) => {
             chrome.tabs.query(queryInfo, (tabs) => {
                 return resolve(tabs);
@@ -43,15 +43,15 @@ export class Script {
     }
 }
 
-export class ContentScript extends Script {
-    static async sendMessageToBackgroundScript(message: Message): Promise<any> {
+export abstract class ContentScript extends Script {
+    public static async sendMessageToBackgroundScript(message: BackgroundMessage): Promise<any> {
         const response = await this.sendMessageToTab(message);
         return response;
     }
 }
 
-export class BackgroundScript extends Script {
-    static async sendMessageToActiveContentScript(message: Message, queryInfo: chrome.tabs.QueryInfo = {}): Promise<any> {
+export abstract class BackgroundScript extends Script {
+    public static async sendMessageToActiveContentScript(message: ContentMessage, queryInfo: chrome.tabs.QueryInfo = {}): Promise<any> {
         queryInfo.active = true;
         queryInfo.currentWindow = true;
 
@@ -62,7 +62,7 @@ export class BackgroundScript extends Script {
         return response;
     }
 
-    static async sendMessageToAllContentScripts(message: Message, queryInfo: chrome.tabs.QueryInfo = {}): Promise<void> {
+    public static async sendMessageToAllContentScripts(message: ContentMessage, queryInfo: chrome.tabs.QueryInfo = {}): Promise<void> {
         const tabs = await this.createQuery(queryInfo);
 
         for (let tab of tabs) {
