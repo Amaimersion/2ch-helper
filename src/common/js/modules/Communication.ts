@@ -6,6 +6,7 @@ export interface ContentMessage {
     type?: string;
     name?: string;
     method?: string;
+    command?: string;
 }
 
 export interface BackgroundMessage {
