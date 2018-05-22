@@ -1,3 +1,4 @@
+/*
 import {Page, Message} from "@modules/Communication";
 import {DOMLoaded} from "@modules/DOM";
 
@@ -121,3 +122,4 @@ class Popup {
 
 
 DOMLoaded.runFunction(Popup.main);
+*/

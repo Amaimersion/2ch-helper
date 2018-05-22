@@ -1,3 +1,4 @@
+/*
 import SettingsIframe from "./settings-iframe";
 
 
@@ -29,3 +30,4 @@ if (document.readyState === 'loading') {
 } else {
     Statistics.main();
 }
+*/
