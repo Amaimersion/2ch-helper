@@ -1,33 +1,36 @@
-/*
-import SettingsIframe from "./settings-iframe";
+import {DOMLoaded} from "@modules/DOM";
+import {Iframe} from "./settings-iframe"; // double export of bootstrap-slider?
 
 
-export default class Statistics {
-    static main: () => void;
-    static bindTime: () => void;
+abstract class Statistics {
+    public static userSettingId = "statistics";
+
+    public static async main(): Promise<void> {
+        await Iframe.initUserSettings(this.userSettingId);
+        this.bindTime();
+    }
+
+    public static bindTime(): void {
+        const elementId = "statistics-time";
+        const element = document.getElementById(elementId);
+
+        if (!element) {
+            console.error(`Could not find an element with the id - "${elementId}".`);
+            return;
+        }
+
+        let time = <number>Iframe.getValueOfUserSettings(this.userSettingId, "totalSecondsSpent");
+
+        if (time === undefined)
+            console.warn("The time value is undefined.");
+
+        // from seconds to hours.
+        time /= 3600
+        time = Math.floor(time);
+
+        element.textContent = String(time);
+    }
 }
 
 
-Statistics.main = async function() {
-    await SettingsIframe.initUserSettings();
-    Statistics.bindTime();
-}
-
-
-Statistics.bindTime = function() {
-    const element = <HTMLElement>document.getElementById('statistics-time');
-
-    // from seconds to hours.
-    let time = SettingsIframe.userSettings.statistics.totalSecondsSpent / 3600;
-    time = Math.floor(time);
-
-    element.textContent = String(time);
-}
-
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', Statistics.main);
-} else {
-    Statistics.main();
-}
-*/
+DOMLoaded.runFunction(() => Statistics.main());
