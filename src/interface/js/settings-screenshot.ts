@@ -1,159 +1,136 @@
-import SettingsIframe from "./settings-iframe"; // double export of bootstrap-slider because of this.
+import {DOMLoaded} from "@modules/DOM";
+import {ElementsInfo, ElementsEvent, Iframe} from "./settings-iframe"; // double export of bootstrap-slider because of this?
 
 
-export default class SettingsScreenshot {
-    static userSettingId: string;
-    static buttons: Array<{id: string, events: Array<{type: string, event: () => void}>}>;
-    static forms: Array<{type: string, data: Array<{elementId: string, settingId: string}>}>;
-    static sliders: Array<{id: string, settingId: string, options: Object, events: Array<{name: string, event: (sliderValue: any) => void}>}>;
-    static main: () => Promise<void>;
-    static buttonClickEvent: () => void;
-    static sliderChangeEvent: (id: string, value: string) => void;
-    static customBind: () => void;
-}
+abstract class PageInfo {
+    public static qualityFormId: string = "quality";
+    public static selectScreenshotFormatId: string = "screenshotFormat";
 
-
-interface HTMLInputEvent extends Event {
-    target: HTMLInputElement & EventTarget;
-}
-
-
-SettingsScreenshot.userSettingId = 'settings_screenshot';
-
-
-SettingsScreenshot.buttons = [
-    {
-        id: 'save',
-        events: [
-            {
-                type: 'click',
-                event: function() {
-                    SettingsScreenshot.buttonClickEvent();
+    public static buttons: ElementsInfo.ButtonInfo[] = [
+        {
+            id: "save",
+            events: [
+                {
+                    type: "click",
+                    event: function() {
+                        ElementsEvent.SaveButton.defaultEvent(
+                            PageInfo.forms, SettingsScreenshot.userSettingId
+                        );
+                    }
                 }
-            }
-        ]
-    }
-];
-
-
-SettingsScreenshot.forms = [
-    {
-        type: 'input',
-        data: [
-            {elementId: 'nameForPosts', settingId: 'fileNamePosts'},
-            {elementId: 'nameForThread', settingId: 'fileNameThread'}
-        ]
-    },
-    {
-        type: 'select',
-        data: [
-            {elementId: 'screenshotFormat', settingId: 'format'}
-        ]
-    },
-    {
-        type: 'span',
-        data: [
-            {elementId: 'screenshotQualityValue', settingId: 'quality'},
-            {elementId: 'screenshotDelayValue', settingId: 'delay'}
-        ]
-    },
-    {
-        type: 'checkbox',
-        data: [
-            {elementId: 'turnOffTrue', settingId: 'turnOffPostsYes'},
-            {elementId: 'turnOffFalse', settingId: 'turnOffPostsNo'}
-        ]
-    }
-];
-
-
-SettingsScreenshot.sliders = [
-    {
-        id: '#screenshotQuality',
-        settingId: 'quality',
-        options: {
-            tooltip: 'hide'
-        },
-        events: [
-            {
-                name: 'change',
-                event: function(sliderValue) {
-                    const id = 'screenshotQualityValue';
-                    const value = sliderValue.newValue;
-
-                    SettingsScreenshot.sliderChangeEvent(id, value);
-                }
-            }
-        ]
-    },
-    {
-        id: '#screenshotDelay',
-        settingId: 'delay',
-        options: {
-            tooltip: 'hide'
-        },
-        events: [
-            {
-                name: 'change',
-                event: function(sliderValue) {
-                    const id = 'screenshotDelayValue';
-                    const value = sliderValue.newValue;
-
-                    SettingsScreenshot.sliderChangeEvent(id, value);
-                }
-            }
-        ]
-    }
-];
-
-
-SettingsScreenshot.main = async function() {
-    await SettingsIframe.initUserSettings();
-    SettingsIframe.bindButtons(SettingsScreenshot.buttons);
-    SettingsIframe.bindSliders(SettingsScreenshot.sliders, SettingsScreenshot.userSettingId);
-    SettingsIframe.bindForms(SettingsScreenshot.forms, SettingsScreenshot.userSettingId);
-    SettingsScreenshot.customBind();
-}
-
-
-SettingsScreenshot.buttonClickEvent = function() {
-    SettingsIframe.saveUserSettings(
-        SettingsScreenshot.forms, SettingsScreenshot.userSettingId
-    );
-    SettingsIframe.sendMessageToContent(
-        {type: 'command', command: 'updateUserSettings'}
-    );
-    SettingsIframe.sendMessageToBackground(
-        {type: 'command', command: 'updateUserSettings'}
-    );
-}
-
-
-SettingsScreenshot.sliderChangeEvent = function(id, value) {
-    document.getElementById(id).textContent = value;
-}
-
-
-SettingsScreenshot.customBind = function() {
-    const qualityElement = document.getElementById('quality');
-    const selectElement = <HTMLSelectElement>document.getElementById('screenshotFormat');
-
-    if (selectElement.value === 'png') {
-        qualityElement.style.display = 'none';
-    }
-
-    selectElement.addEventListener('change', (event: HTMLInputEvent) => {
-        if (event.target.value === 'jpeg') {
-            qualityElement.style.display = 'block';
-        } else if (event.target.value === 'png') {
-            qualityElement.style.display = 'none';
+            ]
         }
-    });
+    ];
+
+    public static forms: ElementsInfo.FormInfo[] = [
+        {
+            type: "input",
+            data: [
+                {elementId: "nameForPosts", settingId: "fileNamePosts"},
+                {elementId: "nameForThread", settingId: "fileNameThread"}
+            ]
+        },
+        {
+            type: "select",
+            data: [
+                {elementId: "screenshotFormat", settingId: "format"}
+            ]
+        },
+        {
+            type: "span",
+            data: [
+                {elementId: "screenshotQualityValue", settingId: "quality"},
+                {elementId: "screenshotDelayValue", settingId: "delay"}
+            ]
+        },
+        {
+            type: "checkbox",
+            data: [
+                {elementId: "turnOffTrue", settingId: "turnOffPostsYes"},
+                {elementId: "turnOffFalse", settingId: "turnOffPostsNo"}
+            ]
+        }
+    ];
+
+    public static sliders: ElementsInfo.SliderInfo[] = [
+        {
+            id: "#screenshotQuality",
+            settingId: "quality",
+            options: {
+                tooltip: "hide"
+            },
+            events: [
+                {
+                    name: "change",
+                    event: function(sliderValue: any) {
+                        const id = "screenshotQualityValue";
+                        const value = sliderValue.newValue;
+
+                        ElementsEvent.Slider.changeEvent(id, value);
+                    }
+                }
+            ]
+        },
+        {
+            id: "#screenshotDelay",
+            settingId: "delay",
+            options: {
+                tooltip: "hide"
+            },
+            events: [
+                {
+                    name: "change",
+                    event: function(sliderValue: any) {
+                        const id = "screenshotDelayValue";
+                        const value = sliderValue.newValue;
+
+                        ElementsEvent.Slider.changeEvent(id, value);
+                    }
+                }
+            ]
+        }
+    ];
 }
 
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', SettingsScreenshot.main);
-} else {
-    SettingsScreenshot.main();
+abstract class SettingsScreenshot {
+    public static userSettingId = "settings_screenshot";
+
+    public static async main(): Promise<void> {
+        await Iframe.initUserSettings(this.userSettingId);
+        Iframe.bindButtons(PageInfo.buttons);
+        Iframe.bindSliders(PageInfo.sliders, this.userSettingId);
+        Iframe.bindForms(PageInfo.forms, this.userSettingId);
+        this.customBind();
+    }
+
+    public static customBind(): void {
+        const qualityElement = <HTMLDivElement>document.getElementById(PageInfo.qualityFormId);
+        const selectElement = <HTMLSelectElement>document.getElementById(PageInfo.selectScreenshotFormatId);
+
+        if (!qualityElement) {
+            console.error(`Could not find an element with the id - "${PageInfo.qualityFormId}".`);
+            return;
+        }
+
+        if (!selectElement) {
+            console.error(`Could not find a select element with the id - "${PageInfo.selectScreenshotFormatId}".`);
+            return;
+        }
+
+        if (selectElement.value === "png") {
+            qualityElement.style.display = "none";
+        }
+
+        selectElement.addEventListener("change", (event: ElementsInfo.HTMLInputEvent) => {
+            if (event.target.value === "jpeg") {
+                qualityElement.style.display = "block";
+            } else if (event.target.value === "png") {
+                qualityElement.style.display = "none";
+            }
+        });
+    }
 }
+
+
+DOMLoaded.runFunction(() => SettingsScreenshot.main());

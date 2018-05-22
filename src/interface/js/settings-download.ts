@@ -1,133 +1,117 @@
-import SettingsIframe from "./settings-iframe"; // double export of bootstrap-slider because of this.
+import {DOMLoaded} from "@modules/DOM";
+import {ElementsInfo, ElementsEvent, Iframe} from "./settings-iframe"; // double export of bootstrap-slider because of this?
 
 
-export default class SettingsDownload {
-    static userSettingId: string;
-    static buttons: Array<{id: string, events: Array<{type: string, event: () => void}>}>;
-    static forms: Array<{type: string, data: Array<{elementId: string, settingId: string}>}>;
-    static sliders: Array<{id: string, settingId: string, options: Object, events: Array<{name: string, event: (sliderValue: any) => void}>}>;
-    static main: () => Promise<void>;
-    static buttonClickEvent: () => void;
-    static sliderChangeEvent: (id: string, value: string) => void;
-    static customBind: () => void;
-}
+abstract class PageInfo {
+    public static nameInputId: string = "downloadName";
+    public static autoInputId: string = "downloadNameAuto";
+    public static userInputId: string = "downloadNameUser";
 
-
-SettingsDownload.userSettingId = 'settings_download';
-
-
-SettingsDownload.buttons = [
-    {
-        id: 'save',
-        events: [
-            {
-                type: 'click',
-                event: function() {
-                    SettingsDownload.buttonClickEvent();
+    public static buttons: ElementsInfo.ButtonInfo[] = [
+        {
+            id: "save",
+            events: [
+                {
+                    type: "click",
+                    event: function() {
+                        ElementsEvent.SaveButton.defaultEvent(
+                            PageInfo.forms, SettingsDownload.userSettingId
+                        );
+                    }
                 }
-            }
-        ]
-    }
-];
+            ]
+        }
+    ];
 
-
-
-SettingsDownload.forms = [
-    {
-        type: 'input',
-        data: [
-            {elementId: 'downloadName', settingId: 'fileName'}
-        ]
-    },
-    {
-        type: 'span',
-        data: [
-            {elementId: 'downloadDelayValue', settingId: 'delay'}
-        ]
-    },
-    {
-        type: 'checkbox',
-        data: [
-            {elementId: 'downloadNameAuto', settingId: 'autoDetectionName'},
-            {elementId: 'downloadNameUser', settingId: 'userName'}
-        ]
-    }
-];
-
-
-
-SettingsDownload.sliders = [
-    {
-        id: '#downloadDelay',
-        settingId: 'delay',
-        options: {
-            tooltip: 'hide'
+    public static forms: ElementsInfo.FormInfo[] = [
+        {
+            type: "input",
+            data: [
+                {elementId: "downloadName", settingId: "fileName"}
+            ]
         },
-        events: [
-            {
-                name: 'change',
-                event: function(sliderValue) {
-                    const id = 'downloadDelayValue';
-                    const value = sliderValue.newValue;
+        {
+            type: "span",
+            data: [
+                {elementId: "downloadDelayValue", settingId: "delay"}
+            ]
+        },
+        {
+            type: "checkbox",
+            data: [
+                {elementId: "downloadNameAuto", settingId: "autoDetectionName"},
+                {elementId: "downloadNameUser", settingId: "userName"}
+            ]
+        }
+    ];
 
-                    SettingsDownload.sliderChangeEvent(id, value);
+    public static sliders: ElementsInfo.SliderInfo[] = [
+        {
+            id: "#downloadDelay",
+            settingId: "delay",
+            options: {
+                tooltip: "hide"
+            },
+            events: [
+                {
+                    name: "change",
+                    event: function(sliderValue: any) {
+                        const id = "downloadDelayValue";
+                        const value = sliderValue.newValue;
+
+                        ElementsEvent.Slider.changeEvent(id, value);
+                    }
                 }
-            }
-        ]
-    }
-];
-
-
-
-SettingsDownload.main = async function() {
-    await SettingsIframe.initUserSettings();
-    SettingsIframe.bindButtons(SettingsDownload.buttons);
-    SettingsIframe.bindSliders(SettingsDownload.sliders, SettingsDownload.userSettingId);
-    SettingsIframe.bindForms(SettingsDownload.forms, SettingsDownload.userSettingId);
-    SettingsDownload.customBind();
+            ]
+        }
+    ];
 }
 
 
+abstract class SettingsDownload {
+    public static userSettingId: string = "settings_download";
 
-SettingsDownload.buttonClickEvent = function() {
-    SettingsIframe.saveUserSettings(
-        SettingsDownload.forms, SettingsDownload.userSettingId
-    );
-    SettingsIframe.sendMessageToContent(
-        {type: 'command', command: 'updateUserSettings'}
-    );
-    SettingsIframe.sendMessageToBackground(
-        {type: 'command', command: 'updateUserSettings'}
-    );
-}
-
-
-SettingsDownload.sliderChangeEvent = function(id, value) {
-    document.getElementById(id).textContent = value;
-}
-
-
-SettingsDownload.customBind = function() {
-    const name = document.getElementById('downloadName');
-    const auto = <HTMLInputElement>document.getElementById('downloadNameAuto');
-    const user = document.getElementById('downloadNameUser');
-
-    if (auto.checked) {
-        name.style.display = 'none';
+    public static async main(): Promise<void> {
+        await Iframe.initUserSettings(this.userSettingId);
+        Iframe.bindButtons(PageInfo.buttons);
+        Iframe.bindSliders(PageInfo.sliders, this.userSettingId);
+        Iframe.bindForms(PageInfo.forms, this.userSettingId);
+        this.customBind();
     }
 
-    auto.addEventListener('click', () => {
-        name.style.display = 'none';
-    });
+    public static customBind(): void {
+        const name = <HTMLInputElement>document.getElementById(PageInfo.nameInputId);
+        const auto = <HTMLInputElement>document.getElementById(PageInfo.autoInputId);
+        const user = <HTMLInputElement>document.getElementById(PageInfo.userInputId);
 
-    user.addEventListener('click', () => {
-        name.style.display = 'block';
-    });
+        if (!name) {
+            console.error(`Could not find an input with the id - "${PageInfo.nameInputId}".`);
+            return;
+        }
+
+        if (!auto) {
+            console.error(`Could not find an input with the id - "${PageInfo.autoInputId}".`);
+            return;
+        }
+
+        if (!user) {
+            console.error(`Could not find an input with the id - "${PageInfo.userInputId}".`);
+            return;
+        }
+
+        if (auto.checked) {
+            name.style.display = "none";
+        }
+
+        auto.addEventListener("click", () => {
+            name.style.display = "none";
+        });
+
+        user.addEventListener("click", () => {
+            name.style.display = "block";
+        });
+    }
 }
 
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', SettingsDownload.main);
-} else {
-    SettingsDownload.main();
-}
+DOMLoaded.runFunction(() => SettingsDownload.main());
