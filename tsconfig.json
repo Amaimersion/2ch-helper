@@ -21,10 +21,10 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "strictPropertyInitialization": true,
-        "removeComments": true, // only for production.
-        "sourceMap": true // only for development.
+        "removeComments": true
     },
     "awesomeTypescriptLoaderOptions": {
-        "useCache": true
+        "useCache": true,
+        "transpileModule": true
     }
 }
