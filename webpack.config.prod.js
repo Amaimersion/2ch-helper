@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 /*
 My own raw plugins. Will be included later.
@@ -23,7 +22,6 @@ module.exports = merge(commonConfig, {
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify('production')
         }),
-        new UglifyJSPlugin(),
         /*
          * Remove files after build.
          * Webpack creates empty sources maps for css files.
