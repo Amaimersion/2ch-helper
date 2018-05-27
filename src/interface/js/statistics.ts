@@ -1,12 +1,12 @@
 import {DOMLoaded} from "@modules/dom";
-import {Iframe} from "./settings-iframe"; // double export of bootstrap-slider?
+import {UserSettings} from "@modules/UserSettings";
 
 
 abstract class Statistics {
     public static userSettingId = "statistics";
 
     public static async main(): Promise<void> {
-        await Iframe.initUserSettings(this.userSettingId);
+        await UserSettings.initUserSettings(this.userSettingId);
         this.bindTime();
     }
 
@@ -19,7 +19,7 @@ abstract class Statistics {
             return;
         }
 
-        let time = <number>Iframe.getValueOfUserSettings(this.userSettingId, "totalSecondsSpent");
+        let time = <number>UserSettings.getValueOfUserSetting(this.userSettingId, "totalSecondsSpent");
 
         if (time === undefined)
             console.warn("The time value is undefined.");

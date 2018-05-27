@@ -1,4 +1,5 @@
 import {ContentScript, BackgroundScript} from "@modules/communication";
+import {UserSettings} from "@modules/UserSettings";
 import * as Slider from "bootstrap-slider";
 
 
@@ -57,7 +58,7 @@ export namespace ElementsEvent {
 
     export abstract class SaveButton {
         public static defaultEvent(forms: ElementsInfo.FormInfo[], userSettingId: string): void {
-            Iframe.saveUserSettings(
+            Iframe.updateAndSaveUserSettings(
                 forms, userSettingId
             );
             BackgroundScript.sendMessageToAllContentScripts(
@@ -72,31 +73,7 @@ export namespace ElementsEvent {
 }
 
 
-interface UserSettings {
-    [key: string]: any;
-}
-
-
-export abstract class Iframe {
-    private static userSettings: UserSettings = {};
-
-    public static async initUserSettings(key: string | Object | string[]): Promise<void> {
-        const userData = await this.getUserSettings(key);
-
-        if (!userData)
-            console.warn(`User data for the key "${key}" is empty.`);
-
-        this.userSettings = {...this.userSettings, ...userData};
-    }
-
-    public static getUserSettings(key: string | Object | string[]): Promise<UserSettings> {
-        return new Promise((resolve) => {
-            chrome.storage.sync.get(key, (data) => {
-                return resolve(data);
-            });
-        });
-    }
-
+export abstract class Iframe extends UserSettings {
     public static bindButtons(buttons: ElementsInfo.ButtonInfo[]): void {
         for (let buttonData of buttons) {
             const elementId = buttonData.id;
@@ -174,14 +151,10 @@ export abstract class Iframe {
         }
     }
 
-    public static saveUserSettings(forms: ElementsInfo.FormInfo[], settingField: string): void {
+    public static updateAndSaveUserSettings(forms: ElementsInfo.FormInfo[], settingField: string): void {
         // first, update the Iframe.userSettings,
         this.updateUserData(forms, settingField);
         // then save it.
-        chrome.storage.sync.set(this.userSettings);
-    }
-
-    public static getValueOfUserSettings(mainField: string, field: string): any {
-        return this.userSettings[mainField][field];
+        this.saveUserSettings();
     }
 }
