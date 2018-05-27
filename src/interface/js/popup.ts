@@ -1,5 +1,5 @@
 import {DOMLoaded} from "@modules/dom";
-import {Message, BackgroundScript} from "@modules/Communication";
+import {Message, BackgroundScript} from "@modules/communication";
 
 
 interface PopupElementEvent {
