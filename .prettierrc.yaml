@@ -1,5 +1,8 @@
 # Basic
-#printWidth: 120
+# Some long strings (file path, e.g.) just do not fit in a line with 80 width.
+# And if break them to a width 80 - it just looks ugly.
+# However, it is still better to follow the width 80 standard.
+printWidth: 120
 tabWidth: 4
 useTabs: false
 singleQuote: false
