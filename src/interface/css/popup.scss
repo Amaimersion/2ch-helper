@@ -10,6 +10,15 @@ body {
   width: 200px;
 }
 
+/*
+ * Override Mozila Firefox stylesheet.
+ * See at chrome://browser/content/extension.css or
+ * chrome://browser/content/extension-mac.css for OS X.
+ */
+ body * {
+  text-align: inherit;
+}
+
 
 /* Common. */
 

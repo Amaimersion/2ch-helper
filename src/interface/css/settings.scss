@@ -33,3 +33,15 @@
     height: 524px;
   }
 }
+
+
+/* Footer. */
+
+/*
+ * Override Google Chrome stylesheet.
+ */
+.custom-footer {
+  .col * {
+    line-height: inherit;
+  }
+}
