@@ -1,0 +1,9 @@
+{
+    "background": {
+        "persistent": false
+    },
+
+    "permissions": [
+        "pageCapture"
+    ]
+}

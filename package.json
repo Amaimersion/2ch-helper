@@ -4,8 +4,12 @@
     "description": "A browser extension which facilitates interaction with the imageboard 2ch.hk.",
     "scripts": {
         "build": "npm run build:prod",
-        "build:dev": "webpack --config webpack.config.dev",
-        "build:prod": "webpack --config webpack.config.prod"
+        "build:prod": "npm run build:chromium:prod && npm run build:firefox:prod",
+        "build:dev": "npm run build:chromium:dev && npm run build:firefox:dev",
+        "build:chromium:prod": "webpack --config webpack.config.prod --env.platform=chromium",
+        "build:chromium:dev": "webpack --config webpack.config.dev --env.platform=chromium",
+        "build:firefox:prod": "webpack --config webpack.config.prod --env.platform=firefox",
+        "build:firefox:dev": "webpack --config webpack.config.dev --env.platform=firefox"
     },
     "author": {
         "name": "Sergey Kuznetsov",
