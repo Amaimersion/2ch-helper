@@ -1,3 +1,15 @@
 {
+    "applications": {
+        "gecko": {
+            "id": "tempid@2ch.helper"
+        }
+    },
 
+    "browser_action": {
+        "browser_style": true
+    },
+
+    "options_ui": {
+        "browser_style": true
+    }
 }
