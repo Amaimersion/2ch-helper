@@ -137,27 +137,27 @@ module.exports = function(env) {
                 }),
             new HTMLWebpackPlugin({
                 template: './src/interface/html/popup.pug',
-                filename: 'interface/html/popup.html',
+                filename: '/interface/html/popup.html',
                 inject: false
             }),
             new HTMLWebpackPlugin({
                 template: './src/interface/html/settings.pug',
-                filename: 'interface/html/settings.html',
+                filename: '/interface/html/settings.html',
                 inject: false
             }),
             new HTMLWebpackPlugin({
                 template: './src/interface/html/settings-download.pug',
-                filename: 'interface/html/settings-download.html',
+                filename: '/interface/html/settings-download.html',
                 inject: false
             }),
             new HTMLWebpackPlugin({
                 template: './src/interface/html/settings-screenshot.pug',
-                filename: 'interface/html/settings-screenshot.html',
+                filename: '/interface/html/settings-screenshot.html',
                 inject: false
             }),
             new HTMLWebpackPlugin({
                 template: './src/interface/html/statistics.pug',
-                filename: 'interface/html/statistics.html',
+                filename: '/interface/html/statistics.html',
                 inject: false
             }),
             new CreateManifestPlugin({

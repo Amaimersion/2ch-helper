@@ -1,11 +1,11 @@
 const webpack = require('webpack');
 const merge = require('webpack-merge');
+const ValidateHTMLLinksPlugin = require('validate-html-links-webpack-plugin');
 
 /*
 My own raw plugins. Will be included later.
 
 const RemoveFilesPlugin = require('./temp/remove');
-const ReplaceResourcesLinksPlugin = require('./temp/replace');
 */
 
 module.exports = function(env) {
@@ -17,9 +17,7 @@ module.exports = function(env) {
         mode: 'production',
         devtool: 'nosources-source-map',
         output: {
-            // When will be included ReplaceResourcesLinksPlugin.
-            //filename: "[name].[chunkhash].min.js",
-            filename: '[name].js'
+            filename: "[name].[chunkhash].min.js",
         },
         plugins: [
             new webpack.DefinePlugin({
@@ -33,9 +31,9 @@ module.exports = function(env) {
             //new RemoveFilesPlugin(),
             /*
              * HTML files contains invalid links for JS files.
-             * So, we replace [name].js to [name].[contenthash].min.js based on the files names.
+             * So, we replace [name].js to [name].[contenthash].min.js.
              */
-            //new ReplaceResourcesLinksPlugin()
+            new ValidateHTMLLinksPlugin()
         ]
     });
 }
