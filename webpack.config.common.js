@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const RemovePlugin = require('remove-files-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const {TsConfigPathsPlugin} = require('awesome-typescript-loader');
@@ -99,12 +99,12 @@ module.exports = function(env) {
             ]
         },
         plugins: [
-            /*
-             * Clean before build.
-            */
-            new CleanWebpackPlugin([
-                `dist/${platform}`
-            ]),
+            new RemovePlugin({
+                before: {
+                    root: __dirname,
+                    include: [`dist/${platform}`]
+                }
+            }),
             new CopyWebpackPlugin([
                 {
                     from: './static/interface',
