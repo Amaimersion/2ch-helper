@@ -1,75 +1,112 @@
-//#region Message Interfaces
+export namespace Message {
+    export type AnyMessage = (Content | Background);
 
-export interface Message extends ContentMessage, BackgroundMessage {}
-
-export interface ContentMessage {
-    type?: string;
-    name?: string;
-    method?: string;
-    command?: string;
-}
-
-export interface BackgroundMessage {
-    type?: string;
-    command?: string;
-    data?: any;
-}
-
-//#endregion
-
-
-//#region Message Interaction Classes
-
-export abstract class Script {
-    public static sendMessageToTab(message: Message, tabId: number = undefined): Promise<any> {
-        return new Promise((resolve) => {
-            if (tabId !== undefined) {
-                chrome.tabs.sendMessage(tabId, message, (response) => {
-                    return resolve(response);
-                });
-            } else {
-                chrome.runtime.sendMessage(message, (response) => {
-                    return resolve(response);
-                })
-            }
-        });
+    interface Message {
+        type: string;
+        command: string;
     }
 
-    public static createQuery(queryInfo: chrome.tabs.QueryInfo = {}): Promise<chrome.tabs.Tab[]> {
-        return new Promise((resolve) => {
-            chrome.tabs.query(queryInfo, (tabs) => {
-                return resolve(tabs);
+    export interface Content extends Message {}
+    export interface Background extends Message {
+        data?: any;
+    }
+}
+
+
+export namespace Script {
+    export type Response = any;
+    export type Query = chrome.tabs.QueryInfo;
+    export type Tab = chrome.tabs.Tab;
+
+    abstract class Script {
+        protected static sendMessageToTab(message: Message.AnyMessage, tabId: number = undefined): Promise<Response> {
+            return new Promise((resolve) => {
+                if (tabId) {
+                    chrome.tabs.sendMessage(tabId, message, (response) => {
+                        return resolve(response);
+                    });
+                } else {
+                    chrome.runtime.sendMessage(message, (response) => {
+                        return resolve(response);
+                    });
+                }
             });
-        });
-    }
-}
+        }
 
-export abstract class ContentScript extends Script {
-    public static async sendMessageToBackgroundScript(message: BackgroundMessage): Promise<any> {
-        const response = await this.sendMessageToTab(message);
-        return response;
-    }
-}
-
-export abstract class BackgroundScript extends Script {
-    public static async sendMessageToActiveContentScript(message: ContentMessage, queryInfo: chrome.tabs.QueryInfo = {}): Promise<any> {
-        queryInfo.active = true;
-        queryInfo.currentWindow = true;
-
-        const tabs = await this.createQuery(queryInfo);
-        const tabId = tabs[0].id;
-        const response = await this.sendMessageToTab(message, tabId);
-
-        return response;
+        protected static createQuery(queryInfo: Query = {}): Promise<Tab[]> {
+            return new Promise((resolve) => {
+                chrome.tabs.query(queryInfo, (result) => {
+                    return resolve(result);
+                })
+            })
+        }
     }
 
-    public static async sendMessageToAllContentScripts(message: ContentMessage, queryInfo: chrome.tabs.QueryInfo = {}): Promise<void> {
-        const tabs = await this.createQuery(queryInfo);
+    export abstract class Content extends Script {
+        public static sendMessageToBackground(message: Message.Background): Promise<Response> {
+            return this.sendMessageToTab(message);
+        }
+    }
 
-        for (let tab of tabs) {
-            this.sendMessageToTab(message, tab.id);
+    export abstract class Background extends Script {
+        public static async sendMessageToActiveContent(message: Message.Content, queryInfo: Query = {}): Promise<Response> {
+            queryInfo.active = true;
+            queryInfo.currentWindow = true;
+
+            const tabs = await this.createQuery(queryInfo);
+
+            if (!tabs.length) {
+                throw new Error("Tabs list is empty.");
+            }
+
+            const tabId = tabs[0].id;
+            const response = await this.sendMessageToTab(message, tabId);
+
+            return response;
+        }
+
+        public static async sendMessageToAllContent(message: Message.Content, queryInfo: Query = {}): Promise<Promise<Response>[]> {
+            const tabs = await this.createQuery(queryInfo);
+            const promises: Promise<Response>[] = [];
+
+            for (let tab of tabs) {
+                promises.push(
+                    this.sendMessageToTab(message, tab.id)
+                );
+            }
+
+            return promises;
         }
     }
 }
 
-//#endregion
+
+export namespace OnMssg {
+    export interface MessageEvent<T> {
+        (
+            message: T,
+            sender: chrome.runtime.MessageSender,
+            sendResponse: (response: Script.Response) => void
+        ): void;
+    }
+
+    export function attach<T>(handler: MessageEvent<T>): void {
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            handler(message, sender, sendResponse);
+        });
+    }
+
+    export abstract class OnMessage {
+        protected static formatObject(obj: Object): string {
+            return JSON.stringify(obj, null, 4);
+        }
+
+        protected static getUnknownMessageErrorText(message: Object, sender: Object, text: string = undefined): string {
+            return (
+                text ? `${text}\n` : "Unknown message.\n" +
+                `Message - ${this.formatObject(message)}\n` +
+                `Sender - ${this.formatObject(sender)}`
+            );
+        }
+    }
+}
