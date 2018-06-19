@@ -1,5 +1,9 @@
 export namespace Message {
-    export type AnyMessage = (Content | Background);
+    export type AnyMessage = Content | Background;
+
+    export interface Response {
+        status: boolean;
+    }
 
     interface Message {
         type: string;
@@ -7,6 +11,7 @@ export namespace Message {
     }
 
     export interface Content extends Message {}
+
     export interface Background extends Message {
         data?: any;
     }
@@ -14,12 +19,11 @@ export namespace Message {
 
 
 export namespace Script {
-    export type Response = any;
     export type Query = chrome.tabs.QueryInfo;
     export type Tab = chrome.tabs.Tab;
 
     abstract class Script {
-        protected static sendMessageToTab(message: Message.AnyMessage, tabId: number = undefined): Promise<Response> {
+        protected static sendMessageToTab(message: Message.AnyMessage, tabId: number = undefined): Promise<Message.Response> {
             return new Promise((resolve) => {
                 if (tabId) {
                     chrome.tabs.sendMessage(tabId, message, (response) => {
@@ -43,13 +47,13 @@ export namespace Script {
     }
 
     export abstract class Content extends Script {
-        public static sendMessageToBackground(message: Message.Background): Promise<Response> {
+        public static sendMessageToBackground(message: Message.Background): Promise<Message.Response> {
             return this.sendMessageToTab(message);
         }
     }
 
     export abstract class Background extends Script {
-        public static async sendMessageToActiveContent(message: Message.Content, queryInfo: Query = {}): Promise<Response> {
+        public static async sendMessageToActiveContent(message: Message.Content, queryInfo: Query = {}): Promise<Message.Response> {
             queryInfo.active = true;
             queryInfo.currentWindow = true;
 
@@ -65,9 +69,9 @@ export namespace Script {
             return response;
         }
 
-        public static async sendMessageToAllContent(message: Message.Content, queryInfo: Query = {}): Promise<Promise<Response>[]> {
+        public static async sendMessageToAllContent(message: Message.Content, queryInfo: Query = {}): Promise<Promise<Message.Response>[]> {
             const tabs = await this.createQuery(queryInfo);
-            const promises: Promise<Response>[] = [];
+            const promises: Promise<Message.Response>[] = [];
 
             for (let tab of tabs) {
                 promises.push(
@@ -86,7 +90,7 @@ export namespace OnMssg {
         (
             message: T,
             sender: chrome.runtime.MessageSender,
-            sendResponse: (response: Script.Response) => void
+            sendResponse: (response: Message.Response) => void
         ): void;
     }
 
