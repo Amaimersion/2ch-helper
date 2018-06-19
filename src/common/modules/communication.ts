@@ -3,6 +3,7 @@ export namespace Message {
 
     export interface Response {
         status: boolean;
+        errorText?: string;
     }
 
     interface Message {
