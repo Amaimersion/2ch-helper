@@ -9,8 +9,8 @@
         ],
         "baseUrl": "./",
         "paths": {
-            "@libs/*": ["src/common/js/libs/*"],
-            "@modules/*": ["src/common/js/modules/*"]
+            "@libs/*": ["src/common/libs/*"],
+            "@modules/*": ["src/common/modules/*"]
         },
         "alwaysStrict": true,
         "disableSizeLimit": true,
