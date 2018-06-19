@@ -1,4 +1,4 @@
-import {ContentScript, BackgroundScript} from "@modules/communication";
+import {Script} from "@modules/communication";
 import {UserSettings} from "@modules/user-settings";
 import * as Slider from "bootstrap-slider";
 
@@ -61,11 +61,11 @@ export namespace ElementsEvent {
             Iframe.updateAndSaveUserSettings(
                 forms, userSettingId
             );
-            BackgroundScript.sendMessageToAllContentScripts(
+            Script.Background.sendMessageToAllContent(
                 {type: "command", command: "updateUserSettings"},
                 {url: "*://2ch.hk/*/res/*"}
             );
-            ContentScript.sendMessageToBackgroundScript(
+            Script.Content.sendMessageToBackground(
                 {type: "command", command: "updateUserSettings"}
             );
         }

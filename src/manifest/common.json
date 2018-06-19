@@ -32,6 +32,13 @@
         "128": "/interface/icons/logo/logo-128.png"
     },
 
+    "content_scripts": [
+        {
+            "matches": ["*://2ch.hk/*"],
+            "js": ["/interaction/js/scripts/content/content.js"]
+        }
+    ],
+
     "background": {
         "scripts": [
             "/interaction/js/scripts/background/background-user-profile.js",

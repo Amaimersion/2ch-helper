@@ -1,5 +1,5 @@
 import {DOMLoaded} from "@modules/dom";
-import {Message, BackgroundScript} from "@modules/communication";
+import {Message, Script} from "@modules/communication";
 
 
 interface PopupElementEvent {
@@ -22,7 +22,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "API", name: "screenshot", method: "createScreenshotOfPosts"}
+                    {type: "command", command: "createScreenshotOfPosts"}
                 );
             }
         },
@@ -31,7 +31,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "API", name: "screenshot", method: "createScreenshotOfThread"}
+                    {type: "command", command: "createScreenshotOfThread"}
                 );
             }
         },
@@ -40,7 +40,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "API", name: "download", method: "downloadImages"}
+                    {type: "command", command: "downloadImages"}
                 );
             }
         },
@@ -49,7 +49,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "API", name: "download", method: "downloadVideo"}
+                    {type: "command", command: "downloadVideo"}
                 );
             }
         },
@@ -58,7 +58,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "API", name: "download", method: "downloadMedia"}
+                    {type: "command", command: "downloadMedia"}
                 );
             }
         },
@@ -67,7 +67,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "API", name: "download", method: "downloadThread"}
+                    {type: "command", command: "downloadThread"}
                 )
             }
         }
@@ -123,10 +123,10 @@ abstract class Popup {
         }, displayTime);
     }
 
-    public static async defaultElementEvent(message: Message, errorArgs?: ErrorArguments): Promise<void> {
-        const response = await BackgroundScript.sendMessageToActiveContentScript(message);
+    public static async defaultElementEvent(message: Message.AnyMessage, errorArgs?: ErrorArguments): Promise<void> {
+        const response = await Script.Background.sendMessageToActiveContent(message);
 
-        if (!response || response.error)
+        if (!response || !response.status)
             this.displayError(errorArgs || {});
     }
 }

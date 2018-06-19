@@ -61,7 +61,8 @@ module.exports = function(env) {
             '/interface/js/scripts/settings-iframe': './src/build/interface/settings-iframe-build.js',
             '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot-build.js',
             '/interface/js/scripts/settings-download': './src/build/interface/settings-download-build.js',
-            '/interface/js/scripts/statistics': './src/build/interface/statistics-build.js'
+            '/interface/js/scripts/statistics': './src/build/interface/statistics-build.js',
+            '/interaction/js/scripts/content/content': './src/build/interaction/content.js'
         },
         output: {
             path: path.resolve(__dirname, 'dist', platform)
@@ -174,7 +175,8 @@ module.exports = function(env) {
                  * https://github.com/seiyria/bootstrap-slider#how-do-i-exclude-the-optional-jquery-dependency-from-my-build
                  */
                 jquery: path.resolve(__dirname, './src/common/js/libs/jquery-stub.js'),
-                Interface: path.resolve(__dirname, './src/interface')
+                Interface: path.resolve(__dirname, './src/interface'),
+                Interaction: path.resolve(__dirname, './src/interaction')
             },
             plugins: [
                 /*
