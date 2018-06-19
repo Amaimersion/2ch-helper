@@ -20,7 +20,6 @@
         "noImplicitThis": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "strictPropertyInitialization": true,
         "removeComments": true
     },
     "awesomeTypescriptLoaderOptions": {
