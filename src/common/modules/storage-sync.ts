@@ -1,9 +1,43 @@
+export type AvailableDownloadKey = (
+    "images" | "video"
+);
+
 export interface UserSettings {
     [key: string]: any;
 }
 
+export interface UserSettingsDefault {
+    settingsDownload: {
+        [key: string]: {
+            autoFileName: boolean,
+            fileName: string,
+            delay?: number,
+            types?: string[]
+        }
+    },
+    isExists: boolean
+}
+
 abstract class ProfileInfo {
-    protected static readonly defaultSettings = {
+    protected static readonly defaultSettings: UserSettingsDefault = {
+        settingsDownload: {
+            images: {
+                autoFileName: true,
+                fileName: "image",
+                delay: 500,
+                types: ["jpg", "jpeg", "png", "gif"]
+            },
+            video: {
+                autoFileName: true,
+                fileName: "video",
+                delay: 500,
+                types: ["webm", "mp4"]
+            },
+            thread: {
+                autoFileName: true,
+                fileName: "thread"
+            }
+        },
         isExists: true
     };
 }
