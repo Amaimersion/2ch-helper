@@ -13,7 +13,7 @@ abstract class PageElements {
     protected static bindCheckboxes(): void {
         const thread = API.getThread();
         const checkboxes = API.getElements<HTMLInputElement>({
-            selectors: [`input[type="checkbox"]`],
+            selector: `input[type="checkbox"]`,
             dcmnt: thread,
             errorMessage: "Could not find a thread checkboxes."
         });
@@ -48,7 +48,7 @@ abstract class PageElements {
     protected static getPostOfCheckbox(checkbox: HTMLInputElement): HTMLDivElement {
         const value = checkbox.value;
         const post = API.getElement<HTMLDivElement>({
-            selectors: [`#post-${value}`],
+            selector: `#post-${value}`,
             errorMessage: `Could not find a post for the value "${value}".`
         });
 
@@ -58,7 +58,7 @@ abstract class PageElements {
     protected static turnOffActivePosts(): void {
         for (let post of this.activePosts) {
             const checkbox = API.getElement<HTMLInputElement>({
-                selectors: [`input[type="checkbox"]`],
+                selector: `input[type="checkbox"]`,
                 dcmnt: post
             });
             checkbox.checked = false;

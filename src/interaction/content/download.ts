@@ -41,7 +41,7 @@ export abstract class Download {
 
         try {
             pageLinks = API.getElements<HTMLLinkElement>({
-                selectors: [query],
+                selector: query,
                 dcmnt: thread
             });
         } catch (error) {

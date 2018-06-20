@@ -12,7 +12,7 @@ type CheckMethod<T> = (
 ) => boolean;
 
 export interface GetParams {
-    selectors: string[];
+    selector: string | string[];
     errorMessage?: string;
     dcmnt?: any;
 }
@@ -20,7 +20,7 @@ export interface GetParams {
 export abstract class API {
     public static getThread(): HTMLFormElement {
         return this.getElement<HTMLFormElement>({
-            selectors: ["#posts-form"],
+            selector: "#posts-form",
             errorMessage: "The thread form does not exists."
         });
     }
@@ -106,7 +106,11 @@ export abstract class API {
         params.dcmnt = params.dcmnt || document;
         params.errorMessage = params.errorMessage || "Could not find an element.";
 
-        for (let selector of params.selectors) {
+        if (typeof params.selector === "string") {
+            params.selector = [params.selector];
+        }
+
+        for (let selector of params.selector) {
             const value: T = getMethod(params.dcmnt, selector);
 
             if (checkMethod(value)) {
