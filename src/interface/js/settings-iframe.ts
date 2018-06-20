@@ -1,3 +1,4 @@
+/*
 import {Script} from "@modules/communication";
 import {UserSettings} from "@modules/user-settings";
 import * as Slider from "bootstrap-slider";
@@ -61,10 +62,12 @@ export namespace ElementsEvent {
             Iframe.updateAndSaveUserSettings(
                 forms, userSettingId
             );
-            Script.Background.sendMessageToAllContent(
-                {type: "command", command: "updateUserSettings"},
-                {url: "*://2ch.hk/*/res/*"}
-            );
+            */
+            //Script.Background.sendMessageToAllContent(
+            //    {type: "command", command: "updateUserSettings"},
+            //    {url: "*://2ch.hk/*/res/*"}
+            //);
+            /*
             Script.Content.sendMessageToBackground(
                 {type: "command", command: "updateUserSettings"}
             );
@@ -158,3 +161,4 @@ export abstract class Iframe extends UserSettings {
         this.saveUserSettings();
     }
 }
+*/

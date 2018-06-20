@@ -62,7 +62,8 @@ module.exports = function(env) {
             '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot-build.js',
             '/interface/js/scripts/settings-download': './src/build/interface/settings-download-build.js',
             '/interface/js/scripts/statistics': './src/build/interface/statistics-build.js',
-            '/interaction/js/scripts/content/content': './src/build/interaction/content.js'
+            '/interaction/js/scripts/content/content': './src/build/interaction/content.js',
+            '/interaction/js/scripts/background/background': './src/build/interaction/background.js'
         },
         output: {
             path: path.resolve(__dirname, 'dist', platform)
@@ -110,10 +111,6 @@ module.exports = function(env) {
                 {
                     from: './static/interface',
                     to: './interface'
-                },
-                {
-                    from: './static/interaction',
-                    to: './interaction'
                 },
                 {
                     from: './static/interface/js/libs',

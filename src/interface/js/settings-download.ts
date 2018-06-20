@@ -1,3 +1,5 @@
+/*
+
 import {DOMLoaded} from "@modules/dom";
 import {ElementsInfo, ElementsEvent, Iframe} from "./settings-iframe";
 
@@ -115,3 +117,5 @@ abstract class SettingsDownload {
 
 
 DOMLoaded.runFunction(() => SettingsDownload.main());
+
+*/

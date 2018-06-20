@@ -1,3 +1,4 @@
+/*
 import {DOMLoaded} from "@modules/dom";
 import {UserSettings} from "@modules/user-settings";
 
@@ -34,3 +35,4 @@ abstract class Statistics {
 
 
 DOMLoaded.runFunction(() => Statistics.main());
+*/
