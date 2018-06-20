@@ -1,5 +1,6 @@
 import {DOMLoaded} from "@modules/dom";
 import {Message, Script} from "@modules/communication";
+import {API} from "@modules/api";
 
 
 interface PopupElementEvent {
@@ -126,7 +127,7 @@ abstract class Popup {
     public static async defaultElementEvent(message: Message.AnyMessage, errorArgs?: ErrorArguments): Promise<void> {
         const response = await Script.Background.sendMessageToActiveContent(message);
 
-        if (!response || !response.status)
+        if (API.isErrorResponse(response))
             this.displayError(errorArgs || {});
     }
 }
