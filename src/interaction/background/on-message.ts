@@ -3,7 +3,7 @@ import {Download} from "./download";
 
 
 abstract class OnMessage extends OnMssg.OnMessage {
-    public static messageHandler: OnMssg.MessageEvent<Message.Content> = async (message, sender, sendResponse) => {
+    public static messageHandler: OnMssg.MessageEvent<Message.Background> = async (message, sender, sendResponse) => {
         switch (message.type) {
             case "command": {
                 OnMessage.commandHandler(message, sender, sendResponse);
@@ -23,35 +23,11 @@ abstract class OnMessage extends OnMssg.OnMessage {
         }
     }
 
-    protected static commandHandler: OnMssg.MessageEvent<Message.Content> = async (message, sender, sendResponse) => {
+    protected static commandHandler: OnMssg.MessageEvent<Message.Background> = async (message, sender, sendResponse) => {
         switch (message.command) {
-            case "downloadImages": {
+            case "downloadLinks": {
                 try {
-                    await Download.images();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "downloadVideo": {
-                try {
-                    await Download.video();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "downloadMedia": {
-                try {
-                    await Download.media();
+                    await Download.links(message.data.links, message.data.type);
                 } catch (error) {
                     sendResponse({status: false, errorText: error.message});
                     throw error;
@@ -81,11 +57,11 @@ abstract class OnMessage extends OnMssg.OnMessage {
                 );
 
                 sendResponse({status: false, errorText: errorMessage});
-                throw new Error(errorMessage);;
+                throw new Error(errorMessage);
             }
         }
     }
 }
 
 
-OnMssg.attach<Message.Content>(OnMessage.messageHandler);
+OnMssg.attach<Message.Background>(OnMessage.messageHandler);

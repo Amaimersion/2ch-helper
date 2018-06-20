@@ -92,12 +92,13 @@ export namespace OnMssg {
             message: T,
             sender: chrome.runtime.MessageSender,
             sendResponse: (response: Message.Response) => void
-        ): void;
+        ): Promise<void>;
     }
 
     export function attach<T>(handler: MessageEvent<T>): void {
         chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             handler(message, sender, sendResponse);
+            return true; // in order to support asynchronous response.
         });
     }
 
