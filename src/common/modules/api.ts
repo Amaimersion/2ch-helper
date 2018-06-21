@@ -42,18 +42,27 @@ export abstract class API {
         });
     }
 
-    public static async getSettings(key: string): Promise<UserSettings> {
-        const settings = await StorageSync.get(key);
+    public static async getSettings(key: string, existingSettings: UserSettings = undefined): Promise<UserSettings> {
+        let settings: UserSettings = undefined;
+
+        if (existingSettings) {
+            settings = existingSettings[key];
+        } else {
+            settings = await StorageSync.get(key);
+        }
 
         if (!settings || !Object.keys(settings).length) {
             throw new Error(`A settings for "${key}" key is undefined.`);
         }
 
-        if (!Object.keys(settings[key]).length) {
-            console.warn(`A settings for "${key}" key is empty.`);
+        if (
+            (existingSettings && !Object.keys(settings).length) ||
+            (!existingSettings && !Object.keys(settings[key]).length)
+        ) {
+            console.warn(`A settings for the "${key}" key is empty.`);
         }
 
-        return settings[key];
+        return existingSettings ? settings : settings[key];
     }
 
     public static createTimeout(time: number): Promise<void> {
