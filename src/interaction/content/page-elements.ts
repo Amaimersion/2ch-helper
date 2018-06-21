@@ -1,20 +1,28 @@
 import {API} from "@modules/api";
 
 
-abstract class Checkboxes {
-    protected static _activePosts: Set<HTMLDivElement> = undefined;
+export namespace Elements {
+    export type Thread = HTMLFormElement;
+    export type Element = HTMLElement;
+    export type Post = HTMLDivElement;
+    export type Checkbox = HTMLInputElement;
+}
 
-    public static get activePosts(): Set<HTMLDivElement> {
+
+abstract class Checkboxes {
+    protected static _activePosts: Set<Elements.Post> = undefined;
+
+    public static get activePosts(): Set<Elements.Post> {
         return Checkboxes._activePosts;
     }
 
     public static main(): void {
-        this._activePosts = new Set<HTMLDivElement>();
+        this._activePosts = new Set<Elements.Post>();
         this.bindCheckboxes();
     }
 
-    public static bindCheckboxes(post: HTMLDivElement = undefined): void {
-        const checkboxes = API.getElements<HTMLInputElement>({
+    public static bindCheckboxes(post: Elements.Post = undefined): void {
+        const checkboxes = API.getElements<Elements.Checkbox>({
             selector: `input[type="checkbox"]`,
             dcmnt: post ? post : PageElements.thread,
             errorMessage: "Could not find a thread checkboxes."
@@ -22,7 +30,7 @@ abstract class Checkboxes {
 
         checkboxes.forEach((checkbox) => {
             checkbox.addEventListener("change", (event) => {
-                if ((event.target as HTMLInputElement).checked) {
+                if ((event.target as Elements.Checkbox).checked) {
                     this.eventForCheckedCheckbox(checkbox);
                 } else {
                     this.eventForUncheckedCheckbox(checkbox);
@@ -31,12 +39,12 @@ abstract class Checkboxes {
         });
     }
 
-    protected static eventForCheckedCheckbox(checkbox: HTMLInputElement): void {
+    protected static eventForCheckedCheckbox(checkbox: Elements.Checkbox): void {
         const post = this.getPostOfCheckbox(checkbox);
         this.activePosts.add(post);
     }
 
-    protected static eventForUncheckedCheckbox(checkbox: HTMLInputElement): void {
+    protected static eventForUncheckedCheckbox(checkbox: Elements.Checkbox): void {
         const post = this.getPostOfCheckbox(checkbox);
         const status = this.activePosts.delete(post);
 
@@ -45,9 +53,9 @@ abstract class Checkboxes {
         }
     }
 
-    protected static getPostOfCheckbox(checkbox: HTMLInputElement): HTMLDivElement {
+    protected static getPostOfCheckbox(checkbox: Elements.Checkbox): Elements.Post {
         const value = checkbox.value;
-        const post = API.getElement<HTMLDivElement>({
+        const post = API.getElement<Elements.Post>({
             selector: `#post-${value}`,
             dcmnt: PageElements.thread,
             errorMessage: `Could not find a post for the value "${value}".`
@@ -58,7 +66,7 @@ abstract class Checkboxes {
 
     protected static turnOffActivePosts(): void {
         for (let post of PageElements.activePosts) {
-            const checkbox = API.getElement<HTMLInputElement>({
+            const checkbox = API.getElement<Elements.Checkbox>({
                 selector: `input[type="checkbox"]`,
                 dcmnt: post,
                 errorMessage: `Could not find a checkbox of the post "${post.id}" .`
@@ -87,25 +95,22 @@ abstract class Observer {
     }
 
     protected static observerEvent: MutationCallback = (mutations) => {
-        type Element = HTMLElement;
-        type Post = HTMLDivElement;
-
         for (let mutation of mutations) {
             for (let node of mutation.addedNodes) {
-                if (!Observer.isPostNode(node as Element)) {
+                if (!Observer.isPostNode(node as Elements.Element)) {
                     continue;
                 }
 
-                if (Observer.isReplyPost(node as Post)) {
-                    Observer.replyPostEvent(node as Post);
+                if (Observer.isReplyPost(node as Elements.Post)) {
+                    Observer.replyPostEvent(node as Elements.Post);
                 } else {
-                    Observer.commonPostEvent(node as Post);
+                    Observer.commonPostEvent(node as Elements.Post);
                 }
             }
         }
     }
 
-    protected static isPostNode(node: HTMLElement): boolean {
+    protected static isPostNode(node: Elements.Element): boolean {
         const postTags = ["div"];
         const postId = new RegExp(/((post|preview)-*)/, "");
 
@@ -117,7 +122,7 @@ abstract class Observer {
         );
     }
 
-    protected static isReplyPost(post: HTMLDivElement): boolean {
+    protected static isReplyPost(post: Elements.Post): boolean {
         const replyPostClasses = ["reply"];
 
         const containClass = replyPostClasses.some((element) => {
@@ -127,20 +132,20 @@ abstract class Observer {
         return containClass;
     }
 
-    protected static replyPostEvent(replyPost: HTMLDivElement): void {
+    protected static replyPostEvent(replyPost: Elements.Post): void {
         const originalId = replyPost.id.replace("preview-", "post-");
 
-        const originalPost = API.getElement<HTMLDivElement>({
+        const originalPost = API.getElement<Elements.Post>({
             selector: `#${originalId}`,
             dcmnt: PageElements.thread,
             errorMessage: `Could not find an original post with the id "${originalId}".`
         });
-        const originalCheckbox = API.getElement<HTMLInputElement>({
+        const originalCheckbox = API.getElement<Elements.Checkbox>({
             selector: `input[type="checkbox"]`,
             dcmnt: originalPost,
             errorMessage: `Could not find a checkbox of the original post "${originalId}".`
         });
-        const replyCheckbox = API.getElement<HTMLInputElement>({
+        const replyCheckbox = API.getElement<Elements.Checkbox>({
             selector: `input[type="checkbox"]`,
             dcmnt: replyPost,
             errorMessage: `Could not find a checkbox of the reply post "${replyPost.id}".`
@@ -155,20 +160,20 @@ abstract class Observer {
         });
     }
 
-    protected static commonPostEvent(post: HTMLDivElement): void {
+    protected static commonPostEvent(post: Elements.Post): void {
         Checkboxes.bindCheckboxes(post);
     }
 }
 
 
 export abstract class PageElements {
-    protected static _thread: HTMLFormElement = undefined;
+    protected static _thread: Elements.Thread = undefined;
 
-    public static get thread(): HTMLFormElement {
+    public static get thread(): Elements.Thread {
         return PageElements._thread;
     }
 
-    public static get activePosts(): Set<HTMLDivElement> {
+    public static get activePosts(): Set<Elements.Post> {
         return Checkboxes.activePosts;
     }
 
