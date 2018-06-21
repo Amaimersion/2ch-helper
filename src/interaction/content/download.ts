@@ -1,6 +1,7 @@
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
 import {AvailableDownloadKey, UserSettings} from "@modules/storage-sync";
+import {Settings} from "./settings";
 
 
 export abstract class Download {
@@ -70,7 +71,7 @@ export abstract class Download {
     }
 
     protected static getSettings(): Promise<UserSettings> {
-        return API.getSettings("settingsDownload");
+        return Settings.get("settingsDownload");
     }
 
     protected static createTypesQuery(types: string[]): string {
