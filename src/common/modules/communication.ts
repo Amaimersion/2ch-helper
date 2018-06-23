@@ -8,7 +8,7 @@ export namespace Message {
 
     interface Message {
         type: string;
-        command: string;
+        command?: string;
     }
 
     export interface Content extends Message {}

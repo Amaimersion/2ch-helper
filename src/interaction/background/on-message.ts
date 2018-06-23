@@ -1,5 +1,6 @@
 import {Message, OnMssg} from "@modules/communication";
 import {Download} from "./download";
+import {Screenshot} from "./screenshot";
 
 
 abstract class OnMessage extends OnMssg.OnMessage {
@@ -40,6 +41,30 @@ abstract class OnMessage extends OnMssg.OnMessage {
             case "downloadThread": {
                 try {
                     await Download.thread();
+                } catch (error) {
+                    sendResponse({status: false, errorText: error.message});
+                    throw error;
+                }
+
+                sendResponse({status: true});
+                break;
+            }
+
+            case "screenshotHandleCoordinates": {
+                try {
+                    await Screenshot.handleCoordinates(message.data);
+                } catch (error) {
+                    sendResponse({status: false, errorText: error.message});
+                    throw error;
+                }
+
+                sendResponse({status: true});
+                break;
+            }
+
+            case "screenshotCreateFullImage": {
+                try {
+                    await Screenshot.createFullImage();
                 } catch (error) {
                     sendResponse({status: false, errorText: error.message});
                     throw error;

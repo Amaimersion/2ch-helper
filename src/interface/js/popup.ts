@@ -23,7 +23,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "createScreenshotOfPosts"}
+                    {type: "command", command: "screenshotPosts"}
                 );
             }
         },
@@ -32,7 +32,7 @@ abstract class PageInfo {
             type: "click",
             event: function() {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "createScreenshotOfThread"}
+                    {type: "command", command: "screenshotThread"}
                 );
             }
         },
