@@ -27,6 +27,7 @@ abstract class PageInfo {
                 );
             }
         },
+        /*
         {
             id: "screenshot-of-thread",
             type: "click",
@@ -36,6 +37,7 @@ abstract class PageInfo {
                 );
             }
         },
+        */
         {
             id: "download-images",
             type: "click",
