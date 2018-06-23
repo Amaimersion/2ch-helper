@@ -1,0 +1,47 @@
+extends ./common/form
+
+
+block append vars
+  - var title = "Настройки – Скриншот";
+
+
+block append head
+  +link("/interface/css/libs/bootstrap-slider.min.css")
+  +link("/interface/css/styles/settings-iframe.css")
+  +script("/interface/js/libs/bootstrap-slider.min.js")
+  +script("/interface/js/scripts/settings-screenshot.js")
+
+
+block main
+  div(class="container custom-container")
+    form
+      +form-group()
+        +label({for: "nameForPosts", name: "Имя файла для скриншота постов"})
+        +input({id: "nameForPosts", name: "Имя файла для скриншота постов"})
+
+      +form-group()
+        +label({for: "nameForThread", name: "Имя файла для скриншота треда"})
+        +input({id: "nameForThread", name: "Имя файла для скриншота треда"})
+
+      +form-group()
+        +label({for: "screenshotFormat", name: "Формат скриншота"})
+        +select({id: "screenshotFormat", options: [{value: "jpeg", name: "JPEG"}, {value: "png", name: "PNG"}]})
+
+      +form-group(id="quality")
+        +label({for: "screenshotQuality", name: "Качество скриншота"})
+        +input()(id="screenshotQuality" type="text" data-provide="slider" data-slider-min="0" data-slider-max="100" data-slider-step="1")
+        +span({id: "screenshotQualityValue"})(class="pl-2")
+        +span({id: "screenshotQualityUnit", name: "%"})
+
+      +form-group()
+        +label({for: "screenshotDelay", name: "Задержка"})
+        +input()(id="screenshotDelay" type="text" data-provide="slider" data-slider-min="500" data-slider-max="2000" data-slider-step="100")
+        +span({id: "screenshotDelayValue"})(class="pl-2")
+        +span({cid: "screenshotDelayUnit", name: "мс"})
+
+      +form-group()
+        +label({for: "turnOffPosts", name: "Выключать активные посты после создания скриншота"})
+        +form-check-inline({inputId: "turnOffTrue", inputName: "turnOffPosts", labelName: "Да"})
+        +form-check-inline({inputId: "turnOffFalse", inputName: "turnOffPosts", labelName: "Нет"})
+
+      +button({id: "save", name: "Сохранить"})

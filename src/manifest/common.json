@@ -1,0 +1,54 @@
+{
+    "manifest_version": 2,
+
+    "name": "2ch-helper",
+    "short_name": "2ch-helper",
+    "version": "1.0.0",
+    "description": "Облегчение взаимодействия с имиджбордой 2ch.hk.",
+
+    "author": "Sergey Kuznetsov",
+    "homepage_url": "https://github.com/Amaimersion/2ch-helper",
+
+    "options_ui": {
+        "page": "/interface/html/settings.html",
+        "open_in_tab": true
+    },
+
+    "browser_action": {
+        "default_title": "2ch-helper",
+        "default_popup": "/interface/html/popup.html",
+        "default_icon": {
+            "16": "/interface/icons/logo/logo-16.png",
+            "32": "/interface/icons/logo/logo-32.png",
+            "48": "/interface/icons/logo/logo-48.png",
+            "128": "/interface/icons/logo/logo-128.png"
+        }
+    },
+
+    "icons": {
+        "16": "/interface/icons/logo/logo-16.png",
+        "32": "/interface/icons/logo/logo-32.png",
+        "48": "/interface/icons/logo/logo-48.png",
+        "128": "/interface/icons/logo/logo-128.png"
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["*://2ch.hk/*"],
+            "js": ["/interaction/js/scripts/content/content.js"]
+        }
+    ],
+
+    "background": {
+        "scripts": [
+            "/interaction/js/scripts/background/background.js"
+        ]
+    },
+
+    "permissions": [
+        "storage",
+        "downloads",
+        "activeTab",
+        "*://2ch.hk/*"
+    ]
+}

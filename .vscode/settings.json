@@ -1,0 +1,25 @@
+{
+    "files.exclude": {
+        // folders.
+        "dist": true,
+        "node_modules": true,
+        ".awcache": true,
+
+        // IDE's and editor's folders.
+        ".vs": true,
+        ".vscode": true,
+
+        // version control.
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true,
+        ".awcache": true
+    },
+    "typescript.tsdk": "node_modules\\typescript\\lib"
+}

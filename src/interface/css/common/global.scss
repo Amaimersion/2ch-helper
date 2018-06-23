@@ -1,0 +1,19 @@
+/* Global. */
+
+// an elements for zero out margin and padding.
+$zero-out: (html, body, h1, p, a);
+
+html {
+  min-height: 100%;
+}
+
+body {
+  background-color: #EEE;
+  color: #333;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+#{$zero-out} {
+  margin: 0;
+  padding: 0;
+}

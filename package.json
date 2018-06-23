@@ -1,0 +1,59 @@
+{
+    "name": "2ch-helper",
+    "version": "1.0.0-beta.6",
+    "description": "A browser extension which facilitates interaction with the imageboard 2ch.hk.",
+    "scripts": {
+        "build:chromium:prod": "webpack --config webpack.config.prod --env.platform=chromium",
+        "build:chromium:dev": "webpack --config webpack.config.dev --env.platform=chromium",
+        "build:firefox:prod": "webpack --config webpack.config.prod --env.platform=firefox",
+        "build:firefox:dev": "webpack --config webpack.config.dev --env.platform=firefox",
+        "zip:chromium": "bestzip ./dist/chromium.zip ./dist/chromium/*",
+        "zip:firefox": "bestzip ./dist/firefox.zip ./dist/firefox/*",
+        "clean": "rimraf ./dist",
+        "clean:chromium": "rimraf ./dist/chromium ./dist/chromium.zip",
+        "clean:firefox": "rimraf ./dist/firefox ./dist/firefox.zip",
+        "build": "npm run build:prod",
+        "build:prod": "npm run build:chromium:prod && npm run build:firefox:prod",
+        "build:dev": "npm run build:chromium:dev && npm run build:firefox:dev",
+        "zip": "npm run zip:chromium && npm run zip:firefox",
+        "build-zip": "npm run build-zip:chromium:prod && npm run build-zip:firefox:prod",
+        "build-zip:chromium:prod": "npm run build:chromium:prod && npm run zip:chromium",
+        "build-zip:chromium:dev": "npm run build:chromium:dev && npm run zip:chromium",
+        "build-zip:firefox:prod": "npm run build:firefox:prod && npm run zip:firefox",
+        "build-zip:firefox:dev": "npm run build:firefox:dev && npm run zip:firefox"
+    },
+    "author": {
+        "name": "Sergey Kuznetsov",
+        "url": "https://github.com/Amaimersion"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Amaimersion/2ch-helper"
+    },
+    "bugs": {
+        "url": "https://github.com/Amaimersion/2ch-helper/issues"
+    },
+    "license": "MIT",
+    "private": true,
+    "dependencies": {},
+    "devDependencies": {
+        "@types/chrome": "0.0.63",
+        "awesome-typescript-loader": "^4.0.1",
+        "bestzip": "^1.1.4",
+        "copy-webpack-plugin": "^4.5.1",
+        "css-loader": "^0.28.11",
+        "extract-text-webpack-plugin": "^4.0.0-beta.0",
+        "html-webpack-plugin": "^3.2.0",
+        "node-sass": "^4.9.0",
+        "pug": "^2.0.3",
+        "pug-loader": "^2.4.0",
+        "remove-files-webpack-plugin": "^1.0.0",
+        "rimraf": "^2.6.2",
+        "sass-loader": "^6.0.7",
+        "typescript": "^2.9.2",
+        "validate-html-links-webpack-plugin": "^1.0.0",
+        "webpack": "^4.12.0",
+        "webpack-cli": "^2.1.5",
+        "webpack-merge": "^4.1.3"
+    }
+}

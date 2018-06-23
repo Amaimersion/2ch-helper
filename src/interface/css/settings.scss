@@ -1,0 +1,47 @@
+@import "./common/extra";
+
+
+/* Main. */
+
+.custom-main-navbar {
+  height: 51px; /* +1px because 1px border. */
+  line-height: 40px;
+  padding-top: 10px;
+}
+
+.custom-navbar-element {
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(221, 221, 221, 0.7);
+  }
+}
+
+.custom-navbar-element,
+.custom-navbar-element:hover {
+  transition: background-color .2s;
+}
+
+.custom-main-iframes {
+  iframe {
+    display: none;
+    width: 100%;
+  }
+
+  iframe:nth-child(1) {
+    display: block;
+    height: 524px;
+  }
+}
+
+
+/* Footer. */
+
+/*
+ * Override Google Chrome stylesheet.
+ */
+.custom-footer {
+  .col * {
+    line-height: inherit;
+  }
+}

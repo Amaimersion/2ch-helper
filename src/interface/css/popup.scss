@@ -1,0 +1,68 @@
+@import "./common/font";
+@import "./common/global";
+
+
+/* Global. */
+
+body {
+  color: #FF7000;
+  height: auto;
+  width: 200px;
+}
+
+/*
+ * Override Mozila Firefox stylesheet.
+ * See at chrome://browser/content/extension.css or
+ * chrome://browser/content/extension-mac.css for OS X.
+ */
+ body * {
+  text-align: inherit;
+}
+
+
+/* Common. */
+
+.custom-border-bottom {
+  border-bottom: 1px solid rgba(51, 51, 51, 0.5);
+}
+
+.custom-content {
+  padding: 5px 0;
+  text-align: center;
+}
+
+
+/* Main. */
+
+.custom-main-content {
+  padding: 0;
+}
+
+.custom-options-border-bottom {
+  border-bottom: 1px solid #DDD;
+}
+
+.custom-item {
+  color: #FF7000;
+  cursor: pointer;
+  display: block;
+  font-size: 15px;
+  padding: 5px 0;
+  text-decoration: none;
+
+  &:hover {
+    background-color: rgba(221, 221, 221, 0.7);
+  }
+
+  &,
+  &:hover {
+    transition: .2s;
+  }
+}
+
+
+/* Footer. */
+
+.custom-version {
+  font-weight: bold;
+}

@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "target": "ES2018",
+        "module": "ES6",
+        "moduleResolution": "node",
+        "lib": [
+            "es2018",
+            "dom",
+            "dom.iterable"
+        ],
+        "baseUrl": "./",
+        "paths": {
+            "@libs/*": ["src/common/libs/*"],
+            "@modules/*": ["src/common/modules/*"]
+        },
+        "alwaysStrict": true,
+        "disableSizeLimit": true,
+        "downlevelIteration": true,
+        "noErrorTruncation": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "removeComments": true
+    },
+    "awesomeTypescriptLoaderOptions": {
+        "useCache": true,
+        "transpileModule": true
+    }
+}

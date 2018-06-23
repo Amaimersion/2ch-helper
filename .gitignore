@@ -1,0 +1,4 @@
+node_modules
+dist
+.awcache
+npm-debug.log

@@ -1,0 +1,30 @@
+extends ./common/form
+
+
+block append vars
+  - var title = "Настройки – Загрузка";
+
+
+block append head
+  +link("/interface/css/libs/bootstrap-slider.min.css")
+  +link("/interface/css/styles/settings-iframe.css")
+  +script("/interface/js/libs/bootstrap-slider.min.js")
+  +script("/interface/js/scripts/settings-download.js")
+
+
+block main
+  div(class="container custom-container")
+    form
+      +form-group()
+        +label({for: "nameForPosts", name: "Имя файла"})
+        +form-check-inline({inputId: "downloadNameAuto", inputName: "downloadNameMode", labelName: "Автоопределение"})
+        +form-check-inline({inputId: "downloadNameUser", inputName: "downloadNameMode", labelName: "Пользовательское"})
+        +input({id: "downloadName", name: "Имя файла"})(class="mt-1")
+
+      +form-group()
+        +label({for: "downloadDelay", name: "Задержка"})
+        +input()(id="downloadDelay" data-provide="slider" type="text" data-slider-min="500" data-slider-max="2000" data-slider-step="100")
+        +span({id: "downloadDelayValue"})(class="pl-2")
+        +span({id: "downloadDelayUnit", name: "мс"})
+
+      +button({id: "save", name: "Сохранить"})
