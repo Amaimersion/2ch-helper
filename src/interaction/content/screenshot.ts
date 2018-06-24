@@ -136,6 +136,8 @@ interface ElementsInstances {
     boardStatsBox: HTMLDivElement;
     favoritesBox: HTMLDivElement;
     autorefresh: HTMLInputElement;
+    postPanelInstance: HTMLElement;
+    checkboxInstance: HTMLElement;
     spoilerInstance: HTMLElement;
 }
 
@@ -149,6 +151,8 @@ interface DefaultOptions {
     downNavArrowOpacity: string;
     favoritesBoxDisplay: string;
     boardStatsBoxDisplay: string;
+    postPanelDisplay: string;
+    checkboxDisplay: string;
     spoilerColor: string;
 }
 
@@ -163,6 +167,8 @@ export abstract class PageOptions {
             boardStatsBox: this.getElement("#boardstats-box") as HTMLDivElement,
             favoritesBox: this.getElement("#favorites-box") as HTMLDivElement,
             autorefresh: this.getElement("#autorefresh-checkbox-bot") as HTMLInputElement,
+            postPanelInstance: this.getElement(".postpanel"),
+            checkboxInstance: this.getElement(`.post-details > input[type="checkbox"]`),
             spoilerInstance: this.getElement(".spoiler")
         };
     }
@@ -182,6 +188,8 @@ export abstract class PageOptions {
             downNavArrowOpacity: this._elements.downNavArrow ? this._elements.downNavArrow.style.opacity : undefined,
             favoritesBoxDisplay: this._elements.favoritesBox ? this._elements.favoritesBox.style.display : undefined,
             boardStatsBoxDisplay: this._elements.boardStatsBox ? this._elements.boardStatsBox.style.display : undefined,
+            postPanelDisplay: this._elements.postPanelInstance ? this._elements.postPanelInstance.style.display : undefined,
+            checkboxDisplay: this._elements.checkboxInstance ? this._elements.checkboxInstance.style.display : undefined,
             spoilerColor: this._elements.spoilerInstance ? this._elements.spoilerInstance.style.color : undefined
         };
     }
@@ -205,6 +213,16 @@ export abstract class PageOptions {
         this._elements.favoritesBox ? this._elements.favoritesBox.style.display = "none" : null;
         this._elements.boardStatsBox ? this._elements.boardStatsBox.style.display = "none" : null;
 
+        const postPanels = document.querySelectorAll<HTMLElement>(".postpanel");
+        postPanels.forEach((element) => {
+            element.style.display = "none";
+        });
+
+        const checkboxes = document.querySelectorAll<HTMLElement>(`.post-details > input[type="checkbox"]`);
+        checkboxes.forEach((element) => {
+            element.style.display = "none";
+        });
+
         const spoilers = document.querySelectorAll<HTMLElement>(".spoiler");
         spoilers.forEach((element) => {
             element.style.color = "inherit";
@@ -224,6 +242,16 @@ export abstract class PageOptions {
 
         this._elements.favoritesBox ? this._elements.favoritesBox.style.display = this._defaults.favoritesBoxDisplay : null;
         this._elements.boardStatsBox ? this._elements.boardStatsBox.style.display = this._defaults.boardStatsBoxDisplay : null;
+
+        const postPanels = document.querySelectorAll<HTMLElement>(".postpanel");
+        postPanels.forEach((element) => {
+            element.style.display = this._defaults.postPanelDisplay;
+        });
+
+        const checkboxes = document.querySelectorAll<HTMLElement>(`.post-details > input[type="checkbox"]`);
+        checkboxes.forEach((element) => {
+            element.style.display = this._defaults.checkboxDisplay;
+        });
 
         const spoilers = document.querySelectorAll<HTMLElement>(".spoiler");
         spoilers.forEach((element) => {
@@ -253,6 +281,10 @@ export abstract class Screenshot {
     public static async posts(): Promise<void> {
         PageOptions.change();
 
+        // We need to wait a little bit, because turn off
+        // occurres too quickly and animations are delayed.
+        await API.createTimeout(100);
+
         try {
             await PostsScreenshot.start();
         } catch (error) {
@@ -264,6 +296,10 @@ export abstract class Screenshot {
 
     public static async thread(): Promise<void> {
         PageOptions.change();
+
+        // We need to wait a little bit, because turn off
+        // occurres too quickly and animations are delayed.
+        await API.createTimeout(100);
 
         try {
             await ThreadScreenshot.start();
