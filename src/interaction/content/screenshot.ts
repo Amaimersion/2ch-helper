@@ -290,11 +290,11 @@ export abstract class PageOptions {
 
 export abstract class Screenshot {
     public static posts(): Promise<void> {
-        return this.run(PostsScreenshot.start);
+        return this.run(() => {return PostsScreenshot.start()});
     }
 
     public static thread(): Promise<void> {
-        return this.run(ThreadScreenshot.start);
+        return this.run(() => {return ThreadScreenshot.start()});
     }
 
     protected static async run(method: (...args: any[]) => Promise<any>): Promise<void> {
