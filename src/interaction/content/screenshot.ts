@@ -26,7 +26,7 @@ abstract class PostsScreenshot {
         let visibleCoordinates: Coordinate[] = [];
 
         for (let coordinate of coordinates) {
-            if (!this.inVisibilityZone(coordinate, initialScrollY)) {
+            if (!this.isInSight(coordinate, initialScrollY)) {
                 visibleCoordinates = await this.handleVisibleCoordinates(visibleCoordinates);
                 window.scrollTo(0, coordinate.top + initialScrollY);
                 await API.createTimeout(250);
@@ -85,7 +85,7 @@ abstract class PostsScreenshot {
         return newCoordinate;
     }
 
-    protected static inVisibilityZone(coordinate: Coordinate, initialScrollY: number): boolean {
+    protected static isInSight(coordinate: Coordinate, initialScrollY: number): boolean {
         const normalizedCoordinate = this.normalizeCoordinate(coordinate, initialScrollY, window.scrollY);
         return window.innerHeight > Math.abs(normalizedCoordinate.bottom);
     }
@@ -103,7 +103,7 @@ abstract class PostsScreenshot {
 
         if (API.isErrorResponse(response)) {
             throw new Error(
-                "The background script cannot handle coordinates. " +
+                "Background script cannot handle coordinates. " +
                 `${response.errorText ? response.errorText : ""}`
             );
         }
