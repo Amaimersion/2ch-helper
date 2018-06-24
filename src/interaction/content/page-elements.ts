@@ -55,13 +55,20 @@ abstract class Checkboxes {
 
     protected static getPostOfCheckbox(checkbox: Elements.Checkbox): Elements.Post {
         const value = checkbox.value;
-        const post = API.getElement<Elements.Post>({
+        const postBody = API.getElement<Elements.Post>({
             selector: `#post-body-${value}`,
             dcmnt: PageElements.thread,
             errorMessage: `Could not find a post for the value "${value}".`
         });
+        const post = postBody.parentElement as HTMLDivElement;
 
-        return post;
+        // OP post body have incorrect size, because
+        // image not calculated in it.
+        if (post.classList.contains("oppost-wrapper")) {
+            return post;
+        } else {
+            return postBody;
+        }
     }
 
     protected static turnOffActivePosts(): void {
