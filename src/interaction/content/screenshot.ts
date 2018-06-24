@@ -230,8 +230,6 @@ export abstract class PageOptions {
     }
 
     public static restore(): void {
-        window.scrollTo(this._defaults.scrollX, this._defaults.scrollY);
-
         document.documentElement.style.overflow = this._defaults.documentOverflow;
         document.body.style.overflowY = this._defaults.bodyOverflowY;
 
@@ -257,6 +255,9 @@ export abstract class PageOptions {
         spoilers.forEach((element) => {
             element.style.color = this._defaults.spoilerColor;
         });
+
+        // should be at the end because of postPanels and checkboxes display change.
+        window.scrollTo(this._defaults.scrollX, this._defaults.scrollY);
     }
 
     protected static getElement(selector: string): HTMLElement {
