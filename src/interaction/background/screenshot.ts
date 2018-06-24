@@ -16,10 +16,6 @@ class ScreenshotImage {
     private _uri: string = undefined;
     private _image: HTMLImageElement = undefined;
 
-    public get image(): HTMLImageElement {
-        return this._image;
-    }
-
     constructor(uri: string) {
         this._uri = uri;
     }
@@ -107,12 +103,8 @@ export abstract class Screenshot {
     }
 
     protected static captureTab(): Promise<string> {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             chrome.tabs.captureVisibleTab({format: "jpeg", quality: 100}, (uri) => {
-                if (!uri) {
-                    return reject("URI is undefined.");
-                }
-
                 return resolve(uri);
             });
         });
