@@ -37,7 +37,9 @@ abstract class PostsScreenshot {
         }
 
         visibleCoordinates = await this.handleVisibleCoordinates(visibleCoordinates);
+    }
 
+    public static async end(): Promise<void> {
         const response = await Script.Content.sendMessageToBackground({
             type: "command",
             command: "screenshotCreateFullImage"
@@ -54,8 +56,8 @@ abstract class PostsScreenshot {
         for (let post of posts) {
             const postCoordinate = post.getBoundingClientRect();
             const coordinate = { // from readonly DOMRect to variable.
-                top: postCoordinate.top, // will be changed later.
-                bottom: postCoordinate.bottom, // will be changed later.
+                top: postCoordinate.top, // can be changed later.
+                bottom: postCoordinate.bottom, // can be changed later.
                 height: postCoordinate.height,
                 width: postCoordinate.width,
                 left: postCoordinate.left,
@@ -72,6 +74,10 @@ abstract class PostsScreenshot {
     }
 
     protected static normalizeCoordinate(coordinate: Coordinate, initialScrollY: number, currentScrollY: number): Coordinate {
+        if (initialScrollY === currentScrollY) {
+            return coordinate;
+        }
+
         const newCoordinate = {
             top: coordinate.top + initialScrollY - currentScrollY,
             bottom: undefined,
@@ -87,7 +93,7 @@ abstract class PostsScreenshot {
 
     protected static isInSight(coordinate: Coordinate, initialScrollY: number): boolean {
         const normalizedCoordinate = this.normalizeCoordinate(coordinate, initialScrollY, window.scrollY);
-        return window.innerHeight > Math.abs(normalizedCoordinate.bottom);
+        return ((normalizedCoordinate.top >= 0) && (normalizedCoordinate.bottom <= window.innerHeight));
     }
 
     protected static async handleVisibleCoordinates(coordinates: Coordinate[]): Promise<Coordinate[]> {
@@ -123,6 +129,8 @@ abstract class ThreadScreenshot {
     public static async start(): Promise<void> {
 
     }
+
+    public static async end(): Promise<void> {}
 }
 
 //#endregion
@@ -288,16 +296,24 @@ export abstract class PageOptions {
 
 //#region Screenshot
 
+type ScreenshotMethod = (...args: any[]) => Promise<any>;
+
 export abstract class Screenshot {
-    public static posts(): Promise<void> {
-        return this.run(() => {return PostsScreenshot.start()});
+    public static async posts(): Promise<void> {
+        return this.run(
+            () => {return PostsScreenshot.start()},
+            () => {return PostsScreenshot.end()}
+        );
     }
 
     public static thread(): Promise<void> {
-        return this.run(() => {return ThreadScreenshot.start()});
+        return this.run(
+            () => {return ThreadScreenshot.start()},
+            () => {return ThreadScreenshot.end()}
+        );
     }
 
-    protected static async run(method: (...args: any[]) => Promise<any>): Promise<void> {
+    protected static async run(startMethod: ScreenshotMethod, endMethod: ScreenshotMethod): Promise<void> {
         PageOptions.change();
 
         // We need to wait a little bit, because turn off
@@ -305,12 +321,14 @@ export abstract class Screenshot {
         await API.createTimeout(100);
 
         try {
-            await method();
+            await startMethod();
         } catch (error) {
             throw error;
         } finally {
             PageOptions.restore();
         }
+
+        await endMethod();
     }
 }
 
