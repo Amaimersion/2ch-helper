@@ -157,19 +157,29 @@ interface DefaultOptions {
 }
 
 export abstract class PageOptions {
+    public static readonly selectors = {
+        upNavArrow: "#up-nav-arrow",
+        downNavArrow: "#down-nav-arrow",
+        boardStatsBox: "#boardstats-box",
+        favoritesBox: "#favorites-box",
+        autorefresh: "#autorefresh-checkbox-bot",
+        postPanel: ".postpanel",
+        checkbox: `.post-details > input[type="checkbox"]`,
+        spoiler: ".spoiler"
+    };
     protected static _elements: ElementsInstances = undefined;
     protected static _defaults: DefaultOptions = undefined;
 
     public static main(): void {
         this._elements = {
-            upNavArrow: this.getElement("#up-nav-arrow") as HTMLDivElement,
-            downNavArrow: this.getElement("#down-nav-arrow") as HTMLDivElement,
-            boardStatsBox: this.getElement("#boardstats-box") as HTMLDivElement,
-            favoritesBox: this.getElement("#favorites-box") as HTMLDivElement,
-            autorefresh: this.getElement("#autorefresh-checkbox-bot") as HTMLInputElement,
-            postPanelInstance: this.getElement(".postpanel"),
-            checkboxInstance: this.getElement(`.post-details > input[type="checkbox"]`),
-            spoilerInstance: this.getElement(".spoiler")
+            upNavArrow: this.getElement(this.selectors.upNavArrow) as HTMLDivElement,
+            downNavArrow: this.getElement(this.selectors.downNavArrow) as HTMLDivElement,
+            boardStatsBox: this.getElement(this.selectors.boardStatsBox) as HTMLDivElement,
+            favoritesBox: this.getElement(this.selectors.favoritesBox) as HTMLDivElement,
+            autorefresh: this.getElement(this.selectors.autorefresh) as HTMLInputElement,
+            postPanelInstance: this.getElement(this.selectors.postPanel),
+            checkboxInstance: this.getElement(this.selectors.checkbox),
+            spoilerInstance: this.getElement(this.selectors.spoiler)
         };
     }
 
@@ -213,17 +223,17 @@ export abstract class PageOptions {
         this._elements.favoritesBox ? this._elements.favoritesBox.style.display = "none" : null;
         this._elements.boardStatsBox ? this._elements.boardStatsBox.style.display = "none" : null;
 
-        const postPanels = document.querySelectorAll<HTMLElement>(".postpanel");
+        const postPanels = document.querySelectorAll<HTMLElement>(this.selectors.postPanel);
         postPanels.forEach((element) => {
             element.style.display = "none";
         });
 
-        const checkboxes = document.querySelectorAll<HTMLElement>(`.post-details > input[type="checkbox"]`);
+        const checkboxes = document.querySelectorAll<HTMLElement>(this.selectors.checkbox);
         checkboxes.forEach((element) => {
             element.style.display = "none";
         });
 
-        const spoilers = document.querySelectorAll<HTMLElement>(".spoiler");
+        const spoilers = document.querySelectorAll<HTMLElement>(this.selectors.spoiler);
         spoilers.forEach((element) => {
             element.style.color = "inherit";
         });
@@ -241,17 +251,17 @@ export abstract class PageOptions {
         this._elements.favoritesBox ? this._elements.favoritesBox.style.display = this._defaults.favoritesBoxDisplay : null;
         this._elements.boardStatsBox ? this._elements.boardStatsBox.style.display = this._defaults.boardStatsBoxDisplay : null;
 
-        const postPanels = document.querySelectorAll<HTMLElement>(".postpanel");
+        const postPanels = document.querySelectorAll<HTMLElement>(this.selectors.postPanel);
         postPanels.forEach((element) => {
             element.style.display = this._defaults.postPanelDisplay;
         });
 
-        const checkboxes = document.querySelectorAll<HTMLElement>(`.post-details > input[type="checkbox"]`);
+        const checkboxes = document.querySelectorAll<HTMLElement>(this.selectors.checkbox);
         checkboxes.forEach((element) => {
             element.style.display = this._defaults.checkboxDisplay;
         });
 
-        const spoilers = document.querySelectorAll<HTMLElement>(".spoiler");
+        const spoilers = document.querySelectorAll<HTMLElement>(this.selectors.spoiler);
         spoilers.forEach((element) => {
             element.style.color = this._defaults.spoilerColor;
         });
@@ -279,23 +289,15 @@ export abstract class PageOptions {
 //#region Screenshot
 
 export abstract class Screenshot {
-    public static async posts(): Promise<void> {
-        PageOptions.change();
-
-        // We need to wait a little bit, because turn off
-        // occurres too quickly and animations are delayed.
-        await API.createTimeout(100);
-
-        try {
-            await PostsScreenshot.start();
-        } catch (error) {
-            throw error;
-        } finally {
-            PageOptions.restore();
-        }
+    public static posts(): Promise<void> {
+        return this.run(PostsScreenshot.start);
     }
 
-    public static async thread(): Promise<void> {
+    public static thread(): Promise<void> {
+        return this.run(ThreadScreenshot.start);
+    }
+
+    protected static async run(method: (...args: any[]) => Promise<any>): Promise<void> {
         PageOptions.change();
 
         // We need to wait a little bit, because turn off
@@ -303,7 +305,7 @@ export abstract class Screenshot {
         await API.createTimeout(100);
 
         try {
-            await ThreadScreenshot.start();
+            await method();
         } catch (error) {
             throw error;
         } finally {
