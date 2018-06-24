@@ -16,6 +16,10 @@ class ScreenshotImage {
     private _uri: string = undefined;
     private _image: HTMLImageElement = undefined;
 
+    public get image(): HTMLImageElement {
+        return this._image;
+    }
+
     constructor(uri: string) {
         this._uri = uri;
     }
@@ -35,7 +39,7 @@ class ScreenshotImage {
         });
     }
 
-    public async cropImage(coordinate: Coordinate): Promise<HTMLImageElement> {
+    public async cropImage(coordinate: Coordinate): Promise<ScreenshotImage> {
         if (!this._image) {
             await this.createImage();
         }
@@ -58,8 +62,9 @@ class ScreenshotImage {
             coordinate.height
         );
 
-        this._uri = canvas.toDataURL("image/jpeg", 1);
-        const croppedImage = await this.createImage();
+        const croppedURI = canvas.toDataURL("image/jpeg", 1);
+        const croppedImage = new ScreenshotImage(croppedURI);
+        await croppedImage.createImage();
 
         return croppedImage;
     }
@@ -88,7 +93,7 @@ export abstract class Screenshot {
 
             for (let coordinate of data.coordinates) {
                 const croppedImage = await fullImage.cropImage(coordinate);
-                croppedImages.push(croppedImage);
+                croppedImages.push(croppedImage.image);
             }
         }
 
@@ -103,9 +108,13 @@ export abstract class Screenshot {
     }
 
     protected static captureTab(): Promise<string> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             chrome.tabs.captureVisibleTab({format: "jpeg", quality: 100}, (uri) => {
-                return resolve(uri);
+                if (uri) {
+                    return resolve(uri);
+                } else {
+                    return reject("URI is undefined.");
+                }
             });
         });
     }
@@ -114,6 +123,11 @@ export abstract class Screenshot {
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
 
+        const paddingTop = 8;
+        const paddingBottom = 8;
+        const paddingLeft = 8;
+        const paddingRight = 8;
+        const paddingBetween = 4;
         let totalHeight = 0;
         let maxWidth = 0;
 
@@ -125,18 +139,33 @@ export abstract class Screenshot {
             }
         }
 
+        totalHeight += paddingTop + paddingBottom + paddingBetween * (images.length - 1);
+        maxWidth += paddingLeft + paddingRight;
+
         canvas.height = totalHeight;
         canvas.width = maxWidth;
 
-        let offsetY = 0;
+        context.fillStyle = "#EEE";
+        context.globalAlpha = 1;
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
-        for (let image of images) {
+        let offsetY = paddingTop;
+
+        for (let i = 0; i !== images.length; i++) {
+            const image = images[i];
+            const isLast = (i === images.length - 1);
+
             context.drawImage(
                 image,
-                0,
+                paddingLeft,
                 offsetY
             );
+
             offsetY += image.height;
+
+            if (!isLast) {
+                offsetY += paddingBetween;
+            }
         }
 
         // can be also webp
