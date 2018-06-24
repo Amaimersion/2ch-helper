@@ -146,7 +146,6 @@ export abstract class Screenshot {
         canvas.width = maxWidth;
 
         context.fillStyle = "#EEE";
-        context.globalAlpha = 1;
         context.fillRect(0, 0, canvas.width, canvas.height);
 
         let offsetY = paddingTop;
