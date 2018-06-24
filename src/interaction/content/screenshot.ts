@@ -3,6 +3,8 @@ import {API} from "@modules/api";
 import {Elements, PageElements} from "./page-elements";
 
 
+//#region Posts Screenshot
+
 interface Coordinate {
     top: number;
     bottom: number;
@@ -112,6 +114,10 @@ abstract class PostsScreenshot {
     }
 }
 
+//#endregion
+
+
+//#region Thread Screenshot
 
 abstract class ThreadScreenshot {
     public static async start(): Promise<void> {
@@ -119,8 +125,10 @@ abstract class ThreadScreenshot {
     }
 }
 
+//#endregion
 
-//#region PageOptions
+
+//#region Page Options
 
 interface ElementsInstances {
     upNavArrow: HTMLDivElement;
@@ -239,6 +247,8 @@ export abstract class PageOptions {
 //#endregion
 
 
+//#region Screenshot
+
 export abstract class Screenshot {
     public static async posts(): Promise<void> {
         PageOptions.change();
@@ -264,3 +274,5 @@ export abstract class Screenshot {
         }
     }
 }
+
+//#endregion
