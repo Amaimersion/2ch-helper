@@ -56,7 +56,7 @@ abstract class Checkboxes {
     protected static getPostOfCheckbox(checkbox: Elements.Checkbox): Elements.Post {
         const value = checkbox.value;
         const post = API.getElement<Elements.Post>({
-            selector: `#post-${value}`,
+            selector: `#post-body-${value}`,
             dcmnt: PageElements.thread,
             errorMessage: `Could not find a post for the value "${value}".`
         });
