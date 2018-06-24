@@ -127,14 +127,16 @@ interface ElementsInstances {
     downNavArrow: HTMLDivElement;
     boardStatsBox: HTMLDivElement;
     favoritesBox: HTMLDivElement;
+    autorefresh: HTMLInputElement;
     spoilerInstance: HTMLElement;
 }
 
 interface DefaultOptions {
     scrollX: number;
     scrollY: number;
-    documentOverflowStyle: string;
-    bodyOverflowStyleY: string;
+    autorefreshChecked: boolean;
+    documentOverflow: string;
+    bodyOverflowY: string;
     upNavArrowOpacity: string;
     downNavArrowOpacity: string;
     favoritesBoxDisplay: string;
@@ -152,6 +154,7 @@ export abstract class PageOptions {
             downNavArrow: this.getElement("#down-nav-arrow") as HTMLDivElement,
             boardStatsBox: this.getElement("#boardstats-box") as HTMLDivElement,
             favoritesBox: this.getElement("#favorites-box") as HTMLDivElement,
+            autorefresh: this.getElement("#autorefresh-checkbox-bot") as HTMLInputElement,
             spoilerInstance: this.getElement(".spoiler")
         };
     }
@@ -164,8 +167,9 @@ export abstract class PageOptions {
         this._defaults = {
             scrollX: window.pageXOffset,
             scrollY: window.pageYOffset,
-            documentOverflowStyle: document.documentElement.style.overflow,
-            bodyOverflowStyleY: document.body.style.overflowY,
+            documentOverflow: document.documentElement.style.overflow,
+            bodyOverflowY: document.body.style.overflowY,
+            autorefreshChecked: this._elements.autorefresh ? this._elements.autorefresh.checked : undefined,
             upNavArrowOpacity: this._elements.upNavArrow ? this._elements.upNavArrow.style.opacity : undefined,
             downNavArrowOpacity: this._elements.downNavArrow ? this._elements.downNavArrow.style.opacity : undefined,
             favoritesBoxDisplay: this._elements.favoritesBox ? this._elements.favoritesBox.style.display : undefined,
@@ -175,17 +179,16 @@ export abstract class PageOptions {
     }
 
     public static change(): void {
-        if (!this._defaults) {
-            this.getDefaults();
-        } else {
-            this._defaults.scrollX = window.pageXOffset;
-            this._defaults.scrollY = window.pageYOffset;
-        }
+        // Should always gets defaults, because the user
+        // can change an options (e.g. scroll, autorefresh).
+        this.getDefaults();
 
         // Trying to make pages with a bad scrolling work, e.g., ones
         // with "body {overflow-y: scroll;}" can break window.scrollTo().
         document.documentElement.style.overflow = "hidden";
         document.body.style.overflowY = "visible";
+
+        this._elements.autorefresh && this._defaults.autorefreshChecked ? this._elements.autorefresh.click() : null;
 
         // "display: none" not works.
         this._elements.upNavArrow ? this._elements.upNavArrow.style.opacity = "0" : null;
@@ -203,8 +206,10 @@ export abstract class PageOptions {
     public static restore(): void {
         window.scrollTo(this._defaults.scrollX, this._defaults.scrollY);
 
-        document.documentElement.style.overflow = this._defaults.documentOverflowStyle;
-        document.body.style.overflowY = this._defaults.bodyOverflowStyleY;
+        document.documentElement.style.overflow = this._defaults.documentOverflow;
+        document.body.style.overflowY = this._defaults.bodyOverflowY;
+
+        this._elements.autorefresh && this._defaults.autorefreshChecked ? this._elements.autorefresh.click() : null;
 
         this._elements.upNavArrow ? this._elements.upNavArrow.style.opacity = this._defaults.upNavArrowOpacity : null;
         this._elements.downNavArrow ? this._elements.downNavArrow.style.opacity = this._defaults.downNavArrowOpacity : null;
@@ -247,7 +252,15 @@ export abstract class Screenshot {
         }
     }
 
-    public static thread(): Promise<void> {
-        return ThreadScreenshot.start();
+    public static async thread(): Promise<void> {
+        PageOptions.change();
+
+        try {
+            await ThreadScreenshot.start();
+        } catch (error) {
+            throw error;
+        } finally {
+            PageOptions.restore();
+        }
     }
 }
