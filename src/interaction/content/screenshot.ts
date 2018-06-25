@@ -130,7 +130,7 @@ abstract class ThreadScreenshot {
         let threadCoordinate = PageElements.thread.getBoundingClientRect();
         let offsetTop: number = undefined;
 
-        // if a thread not in sight.
+        // if a thread not in the sight.
         if (threadCoordinate.top < 0 || threadCoordinate.top > window.innerHeight) {
             window.scrollTo(0, threadCoordinate.top + window.scrollY);
             await API.createTimeout(250);
@@ -140,15 +140,13 @@ abstract class ThreadScreenshot {
             offsetTop = threadCoordinate.top;
         }
 
+        let remainedHeight = threadCoordinate.height;
         let capturedHeight = 0;
-        let remainderHeight = threadCoordinate.height;
 
         while (capturedHeight < threadCoordinate.height) {
             const currentCoordinate: Coordinate = {
                 top: offsetTop,
                 // if a thread should be scrolled.
-                //bottom: remainderHeight >= window.innerHeight ? window.innerHeight : remainderHeight,
-                //bottom: window.innerHeight,
                 bottom: threadCoordinate.bottom < window.innerHeight ? threadCoordinate.bottom : window.innerHeight,
                 height: undefined,
                 width: threadCoordinate.width,
@@ -164,83 +162,20 @@ abstract class ThreadScreenshot {
             });
 
             capturedHeight += currentCoordinate.height;
-            remainderHeight = threadCoordinate.height - capturedHeight;
+            remainedHeight = threadCoordinate.height - capturedHeight;
 
             if (capturedHeight < threadCoordinate.height) {
-                //window.scrollTo(0, remainderHeight >= window.innerHeight ? window.innerHeight + window.scrollY : remainderHeight + window.scrollY);
-                /*
-                window.scrollTo(0, window.innerHeight + window.scrollY);
-                await API.createTimeout(250);
-                */
-                if (remainderHeight >= window.innerHeight) {
-                    window.scrollTo(0, window.innerHeight + window.scrollY);
+                if (remainedHeight >= window.innerHeight) {
+                    window.scrollTo(0, window.scrollY + window.innerHeight);
                     await API.createTimeout(250);
                     offsetTop = 0;
                 } else {
-                    window.scrollTo(0, window.scrollY + remainderHeight);
+                    window.scrollTo(0, window.scrollY + remainedHeight);
                     await API.createTimeout(250);
-                    offsetTop = window.innerHeight - remainderHeight;
+                    offsetTop = window.innerHeight - remainedHeight;
                 }
             }
-
-            /*
-            if (remainderHeight >= window.innerHeight) {
-                offsetTop = 0;
-            } else {
-                //offsetTop = threadCoordinate.bottom - window.scrollY - remainderHeight;
-                offsetTop = 0;
-            }
-            */
         }
-
-        //#region  old
-        /*
-        let offsetTop = 0;
-
-        if (threadCoordinate.top < 0) {
-            window.scrollTo(0, threadCoordinate.top + window.scrollY);
-            await API.createTimeout(250);
-        } else {
-            offsetTop = threadCoordinate.top;
-        }
-
-        threadCoordinate = PageElements.thread.getBoundingClientRect();
-        let offsetY = 0;
-        let capturedHeight = 0;
-
-        while (capturedHeight < threadCoordinate.height) {
-            const currentCoordinate: Coordinate = {
-                top: offsetTop,
-                bottom: window.innerHeight - offsetTop,
-                height: window.innerHeight - offsetTop,
-                width: threadCoordinate.width,
-                left: threadCoordinate.left,
-                right: threadCoordinate.right
-            };
-
-            if (threadCoordinate.height - offsetY >= window.innerHeight) {
-                offsetY += window.innerHeight;
-            } else {
-                offsetY += currentCoordinate.height;
-            }
-
-            capturedHeight += currentCoordinate.height;
-
-            await Script.Content.sendMessageToBackground({
-                type: "command",
-                command: "screenshotHandleCoordinates",
-                data: [currentCoordinate]
-            });
-
-            if (capturedHeight < threadCoordinate.height) {
-                offsetTop = 0;
-                window.scrollTo(0, offsetY);
-                await API.createTimeout(250);
-            }
-        }
-        */
-       //#endregion
-
     }
 
     public static async end(): Promise<void> {
