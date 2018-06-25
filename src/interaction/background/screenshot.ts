@@ -107,6 +107,26 @@ export abstract class Screenshot {
         });
     }
 
+    public static async createThread(): Promise<void> {
+        const images = [];
+
+        for (let data of this._data) {
+            const fullImage = new ScreenshotImage(data.uri);
+            const cropedImage = await fullImage.cropImage(data.coordinates[0]);
+            images.push(cropedImage.image);
+        }
+
+        const uri = this.mergeImages(images);
+
+        await new Promise((resolve) => {
+            chrome.downloads.download({url: uri, filename: "posts.jpg"}, () => {
+                return resolve();
+            });
+        });
+
+        this._data = [];
+    }
+
     protected static captureTab(): Promise<string> {
         return new Promise((resolve, reject) => {
             chrome.tabs.captureVisibleTab({format: "jpeg", quality: 100}, (uri) => {
@@ -123,11 +143,16 @@ export abstract class Screenshot {
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
 
-        const paddingTop = 8;
-        const paddingBottom = 8;
-        const paddingLeft = 8;
-        const paddingRight = 8;
-        const paddingBetween = 4;
+        //const paddingTop = 8;
+        //const paddingBottom = 8;
+        //const paddingLeft = 8;
+        //const paddingRight = 8;
+        //const paddingBetween = 4;
+        const paddingTop = 0;
+        const paddingBottom = 0;
+        const paddingLeft = 0;
+        const paddingRight = 0;
+        const paddingBetween = 0;
         let totalHeight = 0;
         let maxWidth = 0;
 

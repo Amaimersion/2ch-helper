@@ -74,6 +74,18 @@ abstract class OnMessage extends OnMssg.OnMessage {
                 break;
             }
 
+            case "createFullThread": {
+                try {
+                    await Screenshot.createThread();
+                } catch (error) {
+                    sendResponse({status: false, errorText: error.message});
+                    throw error;
+                }
+
+                sendResponse({status: true});
+                break;
+            }
+
             default: {
                 const errorMessage = OnMessage.getUnknownMessageErrorText(
                     message,

@@ -3,8 +3,6 @@ import {API} from "@modules/api";
 import {Elements, PageElements} from "./page-elements";
 
 
-//#region Posts Screenshot
-
 interface Coordinate {
     top: number;
     bottom: number;
@@ -13,6 +11,8 @@ interface Coordinate {
     left: number;
     right: number;
 };
+
+//#region Posts Screenshot
 
 abstract class PostsScreenshot {
     public static async start(): Promise<void> {
@@ -127,10 +127,142 @@ abstract class PostsScreenshot {
 
 abstract class ThreadScreenshot {
     public static async start(): Promise<void> {
+        let threadCoordinate = PageElements.thread.getBoundingClientRect();
+        let offsetTop: number = undefined;
+
+        // if a thread not in sight.
+        if (threadCoordinate.top < 0 || threadCoordinate.top > window.innerHeight) {
+            window.scrollTo(0, threadCoordinate.top + window.scrollY);
+            await API.createTimeout(250);
+            offsetTop = 0;
+            threadCoordinate = PageElements.thread.getBoundingClientRect();
+        } else {
+            offsetTop = threadCoordinate.top;
+        }
+
+        let capturedHeight = 0;
+        let remainderHeight = threadCoordinate.height;
+
+        while (capturedHeight < threadCoordinate.height) {
+            const currentCoordinate: Coordinate = {
+                top: offsetTop,
+                // if a thread should be scrolled.
+                //bottom: remainderHeight >= window.innerHeight ? window.innerHeight : remainderHeight,
+                //bottom: window.innerHeight,
+                bottom: threadCoordinate.bottom < window.innerHeight ? threadCoordinate.bottom : window.innerHeight,
+                height: undefined,
+                width: threadCoordinate.width,
+                left: threadCoordinate.left,
+                right: threadCoordinate.right
+            };
+            currentCoordinate.height = currentCoordinate.bottom - currentCoordinate.top;
+
+            await Script.Content.sendMessageToBackground({
+                type: "command",
+                command: "screenshotHandleCoordinates",
+                data: [currentCoordinate]
+            });
+
+            capturedHeight += currentCoordinate.height;
+            remainderHeight = threadCoordinate.height - capturedHeight;
+
+            if (capturedHeight < threadCoordinate.height) {
+                //window.scrollTo(0, remainderHeight >= window.innerHeight ? window.innerHeight + window.scrollY : remainderHeight + window.scrollY);
+                /*
+                window.scrollTo(0, window.innerHeight + window.scrollY);
+                await API.createTimeout(250);
+                */
+                if (remainderHeight >= window.innerHeight) {
+                    window.scrollTo(0, window.innerHeight + window.scrollY);
+                    await API.createTimeout(250);
+                    offsetTop = 0;
+                } else {
+                    window.scrollTo(0, window.scrollY + remainderHeight);
+                    await API.createTimeout(250);
+                    offsetTop = window.innerHeight - remainderHeight;
+                }
+            }
+
+            /*
+            if (remainderHeight >= window.innerHeight) {
+                offsetTop = 0;
+            } else {
+                //offsetTop = threadCoordinate.bottom - window.scrollY - remainderHeight;
+                offsetTop = 0;
+            }
+            */
+        }
+
+        //#region  old
+        /*
+        let offsetTop = 0;
+
+        if (threadCoordinate.top < 0) {
+            window.scrollTo(0, threadCoordinate.top + window.scrollY);
+            await API.createTimeout(250);
+        } else {
+            offsetTop = threadCoordinate.top;
+        }
+
+        threadCoordinate = PageElements.thread.getBoundingClientRect();
+        let offsetY = 0;
+        let capturedHeight = 0;
+
+        while (capturedHeight < threadCoordinate.height) {
+            const currentCoordinate: Coordinate = {
+                top: offsetTop,
+                bottom: window.innerHeight - offsetTop,
+                height: window.innerHeight - offsetTop,
+                width: threadCoordinate.width,
+                left: threadCoordinate.left,
+                right: threadCoordinate.right
+            };
+
+            if (threadCoordinate.height - offsetY >= window.innerHeight) {
+                offsetY += window.innerHeight;
+            } else {
+                offsetY += currentCoordinate.height;
+            }
+
+            capturedHeight += currentCoordinate.height;
+
+            await Script.Content.sendMessageToBackground({
+                type: "command",
+                command: "screenshotHandleCoordinates",
+                data: [currentCoordinate]
+            });
+
+            if (capturedHeight < threadCoordinate.height) {
+                offsetTop = 0;
+                window.scrollTo(0, offsetY);
+                await API.createTimeout(250);
+            }
+        }
+        */
+       //#endregion
 
     }
 
-    public static async end(): Promise<void> {}
+    public static async end(): Promise<void> {
+        await Script.Content.sendMessageToBackground({
+            type: "command",
+            command: "createFullThread"
+        });
+    }
+
+    protected static normalizeCoordinate(coordinate: ClientRect | DOMRect, initialScrollY: number): Coordinate {
+        const newCoordinate: Coordinate = {
+            top: coordinate.top + initialScrollY,
+            bottom: undefined,
+            height: coordinate.height,
+            width: coordinate.width,
+            left: coordinate.left,
+            right: coordinate.right
+        };
+        newCoordinate.bottom = newCoordinate.top + newCoordinate.height;
+
+        return newCoordinate;
+    }
 }
 
 //#endregion
