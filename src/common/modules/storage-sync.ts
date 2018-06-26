@@ -50,10 +50,10 @@ abstract class ProfileInfo {
                 quality: 100,
                 turnOffPosts: true,
                 fillColor: "#EEE",
-                paddingTop: 8,
-                paddingBottom: 8,
-                paddingLeft: 8,
-                paddingRight: 8,
+                paddingTop: 6,
+                paddingBottom: 6,
+                paddingLeft: 6,
+                paddingRight: 6,
                 paddingBetween: 4
             },
             thread: {
