@@ -1,5 +1,10 @@
+// rename.
 export type AvailableDownloadKey = (
     "images" | "video"
+);
+
+export type ScreenshotKey = (
+    "posts" | "thread"
 );
 
 export interface UserSettings {
@@ -7,6 +12,20 @@ export interface UserSettings {
 }
 
 export interface UserSettingsDefault {
+    settingsScreenshot: {
+        [key: string]: {
+            name: string,
+            format: "jpg" | "png",
+            quality: number,
+            fillColor: string,
+            paddingTop: number,
+            paddingBottom: number,
+            paddingLeft: number,
+            paddingRight: number,
+            paddingBetween?: number,
+            turnOffPosts?: boolean
+        }
+    }
     settingsDownload: {
         [key: string]: {
             autoFileName: boolean,
@@ -20,6 +39,34 @@ export interface UserSettingsDefault {
 
 abstract class ProfileInfo {
     protected static readonly defaultSettings: UserSettingsDefault = {
+        settingsScreenshot: {
+            /* TODO
+             * 1) https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element#answer-11585939
+             * 2) Turn off user posts highlight.
+             */
+            posts: {
+                name: "posts",
+                format: "jpg",
+                quality: 100,
+                turnOffPosts: true,
+                fillColor: "#EEE",
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8,
+                paddingBetween: 4
+            },
+            thread: {
+                name: "thread",
+                format: "jpg",
+                quality: 100,
+                fillColor: "#EEE",
+                paddingTop: 8,
+                paddingBottom: 8,
+                paddingLeft: 8,
+                paddingRight: 8
+            }
+        },
         settingsDownload: {
             images: {
                 autoFileName: true,

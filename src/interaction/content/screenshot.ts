@@ -1,7 +1,10 @@
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
+import {ScreenshotKey} from "@modules/storage-sync";
 import {Elements, PageElements} from "./page-elements";
 
+
+//#region Common
 
 interface Coordinate {
     top: number;
@@ -10,7 +13,55 @@ interface Coordinate {
     width: number;
     left: number;
     right: number;
-};
+}
+
+abstract class CommonScreenshot {
+    public static async scrollTo(x: number, y: number): Promise<void> {
+        window.scrollTo(x, y);
+        await API.createTimeout(250); // animation are delayed.
+    }
+
+    public static async captureCoordinates<T>(coordinates: T[], settingKey: ScreenshotKey): Promise<T[]> {
+        if (!coordinates.length) {
+            return coordinates;
+        }
+
+        const response = await Script.Content.sendMessageToBackground({
+            type: "command",
+            command: "screenshotCaptureCoordinates",
+            data: {
+                coordinates: coordinates,
+                settingKey: settingKey
+            }
+        });
+
+        if (API.isErrorResponse(response)) {
+            throw new Error(
+                "Background script cannot capture coordinates. " +
+                `${response.errorText ? response.errorText : ""}`
+            );
+        }
+
+        coordinates = [];
+
+        return coordinates;
+    }
+
+    public static async end(settingKey: ScreenshotKey): Promise<void> {
+        const response = await Script.Content.sendMessageToBackground({
+            type: "command",
+            command: "screenshotCreateFullImage",
+            data: settingKey
+        });
+
+        if (API.isErrorResponse(response)) {
+            throw new Error(response.errorText || "Background script cannot create a full image.");
+        }
+    }
+}
+
+//#endregion
+
 
 //#region Posts Screenshot
 
@@ -27,27 +78,15 @@ abstract class PostsScreenshot {
 
         for (let coordinate of coordinates) {
             if (!this.isInSight(coordinate, initialScrollY)) {
-                visibleCoordinates = await this.handleVisibleCoordinates(visibleCoordinates);
-                window.scrollTo(0, coordinate.top + initialScrollY);
-                await API.createTimeout(250);
+                visibleCoordinates = await CommonScreenshot.captureCoordinates(visibleCoordinates, "posts");
+                await CommonScreenshot.scrollTo(0, coordinate.top + initialScrollY);
             }
 
             coordinate = this.normalizeCoordinate(coordinate, initialScrollY, window.scrollY);
             visibleCoordinates.push(coordinate);
         }
 
-        visibleCoordinates = await this.handleVisibleCoordinates(visibleCoordinates);
-    }
-
-    public static async end(): Promise<void> {
-        const response = await Script.Content.sendMessageToBackground({
-            type: "command",
-            command: "screenshotCreateFullImage"
-        });
-
-        if (API.isErrorResponse(response)) {
-            throw new Error(response.errorText || "Background script cannot create a full image.");
-        }
+        visibleCoordinates = await CommonScreenshot.captureCoordinates(visibleCoordinates, "posts");
     }
 
     protected static getCoordinates(posts: Set<Elements.Post> | Array<Elements.Post>): Coordinate[] {
@@ -55,7 +94,7 @@ abstract class PostsScreenshot {
 
         for (let post of posts) {
             const postCoordinate = post.getBoundingClientRect();
-            const coordinate = { // from readonly DOMRect to variable.
+            const coordinate: Coordinate = { // from readonly DOMRect to variable.
                 top: postCoordinate.top, // can be changed later.
                 bottom: postCoordinate.bottom, // can be changed later.
                 height: postCoordinate.height,
@@ -78,7 +117,7 @@ abstract class PostsScreenshot {
             return coordinate;
         }
 
-        const newCoordinate = {
+        const newCoordinate: Coordinate = {
             top: coordinate.top + initialScrollY - currentScrollY,
             bottom: undefined,
             height: coordinate.height,
@@ -95,29 +134,6 @@ abstract class PostsScreenshot {
         const normalizedCoordinate = this.normalizeCoordinate(coordinate, initialScrollY, window.scrollY);
         return ((normalizedCoordinate.top >= 0) && (normalizedCoordinate.bottom <= window.innerHeight));
     }
-
-    protected static async handleVisibleCoordinates(coordinates: Coordinate[]): Promise<Coordinate[]> {
-        if (!coordinates.length) {
-            return coordinates;
-        }
-
-        const response = await Script.Content.sendMessageToBackground({
-            type: "command",
-            command: "screenshotHandleCoordinates",
-            data: coordinates
-        });
-
-        if (API.isErrorResponse(response)) {
-            throw new Error(
-                "Background script cannot handle coordinates. " +
-                `${response.errorText ? response.errorText : ""}`
-            );
-        }
-
-        coordinates = [];
-
-        return coordinates;
-    }
 }
 
 //#endregion
@@ -130,14 +146,12 @@ abstract class ThreadScreenshot {
         let threadCoordinate = PageElements.thread.getBoundingClientRect();
         let offsetTop: number = undefined;
 
-        // if a thread not in the sight.
-        if (threadCoordinate.top < 0 || threadCoordinate.top > window.innerHeight) {
-            window.scrollTo(0, threadCoordinate.top + window.scrollY);
-            await API.createTimeout(250);
+        if (this.threadIsInSight(threadCoordinate)) {
+            offsetTop = threadCoordinate.top;
+        } else {
+            await CommonScreenshot.scrollTo(0, threadCoordinate.top + window.scrollY);
             offsetTop = 0;
             threadCoordinate = PageElements.thread.getBoundingClientRect();
-        } else {
-            offsetTop = threadCoordinate.top;
         }
 
         let remainedHeight = threadCoordinate.height;
@@ -155,48 +169,25 @@ abstract class ThreadScreenshot {
             };
             currentCoordinate.height = currentCoordinate.bottom - currentCoordinate.top;
 
-            await Script.Content.sendMessageToBackground({
-                type: "command",
-                command: "screenshotHandleCoordinates",
-                data: [currentCoordinate]
-            });
+            await CommonScreenshot.captureCoordinates([currentCoordinate], "thread");
 
             capturedHeight += currentCoordinate.height;
             remainedHeight = threadCoordinate.height - capturedHeight;
 
             if (capturedHeight < threadCoordinate.height) {
                 if (remainedHeight >= window.innerHeight) {
-                    window.scrollTo(0, window.scrollY + window.innerHeight);
-                    await API.createTimeout(250);
+                    await CommonScreenshot.scrollTo(0, window.scrollY + window.innerHeight);
                     offsetTop = 0;
                 } else {
-                    window.scrollTo(0, window.scrollY + remainedHeight);
-                    await API.createTimeout(250);
+                    await CommonScreenshot.scrollTo(0, window.scrollY + remainedHeight);
                     offsetTop = window.innerHeight - remainedHeight;
                 }
             }
         }
     }
 
-    public static async end(): Promise<void> {
-        await Script.Content.sendMessageToBackground({
-            type: "command",
-            command: "createFullThread"
-        });
-    }
-
-    protected static normalizeCoordinate(coordinate: ClientRect | DOMRect, initialScrollY: number): Coordinate {
-        const newCoordinate: Coordinate = {
-            top: coordinate.top + initialScrollY,
-            bottom: undefined,
-            height: coordinate.height,
-            width: coordinate.width,
-            left: coordinate.left,
-            right: coordinate.right
-        };
-        newCoordinate.bottom = newCoordinate.top + newCoordinate.height;
-
-        return newCoordinate;
+    protected static threadIsInSight(coordinate: ClientRect | DOMRect): boolean {
+        return ((coordinate.top >= 0) && (coordinate.top <= window.innerHeight));
     }
 }
 
@@ -366,17 +357,17 @@ export abstract class PageOptions {
 type ScreenshotMethod = (...args: any[]) => Promise<any>;
 
 export abstract class Screenshot {
-    public static async posts(): Promise<void> {
+    public static posts(): Promise<void> {
         return this.run(
             () => {return PostsScreenshot.start()},
-            () => {return PostsScreenshot.end()}
+            () => {return CommonScreenshot.end("posts")}
         );
     }
 
     public static thread(): Promise<void> {
         return this.run(
             () => {return ThreadScreenshot.start()},
-            () => {return ThreadScreenshot.end()}
+            () => {return CommonScreenshot.end("thread")}
         );
     }
 

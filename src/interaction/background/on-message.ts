@@ -50,9 +50,9 @@ abstract class OnMessage extends OnMssg.OnMessage {
                 break;
             }
 
-            case "screenshotHandleCoordinates": {
+            case "screenshotCaptureCoordinates": {
                 try {
-                    await Screenshot.handleCoordinates(message.data);
+                    await Screenshot.captureCoordinates(message.data.coordinates, message.data.settingKey);
                 } catch (error) {
                     sendResponse({status: false, errorText: error.message});
                     throw error;
@@ -64,19 +64,7 @@ abstract class OnMessage extends OnMssg.OnMessage {
 
             case "screenshotCreateFullImage": {
                 try {
-                    await Screenshot.createFullImage();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "createFullThread": {
-                try {
-                    await Screenshot.createThread();
+                    await Screenshot.createFullImage(message.data);
                 } catch (error) {
                     sendResponse({status: false, errorText: error.message});
                     throw error;

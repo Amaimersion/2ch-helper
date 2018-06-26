@@ -5,6 +5,14 @@ import {API} from "@modules/api";
 export abstract class Download {
     private static settings: UserSettings = undefined;
 
+    public static download(parameters: chrome.downloads.DownloadOptions): Promise<void> {
+        return new Promise((resolve) => {
+            chrome.downloads.download(parameters, () => {
+                return resolve();
+            })
+        });
+    }
+
     public static async links(links: string[], settingId: AvailableDownloadKey): Promise<void> {
         if (!this.settings) {
             this.settings = await this.getSettings();
@@ -21,12 +29,8 @@ export abstract class Download {
                 downloadParameters.filename = `${name}${type}`;
             }
 
-            await new Promise((resolve) => {
-                chrome.downloads.download(downloadParameters, async () => {
-                    await API.createTimeout(this.settings[settingId].delay);
-                    return resolve();
-                });
-            });
+            await this.download(downloadParameters);
+            await API.createTimeout(this.settings[settingId].delay);
         }
     }
 
@@ -63,11 +67,7 @@ export abstract class Download {
             filename: getFileName()
         };
 
-        await new Promise((resolve) => {
-            chrome.downloads.download(downloadOptions, () => {
-                return resolve();
-            });
-        });
+        await this.download(downloadOptions);
     }
 
     protected static getSettings(): Promise<UserSettings> {
