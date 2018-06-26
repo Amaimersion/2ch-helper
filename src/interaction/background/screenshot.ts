@@ -3,6 +3,9 @@ import {Settings} from "./settings";
 import {Download} from "./download";
 
 
+/**
+ * Coordinate of an element.
+ */
 interface Coordinate {
     top: number;
     bottom: number;
@@ -12,23 +15,40 @@ interface Coordinate {
     right: number;
 }
 
+/**
+ * Capture data.
+ */
 interface Data {
     coordinates: Coordinate[];
     uri: string;
 }
 
+/**
+ * Image of the screenshot.
+ */
 class ScreenshotImage {
     private _uri: string = undefined;
     private _image: HTMLImageElement = undefined;
 
+    /**
+     * Image instance.
+     */
     public get image(): HTMLImageElement {
         return this._image;
     }
 
+    /**
+     * Creates an instance of `ScreenshotImage`.
+     *
+     * @param {string} uri The URI/URL of the image.
+     */
     constructor(uri: string) {
         this._uri = uri;
     }
 
+    /**
+     * Creates an image based on the URI.
+     */
     public createImage(): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
             this._image = new Image();
@@ -44,7 +64,16 @@ class ScreenshotImage {
         });
     }
 
-    public async cropImage(coordinate: Coordinate, format: string, quality: number): Promise<ScreenshotImage> {
+    /**
+     * Crops an image.
+     *
+     * @param coordinate The coordinate for cropping.
+     * @param format The format of a cropped image.
+     * @param quality The quality of a cropped image. Must be in the range `0 <= x <= 1`
+     *
+     * @returns A new `ScreenshotImage` instance with the cropped image.
+     */
+    public async cropImage(coordinate: Coordinate, format: "jpeg" | "png", quality: number): Promise<ScreenshotImage> {
         if (!this._image) {
             await this.createImage();
         }
@@ -75,10 +104,19 @@ class ScreenshotImage {
     }
 }
 
+/**
+ * Handles screenshot requests.
+ */
 export abstract class Screenshot {
     private static _settings: UserSettings = undefined;
     private static _data: Data[] = [];
 
+    /**
+     * Saves a coordinates with the current screen image.
+     *
+     * @param coordinates The coordinates for capturing.
+     * @param settingKey The key of the screenshot settings.
+     */
     public static async captureCoordinates(coordinates: Coordinate[], settingKey: ScreenshotKey): Promise<void> {
         if (!this._settings) {
             this._settings = await this.getSettings();
@@ -91,6 +129,11 @@ export abstract class Screenshot {
         });
     }
 
+    /**
+     * Creates a full image based on the capturing data.
+     *
+     * @param settingKey The key of the screenshot settings.
+     */
     public static async createFullImage(settingKey: ScreenshotKey): Promise<void> {
         try {
             await this._createFullImage(settingKey);
@@ -101,11 +144,16 @@ export abstract class Screenshot {
         }
     }
 
+    /**
+     * Captures a current screen area.
+     *
+     * @param settingKey The key of the screenshot settings.
+     */
     protected static captureTab(settingKey: ScreenshotKey): Promise<string> {
         return new Promise((resolve, reject) => {
             const options: chrome.tabs.CaptureVisibleTabOptions = {
                 format: this.getFormat(settingKey),
-                quality: this.getQuality(settingKey, 1)
+                quality: this.getQuality(settingKey, 1) // `0 <= x <= 100`.
             };
 
             chrome.tabs.captureVisibleTab(options, (uri) => {
@@ -118,9 +166,14 @@ export abstract class Screenshot {
         });
     }
 
+    /**
+     * Creates a full image based on the capturing data.
+     *
+     * @param settingKey The key of the screenshot settings.
+     */
     protected static async _createFullImage(settingKey: ScreenshotKey): Promise<void> {
         if (!this._data.length) {
-            throw new Error("Data is empty.");
+            throw new Error("Capturing data is empty.");
         }
 
         if (!this._settings) {
@@ -128,7 +181,7 @@ export abstract class Screenshot {
         }
 
         const format = this.getFormat(settingKey);
-        const quality = this.getQuality(settingKey, 100);
+        const quality = this.getQuality(settingKey, 100); // `0 <= x <= 1`.
         const croppedImages: HTMLImageElement[] = [];
 
         for (let data of this._data) {
@@ -152,6 +205,12 @@ export abstract class Screenshot {
         await Download.download(downloadParameters);
     }
 
+    /**
+     * Merges an images into one.
+     *
+     * @param images The images for merging.
+     * @param settingKey The key of the screenshot settings.
+     */
     protected static mergeImages(images: HTMLImageElement[], settingKey: ScreenshotKey): string {
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
@@ -198,26 +257,38 @@ export abstract class Screenshot {
         }
 
         const imageFormat = this.getFormat(settingKey);
-        const imageQuality = this.getQuality(settingKey, 100);
+        const imageQuality = this.getQuality(settingKey, 100); // `0 <= x <= 1`.
 
         const dataURL = canvas.toDataURL(`image/${imageFormat}`, imageQuality);
 
         return dataURL;
     }
 
+    /**
+     * Clears a data for the screenshot creating.
+     */
     protected static clearData(): void {
         this._data = [];
     }
 
+    /**
+     * Gets an user settings for the `settingsScreenshot` key.
+     */
     protected static getSettings(): Promise<UserSettings> {
         return Settings.get("settingsScreenshot");
     }
 
-    protected static getFormat(settingKey: ScreenshotKey): string {
+    /**
+     * Gets a screenshot format for the `settingKey` settings.
+     *
+     * @param settingKey The key of the screenshot settings.
+     */
+    protected static getFormat(settingKey: ScreenshotKey): "jpeg" | "png" {
         if (!this._settings) {
             throw new Error("Settings is undefined.");
         }
 
+        // "jpg" is not allowed.
         if (this._settings[settingKey].format === "jpg") {
             return "jpeg";
         } else {
@@ -225,11 +296,21 @@ export abstract class Screenshot {
         }
     }
 
-    protected static getQuality(settingKey: ScreenshotKey, normalize: number): number {
+    /**
+     * Gets a screenshot quality for the `settingKey` settings.
+     *
+     * @param settingKey The key of the screenshot settings.
+     *
+     * @param format
+     * Brings the number to the certain format.
+     * By default the quality in the settings is 3-digit.
+     * Returned qualtiy will be divided by the format.
+     */
+    protected static getQuality(settingKey: ScreenshotKey, format: number): number {
         if (!this._settings) {
             throw new Error("Settings is undefined.");
         }
 
-        return (this._settings[settingKey].quality / normalize);
+        return (this._settings[settingKey].quality / format);
     }
 }

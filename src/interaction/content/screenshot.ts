@@ -41,7 +41,7 @@ abstract class CommonScreenshot {
      * Captures coordinates of the visible screen area.
      *
      * @param coordinates The coordinates for capturing.
-     * @param settingKey The key of screenshot settings.
+     * @param settingKey The key of the screenshot settings.
      *
      * @returns If success, then empty coordinates will be returned.
      */
@@ -75,7 +75,7 @@ abstract class CommonScreenshot {
      * Ends screenshot capturing.
      * Sends a command to the background script to create a full image.
      *
-     * @param settingKey The key of screenshot settings.
+     * @param settingKey The key of the screenshot settings.
      */
     public static async end(settingKey: ScreenshotKey): Promise<void> {
         const response = await Script.Content.sendMessageToBackground({
