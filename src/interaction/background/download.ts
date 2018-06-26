@@ -1,5 +1,6 @@
 import {DownloadKey, UserSettings} from "@modules/storage-sync";
 import {API} from "@modules/api";
+import {Settings} from "./settings";
 
 
 export abstract class Download {
@@ -71,7 +72,7 @@ export abstract class Download {
     }
 
     protected static getSettings(): Promise<UserSettings> {
-        return API.getSettings("settingsDownload");
+        return Settings.get("settingsDownload");
     }
 
     protected static fixFileName(name: string, char: string = ""): string {
