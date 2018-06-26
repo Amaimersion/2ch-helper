@@ -1,6 +1,7 @@
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
-import {ScreenshotKey} from "@modules/storage-sync";
+import {ScreenshotKey, UserSettings} from "@modules/storage-sync";
+import {Settings} from "./settings";
 import {Elements, PageElements} from "./page-elements";
 
 
@@ -461,13 +462,25 @@ type ScreenshotMethod = (...args: any[]) => Promise<any>;
  * Handles screenshot requests.
  */
 export abstract class Screenshot {
+    private static _settings: UserSettings = undefined;
+
     /**
      * Starts screenshot of the active posts.
      */
-    public static posts(): Promise<void> {
-        return this.run(
+    public static async posts(): Promise<void> {
+        if (!this._settings) {
+            this._settings = await this.getSettings();
+        }
+
+        await this.run(
             () => {return PostsScreenshot.start()},
-            () => {return CommonScreenshot.end("posts")}
+            async () => {
+                await CommonScreenshot.end("posts");
+
+                if (this._settings.posts.turnOffPosts) {
+                    PageElements.turnOffActivePosts();
+                }
+            }
         );
     }
 
@@ -479,6 +492,13 @@ export abstract class Screenshot {
             () => {return ThreadScreenshot.start()},
             () => {return CommonScreenshot.end("thread")}
         );
+    }
+
+    /**
+     * Gets an user settings for the `settingsScreenshot` key.
+     */
+    protected static getSettings(): Promise<UserSettings> {
+        return Settings.get("settingsScreenshot");
     }
 
     /**

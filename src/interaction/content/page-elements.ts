@@ -71,7 +71,7 @@ abstract class Checkboxes {
         }
     }
 
-    protected static turnOffActivePosts(): void {
+    public static turnOffActivePosts(): void {
         for (let post of PageElements.activePosts) {
             const checkbox = API.getElement<Elements.Checkbox>({
                 selector: `input[type="checkbox"]`,
@@ -188,5 +188,9 @@ export abstract class PageElements {
         this._thread = API.getThread();
         Checkboxes.main();
         Observer.main();
+    }
+
+    public static turnOffActivePosts() {
+        Checkboxes.turnOffActivePosts();
     }
 }
