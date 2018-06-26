@@ -105,8 +105,7 @@ abstract class PostsScreenshot {
      */
     public static async start(): Promise<void> {
         if (!PageElements.activePosts || !PageElements.activePosts.size) {
-            console.warn("There are no active posts.");
-            return;
+            throw new Error("No active posts found.");
         }
 
         const coordinates = this.getCoordinates(PageElements.activePosts);
