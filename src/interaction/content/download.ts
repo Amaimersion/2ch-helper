@@ -1,11 +1,12 @@
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
 import {AvailableDownloadKey, UserSettings} from "@modules/storage-sync";
+import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 
 
 export abstract class Download {
-    private static settings: UserSettings = undefined;
+    private static _settings: UserSettings = undefined;
 
     public static images(): Promise<void> {
         return this.handleDownload("images");
@@ -27,23 +28,22 @@ export abstract class Download {
         });
 
         if (API.isErrorResponse(response)) {
-            throw new Error(response.errorText || `Cannot handle download of thread.`);
+            throw new Error(response.errorText || "The background script cannot download the thread.");
         }
     }
 
-    protected static async handleDownload(settingId: AvailableDownloadKey): Promise<void> {
-        if (!this.settings) {
-            this.settings = await this.getSettings();
+    protected static async handleDownload(settingKey: AvailableDownloadKey): Promise<void> {
+        if (!this._settings) {
+            this._settings = await this.getSettings();
         }
 
-        const thread = API.getThread();
-        const query = this.createTypesQuery(this.settings[settingId].types);
+        const query = this.createTypesQuery(this._settings[settingKey].types);
         let pageLinks: NodeListOf<HTMLLinkElement> = undefined;
 
         try {
             pageLinks = API.getElements<HTMLLinkElement>({
                 selector: query,
-                dcmnt: thread
+                dcmnt: PageElements.thread
             });
         } catch (error) {
             console.warn("Could not find a links in the thread.");
@@ -61,12 +61,14 @@ export abstract class Download {
             command: "downloadLinks",
             data: {
                 links: Array.from(hrefs),
-                type: settingId
+                type: settingKey
             }
         });
 
         if (API.isErrorResponse(response)) {
-            throw new Error(response.errorText || `Cannot handle download for "${settingId}".`);
+            throw new Error(
+                response.errorText || `The background script cannot download links for the key "${settingKey}".`
+            );
         }
     }
 
