@@ -1,5 +1,4 @@
-// rename.
-export type AvailableDownloadKey = (
+export type DownloadKey = (
     "images" | "video"
 );
 

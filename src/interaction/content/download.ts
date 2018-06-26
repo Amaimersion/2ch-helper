@@ -1,6 +1,6 @@
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
-import {AvailableDownloadKey, UserSettings} from "@modules/storage-sync";
+import {DownloadKey, UserSettings} from "@modules/storage-sync";
 import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 
@@ -32,7 +32,7 @@ export abstract class Download {
         }
     }
 
-    protected static async handleDownload(settingKey: AvailableDownloadKey): Promise<void> {
+    protected static async handleDownload(settingKey: DownloadKey): Promise<void> {
         if (!this._settings) {
             this._settings = await this.getSettings();
         }

@@ -1,9 +1,9 @@
-import {AvailableDownloadKey, UserSettings} from "@modules/storage-sync";
+import {DownloadKey, UserSettings} from "@modules/storage-sync";
 import {API} from "@modules/api";
 
 
 export abstract class Download {
-    private static settings: UserSettings = undefined;
+    private static _settings: UserSettings = undefined;
 
     public static download(parameters: chrome.downloads.DownloadOptions): Promise<void> {
         return new Promise((resolve) => {
@@ -13,9 +13,9 @@ export abstract class Download {
         });
     }
 
-    public static async links(links: string[], settingId: AvailableDownloadKey): Promise<void> {
-        if (!this.settings) {
-            this.settings = await this.getSettings();
+    public static async links(links: string[], settingKey: DownloadKey): Promise<void> {
+        if (!this._settings) {
+            this._settings = await this.getSettings();
         }
 
         for (let link of links) {
@@ -23,20 +23,20 @@ export abstract class Download {
                 url: link
             };
 
-            if (!this.settings[settingId].autoFileName) {
-                const name = this.settings[settingId].fileName;
+            if (!this._settings[settingKey].autoFileName) {
+                const name = this._settings[settingKey].fileName;
                 const type = this.getFileFormat(link);
                 downloadParameters.filename = `${name}${type}`;
             }
 
             await this.download(downloadParameters);
-            await API.createTimeout(this.settings[settingId].delay);
+            await API.createTimeout(this._settings[settingKey].delay);
         }
     }
 
     public static async thread(): Promise<void> {
-        if (!this.settings) {
-            this.settings = await this.getSettings();
+        if (!this._settings) {
+            this._settings = await this.getSettings();
         }
 
         const activeTab = await API.getActiveTab();
@@ -51,10 +51,10 @@ export abstract class Download {
         const getFileName = (): string => {
             let name = undefined;
 
-            if (this.settings.thread.autoFileName) {
+            if (this._settings.thread.autoFileName) {
                 name = activeTab.title;
             } else {
-                name = this.settings.thread.fileName;
+                name = this._settings.thread.fileName;
             }
 
             name = this.fixFileName(name);
