@@ -103,6 +103,20 @@ export namespace OnMssg {
     }
 
     export abstract class OnMessage {
+        protected static async runAsyncMethod(
+            method: (...args: any[]) => Promise<any>, sendResponse: (response: Message.Response) => void,
+            successProps: object = {}, errorProps: object = {}
+        ): Promise<void> {
+            try {
+                await method();
+            } catch (error) {
+                sendResponse({...errorProps, ...{status: false, errorText: error.message}});
+                throw error;
+            }
+
+            sendResponse({...successProps, ...{status: true}});
+        }
+
         protected static formatObject(obj: Object): string {
             return JSON.stringify(obj, null, 4);
         }

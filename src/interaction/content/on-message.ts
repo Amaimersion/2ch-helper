@@ -3,7 +3,13 @@ import {Download} from "./download";
 import {Screenshot} from "./screenshot";
 
 
+/**
+ * Handles message requests.
+ */
 abstract class OnMessage extends OnMssg.OnMessage {
+    /**
+     * Handles messages.
+     */
     public static messageHandler: OnMssg.MessageEvent<Message.Content> = async (message, sender, sendResponse) => {
         switch (message.type) {
             case "command": {
@@ -24,77 +30,56 @@ abstract class OnMessage extends OnMssg.OnMessage {
         }
     }
 
+    /**
+     * Handles messages of `command` type.
+     */
     protected static commandHandler: OnMssg.MessageEvent<Message.Content> = async (message, sender, sendResponse) => {
         switch (message.command) {
-            case "downloadImages": {
-                try {
-                    await Download.images();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "downloadVideo": {
-                try {
-                    await Download.video();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "downloadMedia": {
-                try {
-                    await Download.media();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "downloadThread": {
-                try {
-                    await Download.thread();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
             case "screenshotPosts": {
-                try {
-                    await Screenshot.posts();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
+                await OnMessage.runAsyncMethod(
+                    () => {return Screenshot.posts()},
+                    sendResponse
+                );
                 break;
             }
 
             case "screenshotThread": {
-                try {
-                    await Screenshot.thread();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
+                await OnMessage.runAsyncMethod(
+                    () => {return Screenshot.thread()},
+                    sendResponse
+                );
+                break;
+            }
 
-                sendResponse({status: true});
+            case "downloadImages": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Download.images()},
+                    sendResponse
+                );
+                break;
+            }
+
+            case "downloadVideo": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Download.video()},
+                    sendResponse
+                );
+                break;
+            }
+
+            case "downloadMedia": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Download.media()},
+                    sendResponse
+                );
+                break;
+            }
+
+            case "downloadThread": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Download.thread()},
+                    sendResponse
+                );
                 break;
             }
 
