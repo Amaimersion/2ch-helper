@@ -5,22 +5,37 @@ import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 
 
+/**
+ * Handles download requests.
+ */
 export abstract class Download {
     private static _settings: UserSettings = undefined;
 
+    /**
+     * Starts download of images.
+     */
     public static images(): Promise<void> {
         return this.handleDownload("images");
     }
 
+    /**
+     * Starts download of video.
+     */
     public static video(): Promise<void> {
         return this.handleDownload("video");
     }
 
+    /**
+     * Starts download of both images and video.
+     */
     public static async media(): Promise<void> {
         await this.images();
         await this.video();
     }
 
+    /**
+     * Starts download of thread.
+     */
     public static async thread(): Promise<void> {
         const response = await Script.Content.sendMessageToBackground({
             type: "command",
@@ -32,6 +47,11 @@ export abstract class Download {
         }
     }
 
+    /**
+     * Handles download of an elements.
+     *
+     * @param settingKey The key of the download settings.
+     */
     protected static async handleDownload(settingKey: DownloadKey): Promise<void> {
         if (!this._settings) {
             this._settings = await this.getSettings();
@@ -72,10 +92,22 @@ export abstract class Download {
         }
     }
 
+    /**
+     * Gets an user settings for the `settingsDownload` key.
+     */
     protected static getSettings(): Promise<UserSettings> {
         return Settings.get("settingsDownload");
     }
 
+    /**
+     * Creates a query selector for search of links with the certain type.
+     *
+     * @param types The types for search. Should not contain a dot symbol.
+     *
+     * @example
+     * types = ["jpg", "jpeg", "png", "gif"];
+     * Returns: `a[href$=".jpg"],a[href$=".jpeg"],a[href$=".png"],a[href$=".gif"]`
+     */
     protected static createTypesQuery(types: string[]): string {
         let query = "";
 
