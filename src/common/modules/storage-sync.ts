@@ -1,45 +1,118 @@
+/**
+ * Available for download settings.
+ */
 export type DownloadKey = (
     "images" | "video"
 );
 
+/**
+ * Available for screenshot settings.
+ */
 export type ScreenshotKey = (
     "posts" | "thread"
 );
 
+/**
+ * User settings object.
+ */
 export interface UserSettings {
     [key: string]: any;
 }
 
+/**
+ * Default user settings object.
+ */
 export interface UserSettingsDefault {
+    /**
+     * The settings for screenshot.
+     */
     settingsScreenshot: {
         [key: string]: {
+            /**
+             * A name of the file.
+             */
             name: string,
+            /**
+             * A format of the file.
+             */
             format: "jpg" | "png",
+            /**
+             * A quality of the file.
+             */
             quality: number,
+            /**
+             * A background fill color of the file.
+             */
             fillColor: string,
+            /**
+             * A height of the background at the top.
+             */
             paddingTop: number,
+            /**
+             * A height of the background at the bottom.
+             */
             paddingBottom: number,
+            /**
+             * A height of the background at the left.
+             */
             paddingLeft: number,
+            /**
+             * A height of the background at the right.
+             */
             paddingRight: number,
+            /**
+             * A height between images.
+             */
             paddingBetween?: number,
+            /**
+             * Turn off posts after screenshot get taken.
+             */
             turnOffPosts?: boolean
         }
-    }
+    },
+
+    /**
+     * The settings for download.
+     */
     settingsDownload: {
         [key: string]: {
+            /**
+             * Determine name of the file.
+             */
             autoFileName: boolean,
+            /**
+             * A name of the file.
+             * If `autoFileName` is `true`, then is doesn'a affected.
+             */
             fileName: string,
+            /**
+             * A delay between downloads.
+             */
             delay?: number,
+            /**
+             * A types for download.
+             * Should not contain a dot symbol.
+             *
+             * @example
+             * ["jpg", "png"]
+             */
             types?: string[]
         }
     },
+
+    /**
+     * Indicates that the settings have been successfully created.
+     */
     isExists: boolean
 }
 
+/**
+ * Information about the user profile.
+ */
 abstract class ProfileInfo {
-    protected static readonly defaultSettings: UserSettingsDefault = {
+    protected static readonly _defaultSettings: UserSettingsDefault = {
         settingsScreenshot: {
-            /* TODO
+            /* TODO:
              * 1) https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element#answer-11585939
              * 2) Turn off user posts highlight.
              */
@@ -60,10 +133,10 @@ abstract class ProfileInfo {
                 format: "jpg",
                 quality: 100,
                 fillColor: "#EEE",
-                paddingTop: 8,
-                paddingBottom: 8,
-                paddingLeft: 8,
-                paddingRight: 8
+                paddingTop: 6,
+                paddingBottom: 6,
+                paddingLeft: 6,
+                paddingRight: 6
             }
         },
         settingsDownload: {
@@ -88,7 +161,18 @@ abstract class ProfileInfo {
     };
 }
 
+/**
+ * The sync storage area that synced using Browser Sync technologies.
+ */
 export abstract class StorageSync extends ProfileInfo {
+    /**
+     * Gets a settings from the storage.
+     *
+     * @param key
+     * A single key to get, list of keys to get, or a dictionary specifying default values.
+     * An empty list or object will return an empty result object.
+     * Pass in null to get the entire contents of storage.
+     */
     public static get(key: string | string[] | Object | null = null): Promise<UserSettings> {
         return new Promise((resolve) => {
             chrome.storage.sync.get(key, (items) => {
@@ -97,6 +181,17 @@ export abstract class StorageSync extends ProfileInfo {
         });
     }
 
+    /**
+     * Saves an items in the storage.
+     *
+     * @param items
+     * An object which gives each key/value pair to update storage with.
+     * Any other key/value pairs in storage will not be affected.
+     * Primitive values such as numbers will serialize as expected.
+     * Values with a typeof "object" and "function" will typically serialize to {},
+     * with the exception of Array (serializes as expected), Date,
+     * and Regex (serialize using their String representation).
+     */
     public static set(items: UserSettings): Promise<void> {
         return new Promise((resolve) => {
             chrome.storage.sync.set(items, () => {
@@ -105,6 +200,9 @@ export abstract class StorageSync extends ProfileInfo {
         });
     }
 
+    /**
+     * Clears the storage.
+     */
     public static clear(): Promise<void> {
         return new Promise((resolve) => {
             chrome.storage.sync.clear(() => {
@@ -113,6 +211,17 @@ export abstract class StorageSync extends ProfileInfo {
         });
     }
 
+    /**
+     * Restores default settings.
+     *
+     * @param force
+     * Check if settings already exists.
+     * If true, then there will be no verification,
+     * else will be thrown an error if the settings is exists.
+     *
+     * @throws
+     * Throws an error if `!force && settings`.
+     */
     public static async restoreDefault(force: boolean = false): Promise<void> {
         if (!force) {
             if (await this.isExists()) {
@@ -121,9 +230,12 @@ export abstract class StorageSync extends ProfileInfo {
         }
 
         await this.clear();
-        await this.set(this.defaultSettings);
+        await this.set(this._defaultSettings);
     }
 
+    /**
+     * Checks if the settings exists.
+     */
     public static async isExists(): Promise<boolean> {
         return (await this.get({isExists: false})).isExists;
     }
