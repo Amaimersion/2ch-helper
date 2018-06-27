@@ -3,9 +3,17 @@ import {API} from "@modules/api";
 import {Settings} from "./settings";
 
 
+/**
+ * Handles download requests.
+ */
 export abstract class Download {
     private static _settings: UserSettings = undefined;
 
+    /**
+     * Executes download with the parameters.
+     *
+     * @param parameters The parameters for download.
+     */
     public static download(parameters: chrome.downloads.DownloadOptions): Promise<void> {
         return new Promise((resolve) => {
             chrome.downloads.download(parameters, () => {
@@ -14,6 +22,12 @@ export abstract class Download {
         });
     }
 
+    /**
+     * Executes download of the links.
+     *
+     * @param links The links URL's for download.
+     * @param settingKey The key of the download settings.
+     */
     public static async links(links: string[], settingKey: DownloadKey): Promise<void> {
         if (!this._settings) {
             this._settings = await this.getSettings();
@@ -35,6 +49,9 @@ export abstract class Download {
         }
     }
 
+    /**
+     * Executes download of the thread.
+     */
     public static async thread(): Promise<void> {
         if (!this._settings) {
             this._settings = await this.getSettings();
@@ -42,6 +59,9 @@ export abstract class Download {
 
         const activeTab = await API.getActiveTab();
 
+        /**
+         * Gets the MHTML content of the active page.
+         */
         const getMHTML = (): any => {
             return new Promise<any>((resolve) => {
                 chrome.pageCapture.saveAsMHTML({tabId: activeTab.id}, (data) => {
@@ -49,6 +69,9 @@ export abstract class Download {
                 });
             });
         };
+        /**
+         * Gets the name of the active page.
+         */
         const getFileName = (): string => {
             let name = undefined;
 
@@ -71,14 +94,32 @@ export abstract class Download {
         await this.download(downloadOptions);
     }
 
+    /**
+     * Gets an user settings for the `settingsDownload` key.
+     */
     protected static getSettings(): Promise<UserSettings> {
         return Settings.get("settingsDownload");
     }
 
+    /**
+     * Removes invalid characters for the file name.
+     *
+     * @param name The name for fix.
+     * @param char The character for replace. Defaults to `""`.
+     */
     protected static fixFileName(name: string, char: string = ""): string {
         return name.replace(/[\\\/\:\*\?\"\<\>\|]/g, char);
     }
 
+    /**
+     * Gets the format of the name.
+     *
+     * @param name The name for identification.
+     *
+     * @example
+     * name = "www.link.com/image.jpg";
+     * Returns: ".jpg"
+     */
     protected static getFileFormat(name: string): string {
         const lastIndex = name.lastIndexOf(".");
         return lastIndex !== -1 ? name.slice(lastIndex) : "";
