@@ -112,10 +112,6 @@ export interface UserSettingsDefault {
 abstract class ProfileInfo {
     protected static readonly _defaultSettings: UserSettingsDefault = {
         settingsScreenshot: {
-            /* TODO:
-             * 1) https://stackoverflow.com/questions/6081483/maximum-size-of-a-canvas-element#answer-11585939
-             * 2) Turn off user posts highlight.
-             */
             posts: {
                 name: "posts",
                 format: "jpg",
