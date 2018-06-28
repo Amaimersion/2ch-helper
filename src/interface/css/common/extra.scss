@@ -72,6 +72,8 @@ html {
   height: 100%;
 
   iframe {
+    // Manually setting of height because
+    // i'm too lazy to do things properly.
     height: 73vh;
     width: 100%;
   }
@@ -83,9 +85,12 @@ html {
 .custom-footer {
   height: $footer-height;
   width: 100%;
+
   /* It doesn't needed, if header-height + main-height + footer-height = 100vh.
+
   bottom: 0;
   position: absolute;
+
   */
 }
 
