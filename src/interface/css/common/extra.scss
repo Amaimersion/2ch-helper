@@ -2,6 +2,14 @@
 @import "./global";
 
 
+/* Vars. */
+
+$border-height: .15vh;
+$header-height: 8vh + $border-height;
+$footer-height: 5vh + $border-height;
+$main-height: 100vh - $header-height - $footer-height;
+
+
 /* Global. */
 
 html {
@@ -10,6 +18,10 @@ html {
 
 
 /* Common. */
+
+.custom-content {
+  text-align: center;
+}
 
 .custom-container {
   margin: {
@@ -27,61 +39,58 @@ html {
 .custom-border {
   @each $border in ("top", "bottom") {
     &-#{$border} {
-      border-#{$border}: 1px solid #DDD;
+      border-#{$border}: $border-height solid #DDD;
     }
   }
-}
-
-
-/* Main. */
-
-.custom-main {
-  padding-top: 1vh;
-}
-
-.custom-main-content {
-  text-align: center;
 }
 
 
 /* Header. */
 
 .custom-header {
-  height: 70px;
+  height: $header-height;
 }
 
 .custom-header-content {
-  padding-top: 10px;
-  text-align: center;
+  padding: 1vh;
 }
 
-.custom-header-logo {
+.custom-header-info {
   display: inline-flex;
   margin: 0 auto;
+}
+
+.custom-title {
+  color: #FF7000;
+  font-weight: bold;
+}
+
+
+/* Main. */
+
+.custom-main {
+  height: $main-height;
+  padding-top: 1vh;
 }
 
 
 /* Footer. */
 
-$footer-height: 40px;
-
 .custom-footer {
-  bottom: 0;
   height: $footer-height;
-  overflow: hidden;
-  position: absolute;
   width: 100%;
+  /* It doesn't needed, if header-height + main-height + footer-height = 100vh.
+  bottom: 0;
+  position: absolute;
+  */
 }
 
 .custom-footer-content {
   line-height: $footer-height;
-  overflow: hidden;
-  text-align: center;
 }
 
-/*
 .custom-footer-icon {
-  opacity: .7;
+  opacity: .8;
 
   &:hover {
     opacity: 1;
@@ -92,4 +101,12 @@ $footer-height: 40px;
     transition: opacity .2s;
   }
 }
-*/
+
+/*
+ * Override Google Chrome stylesheet.
+ */
+ .custom-footer {
+  .col > * {
+    line-height: inherit;
+  }
+}
