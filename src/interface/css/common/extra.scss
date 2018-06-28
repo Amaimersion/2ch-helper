@@ -32,7 +32,7 @@ html {
   width: 100%;
 }
 
-.custom-row {
+.custom-row-fix {
   margin: 0;
 }
 
@@ -52,7 +52,7 @@ html {
 }
 
 .custom-header-content {
-  padding: 1vh;
+  padding: 1vh 0;
 }
 
 .custom-header-info {
@@ -70,7 +70,16 @@ html {
 
 .custom-main {
   height: $main-height;
-  padding-top: 1vh;
+}
+
+.custom-main-content {
+  padding: 3vh 0;
+  height: 100%;
+
+  iframe {
+    height: 73vh;
+    width: 100%;
+  }
 }
 
 
