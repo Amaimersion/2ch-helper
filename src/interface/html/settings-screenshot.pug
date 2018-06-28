@@ -6,42 +6,92 @@ block append vars
 
 
 block append head
-  +css("/interface/css/libs/bootstrap-slider.min.css")
-  +css("/interface/css/styles/settings-iframe.css")
-  +js("/interface/js/libs/bootstrap-slider.min.js")
   +js("/interface/js/scripts/settings-screenshot.js")
 
 
-block main
-  div(class="container custom-container")
-    form
-      +form-group()
-        +label({for: "nameForPosts", name: "Имя файла для скриншота постов"})
-        +input({id: "nameForPosts", name: "Имя файла для скриншота постов"})
+block append main
+  +main()
+    +form()
+      +title({text: "Посты"})
 
-      +form-group()
-        +label({for: "nameForThread", name: "Имя файла для скриншота треда"})
-        +input({id: "nameForThread", name: "Имя файла для скриншота треда"})
+      +row()
+        +col()
+          +label({for: "posts-name", text: "Имя файла"})
+          +input({id: "posts-name", type: "text", dataType: "string", placeholder: placeholders.fileName})
 
-      +form-group()
-        +label({for: "screenshotFormat", name: "Формат скриншота"})
-        +select({id: "screenshotFormat", options: [{value: "jpeg", name: "JPEG"}, {value: "png", name: "PNG"}]})
+        +col()
+          +label({for: "posts-format", text: "Формат файла"})
+          +select({id: "posts-format", dataType: "string", items: [{value: "jpg", text: "JPG"}, {value: "png", text: "PNG"}]})
 
-      +form-group(id="quality")
-        +label({for: "screenshotQuality", name: "Качество скриншота"})
-        +input()(id="screenshotQuality" type="text" data-provide="slider" data-slider-min="0" data-slider-max="100" data-slider-step="1")
-        +span({id: "screenshotQualityValue"})(class="pl-2")
-        +span({id: "screenshotQualityUnit", name: "%"})
+      +row()
+        +col()
+          +label({for: "posts-quality", text: "Качество файла"})
+          +input({id: "posts-quality", type: "number", dataType: "number", placeholder: placeholders.from0To100})(min=0 max=100)
 
-      +form-group()
-        +label({for: "screenshotDelay", name: "Задержка"})
-        +input()(id="screenshotDelay" type="text" data-provide="slider" data-slider-min="500" data-slider-max="2000" data-slider-step="100")
-        +span({id: "screenshotDelayValue"})(class="pl-2")
-        +span({cid: "screenshotDelayUnit", name: "мс"})
+        +col()
+          +label({for: "posts-fillColor", text: "Цвет фона"})
+          +input({id: "posts-fillColor", type: "text", dataType: "string", placeholder: placeholders.hexNumber})
 
-      +form-group()
-        +label({for: "turnOffPosts", name: "Выключать активные посты после создания скриншота"})
-        +form-check-inline({inputId: "turnOffTrue", inputName: "turnOffPosts", labelName: "Да"})
-        +form-check-inline({inputId: "turnOffFalse", inputName: "turnOffPosts", labelName: "Нет"})
+        +col()
+          +label({for: "posts-turnOffPosts", text: "Выключать посты после создания файла"})
+          +checkbox({id: "posts-turnOffPosts", dataType: "boolean"})
 
-      +button({id: "save", name: "Сохранить"})
+      +row()
+        +col()
+          +label({for: "posts-paddingTop", text: "Отступ сверху"})
+          +input({id: "posts-paddingTop", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "posts-paddingBottom", text: "Отступ снизу"})
+          +input({id: "posts-paddingBottom", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "posts-paddingLeft", text: "Отступ слева"})
+          +input({id: "posts-paddingLeft", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "posts-paddingRight", text: "Отступ справа"})
+          +input({id: "posts-paddingRight", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "posts-paddingBetween", text: "Отступ между постами"})
+          +input({id: "posts-paddingBetween", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+      +title({text: "Тред"})
+
+      +row()
+        +col()
+          +label({for: "thread-name", text: "Имя файла"})
+          +input({id: "thread-name", type: "text", dataType: "string", placeholder: placeholders.fileName})
+
+        +col()
+          +label({for: "thread-format", text: "Формат файла"})
+          +select({id: "thread-format", dataType: "string", items: [{value: "jpg", text: "JPG"}, {value: "png", text: "PNG"}]})
+
+      +row()
+        +col()
+          +label({for: "thread-quality", text: "Качество файла"})
+          +input({id: "thread-quality", type: "number", dataType: "number", placeholder: placeholders.from0To100})(min=0 max=100)
+
+        +col()
+          +label({for: "thread-fillColor", text: "Цвет фона"})
+          +input({id: "thread-fillColor", type: "text", dataType: "string", placeholder: placeholders.hexNumber})
+
+      +row()
+        +col()
+          +label({for: "thread-paddingTop", text: "Отступ сверху"})
+          +input({id: "thread-paddingTop", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "thread-paddingBottom", text: "Отступ снизу"})
+          +input({id: "thread-paddingBottom", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "thread-paddingLeft", text: "Отступ слева"})
+          +input({id: "thread-paddingLeft", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "thread-paddingRight", text: "Отступ справа"})
+          +input({id: "thread-paddingRight", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+      +buttons()
