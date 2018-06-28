@@ -7,7 +7,7 @@ block append vars
   -  from0To100: "Число от 0 до 100",
   -  hexNumber: `Шестнадцатеричное число со знаком "#"`,
   -  positiveNumber: "Положительное число",
-  -  typesForDownload: "Типы файлов без точки и через запятую"
+  -  typesForDownload: "Типы файлов без точки, перечисленные через запятую"
   -};
 
 
@@ -34,7 +34,7 @@ block append mixins
   mixin input(object={})
     input(
       required
-      class="form-control custom-input"
+      class="form-control"
       id=object.id
       type=object.type
       placeholder=object.placeholder
