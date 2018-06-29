@@ -111,10 +111,6 @@ module.exports = function(env) {
                 {
                     from: './static/interface',
                     to: './interface'
-                },
-                {
-                    from: './static/interface/js/libs',
-                    to: './interface/js/libs'
                 }
             ]),
             /*
@@ -166,12 +162,6 @@ module.exports = function(env) {
         ],
         resolve: {
             alias: {
-                /*
-                 * "bootstrap-slider.js have optional jquery dependency".
-                 * "So, in order to not include jquery, we redirect to the stub file".
-                 * https://github.com/seiyria/bootstrap-slider#how-do-i-exclude-the-optional-jquery-dependency-from-my-build
-                 */
-                jquery: path.resolve(__dirname, './src/common/js/libs/jquery-stub.js'),
                 Interface: path.resolve(__dirname, './src/interface'),
                 Interaction: path.resolve(__dirname, './src/interaction')
             },
@@ -189,37 +179,6 @@ module.exports = function(env) {
                 '.scss',
                 '.pug'
             ]
-        },
-        externals: [
-            /*
-             * Some scripts (for now it is only "settings-iframe.ts") perform the import of "bootstrap-slider.js" library.
-             * However, it is only necessary for type definition, not entire lib.
-             * So, we exclude the lib from bundling and only looking for one instance of "bootstrap-slider.js".
-             *
-             * Different approaches:
-             * 1. If not exclude the lib, then some scripts (not only "settings-iframe.ts")
-             *    will contain "bootstrap-slider.js" and size of file and source maps will be large.
-             * 2. If create an entry point only for the lib and exclude from everywhere, then
-             *    webpack wraps out the lib and it can't add it's "Slider" constructor in the global namespace (see 3).
-             * 3. "bootstrap-slider.js" designed for usage without any initizalition. It is means that it add
-             *    it's constructor ("Slider") in the global namespace. So, if just manually copy in the build and
-             *    paste into the page, then it will be work. Therefore exclude the lib from everywhere and manually copy it.
-             *
-             * It is obvious that the second approach is preferable.
-             * In this case it's works with npm package ("bootstrap-slider"), not just a file.
-             * But for now we use third approach because of *see 2*.
-             */
-            function(context, request, callback) {
-                if (request === 'bootstrap-slider' /* *only for second approach* && !context.includes('build') */) {
-                    /*
-                     * Replace entire lib with module.exports = Slider.
-                     * Later it will be called as "new Slider()".
-                     */
-                    callback(null, 'Slider');
-                } else {
-                    callback();
-                }
-            }
-        ]
+        }
     }
 }
