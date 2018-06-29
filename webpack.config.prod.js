@@ -5,8 +5,8 @@ const RemovePlugin = require('remove-files-webpack-plugin');
 
 module.exports = function(env) {
     env = env || {};
-    const platform = env.platform ? env.platform : 'chromium';
 
+    const platform = env.platform ? env.platform : 'chromium';
     const commonConfig = require('./webpack.config.common')(env);
 
     return merge(commonConfig, {
