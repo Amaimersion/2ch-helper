@@ -3,6 +3,48 @@ const merge = require('webpack-merge');
 const ValidateHTMLLinksPlugin = require('validate-html-links-webpack-plugin');
 const RemovePlugin = require('remove-files-webpack-plugin');
 
+
+//#region Custom plugins.
+
+const fs = require('fs');
+const path = require('path');
+
+class FixManifestPlugin {
+    constructor(platform) {
+        this.platform = platform;
+    }
+
+    apply(compiler) {
+        compiler.hooks.afterEmit.tapAsync('fix-manifest-plugin', (compilation, callback) => {
+            this.handleAfterEmitHook(compilation, callback);
+        });
+    }
+
+    handleAfterEmitHook(compilation, callback) {
+        console.log(this.platform);
+        const files = fs.readdirSync(path.join(__dirname, 'dist', this.platform, 'interaction'));
+        let manifest = fs.readFileSync(path.join(__dirname, 'dist', this.platform, 'manifest.json'), {encoding: 'utf-8'});
+
+        for (let name of ['content', 'background']) {
+            const regexp = new RegExp(`(${name})(.*)(\.js$)`, 'm');
+
+            for (let file of files) {
+                if (regexp.test(file)) {
+                    manifest = manifest.replace(`${name}.js`, file);
+                    break;
+                }
+            }
+        }
+
+        fs.writeFileSync(path.join(__dirname, 'dist', this.platform, 'manifest.json'), manifest);
+
+        callback();
+    }
+}
+
+//#endregion
+
+
 module.exports = function(env) {
     env = env || {};
 
@@ -40,7 +82,9 @@ module.exports = function(env) {
              * HTML files contains invalid links for JS files.
              * So, we replace [name].js to [name].[contenthash].min.js.
              */
-            new ValidateHTMLLinksPlugin()
+            new ValidateHTMLLinksPlugin(),
+
+            new FixManifestPlugin(platform)
         ]
     });
 }

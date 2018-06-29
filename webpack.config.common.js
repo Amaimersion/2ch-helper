@@ -7,6 +7,9 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const {TsConfigPathsPlugin} = require('awesome-typescript-loader');
 
+
+//#region Custom plugins.
+
 class CreateManifestPlugin {
     constructor(options) {
         this.pluginName = 'create-manifest-plugin';
@@ -49,6 +52,9 @@ class CreateManifestPlugin {
         callback();
     }
 }
+
+//#endregion
+
 
 module.exports = function(env) {
     env = env || {};
