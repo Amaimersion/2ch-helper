@@ -56,12 +56,12 @@ module.exports = function(env) {
 
     return {
         entry: {
-            '/interface/js/scripts/popup': './src/build/interface/popup-build.js',
-            '/interface/js/scripts/settings': './src/build/interface/settings-build.js',
-            '/interface/js/scripts/settings-iframe': './src/build/interface/settings-iframe-build.js',
-            '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot-build.js',
-            '/interface/js/scripts/settings-download': './src/build/interface/settings-download-build.js',
-            '/interface/js/scripts/statistics': './src/build/interface/statistics-build.js',
+            '/interface/js/scripts/popup': './src/build/interface/popup.js',
+            '/interface/js/scripts/settings': './src/build/interface/settings.js',
+            '/interface/js/scripts/settings-iframe': './src/build/interface/settings-iframe.js',
+            '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot.js',
+            '/interface/js/scripts/settings-download': './src/build/interface/settings-download.js',
+            '/interface/js/scripts/statistics': './src/build/interface/statistics.js',
             '/interaction/content': './src/build/interaction/content.js',
             '/interaction/background': './src/build/interaction/background.js'
         },
