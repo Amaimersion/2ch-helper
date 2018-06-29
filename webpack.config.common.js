@@ -129,8 +129,8 @@ module.exports = function(env) {
                 }
             ]),
             /*
-             * Replace with mini-css-extract-plugin, when they do
-             * this fucking support for filename function type.
+             * Replace with mini-css-extract-plugin, when
+             * they do a support for filename function type.
              * https://github.com/webpack-contrib/mini-css-extract-plugin/issues/67
              * https://github.com/webpack-contrib/mini-css-extract-plugin/issues/143
              */
