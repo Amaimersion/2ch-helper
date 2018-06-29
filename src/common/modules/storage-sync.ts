@@ -1,12 +1,12 @@
 /**
- * Available for download settings.
+ * Available key for download settings.
  */
 export type DownloadKey = (
     "images" | "video"
 );
 
 /**
- * Available for screenshot settings.
+ * Available key for screenshot settings.
  */
 export type ScreenshotKey = (
     "posts" | "thread"
@@ -22,7 +22,7 @@ export interface UserSettings {
 /**
  * Default user settings object.
  */
-export interface UserSettingsDefault {
+interface DefaultSettings {
     /**
      * The settings for screenshot.
      */
@@ -98,6 +98,22 @@ export interface UserSettingsDefault {
              */
             types?: string[]
         }
+    }
+}
+
+/**
+ * Initial user settings object.
+ */
+interface InitialSettings extends DefaultSettings {
+    /**
+     * Statistics values.
+     */
+    statistics: {
+        /**
+         * How many time user spent on the imageboard.
+         * In milliseconds.
+         */
+        totalSpent: number
     },
 
     /**
@@ -110,7 +126,7 @@ export interface UserSettingsDefault {
  * Information about the user profile.
  */
 abstract class ProfileInfo {
-    protected static readonly _defaultSettings: UserSettingsDefault = {
+    protected static readonly _defaultSettings: DefaultSettings = {
         settingsScreenshot: {
             posts: {
                 name: "posts",
@@ -152,6 +168,12 @@ abstract class ProfileInfo {
                 autoFileName: true,
                 fileName: "thread"
             }
+        }
+    };
+
+    protected static readonly _initialSettings: InitialSettings = {...ProfileInfo._defaultSettings,
+        statistics: {
+            totalSpent: 0
         },
         isExists: true
     };
@@ -208,6 +230,41 @@ export abstract class StorageSync extends ProfileInfo {
     }
 
     /**
+     * Removes an items from the storage.
+     *
+     * @param keys Single key or a list of keys for items to remove.
+     */
+    public static remove(keys: string | string[]): Promise<void> {
+        return new Promise((resolve) => {
+            chrome.storage.sync.remove(keys, () => {
+                return resolve();
+            });
+        });
+    }
+
+    /**
+     * Sets an initial settings.
+     *
+     * @param force
+     * Check if settings already exists.
+     * If true, then there will be no verification,
+     * else will be thrown an error if the settings is exists.
+     *
+     * @throws
+     * Throws an error if `!force && settings`.
+     */
+    public static async setInitialSettings(force: boolean = false): Promise<void> {
+        if (!force) {
+            if (await this.isExists()) {
+                throw new Error("Attempt to override an existing settings.");
+            }
+        }
+
+        await this.clear();
+        await this.set(this._initialSettings);
+    }
+
+    /**
      * Restores default settings.
      *
      * @param force
@@ -219,20 +276,26 @@ export abstract class StorageSync extends ProfileInfo {
      * Throws an error if `!force && settings`.
      */
     public static async restoreDefault(force: boolean = false): Promise<void> {
+        const keys = Object.keys(this._defaultSettings);
+
         if (!force) {
-            if (await this.isExists()) {
+            if (await this.isExists(keys)) {
                 throw new Error("Attempt to override an existing settings.");
             }
         }
 
-        await this.clear();
+        await this.remove(keys);
         await this.set(this._defaultSettings);
     }
 
     /**
      * Checks if the settings exists.
      */
-    public static async isExists(): Promise<boolean> {
-        return (await this.get({isExists: false})).isExists;
+    public static async isExists(key: string | string[] | Object | null = undefined): Promise<boolean> {
+        if (key) {
+            return (await this.get(key) ? true : false);
+        } else {
+            return (await this.get({isExists: false})).isExists;
+        }
     }
 }

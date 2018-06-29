@@ -9,7 +9,7 @@ abstract class Events {
      * Runs when the extension is first installed.
      */
     public static async onFirstInstall(): Promise<void> {
-        await StorageSync.restoreDefault(true);
+        await StorageSync.setInitialSettings(true);
     }
 }
 
