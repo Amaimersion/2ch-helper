@@ -62,8 +62,8 @@ module.exports = function(env) {
             '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot-build.js',
             '/interface/js/scripts/settings-download': './src/build/interface/settings-download-build.js',
             '/interface/js/scripts/statistics': './src/build/interface/statistics-build.js',
-            '/interaction/js/scripts/content/content': './src/build/interaction/content.js',
-            '/interaction/js/scripts/background/background': './src/build/interaction/background.js'
+            '/interaction/content': './src/build/interaction/content.js',
+            '/interaction/background': './src/build/interaction/background.js'
         },
         output: {
             path: path.resolve(__dirname, 'dist', platform)
@@ -105,6 +105,15 @@ module.exports = function(env) {
                 before: {
                     root: __dirname,
                     include: [`dist/${platform}`]
+                },
+                after: {
+                    root: __dirname,
+                    test: [{
+                        folder: `dist/${platform}/interface/js/scripts`,
+                        method: (filePath) => {
+                            return filePath.includes("settings-iframe.js");
+                        }
+                    }]
                 }
             }),
             new CopyWebpackPlugin([
