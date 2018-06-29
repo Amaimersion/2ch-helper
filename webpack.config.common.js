@@ -118,7 +118,7 @@ module.exports = function(env) {
             }),
             new CopyWebpackPlugin([
                 {
-                    from: './static/interface',
+                    from: './src/static/interface',
                     to: './interface'
                 }
             ]),
