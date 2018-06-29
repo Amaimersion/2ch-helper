@@ -10,7 +10,6 @@
         ],
         "baseUrl": "./",
         "paths": {
-            "@libs/*": ["src/common/libs/*"],
             "@modules/*": ["src/common/modules/*"]
         },
         "alwaysStrict": true,
