@@ -112,6 +112,7 @@ export namespace Iframe {
     export abstract class Buttons {
         public static async resetButtonEvent(): Promise<void> {
             await StorageSync.restoreDefault(true);
+            this.sendCommandToUpdateSettings();
             window.location.reload();
         }
 
@@ -176,6 +177,12 @@ export namespace Iframe {
                 userSettings[form.settingField][form.settingKey] = value;
             }
 
+            this.sendCommandToUpdateSettings();
+
+            return userSettings;
+        }
+
+        protected static sendCommandToUpdateSettings(): void {
             Script.Background.sendMessageToAllContent(
                 {type: "command", command: "updateSettings"},
                 {url: "*://2ch.hk/*/res/*"}
@@ -183,8 +190,6 @@ export namespace Iframe {
             Script.Content.sendMessageToBackground(
                 {type: "command", command: "updateSettings"}
             );
-
-            return userSettings;
         }
     }
 }
