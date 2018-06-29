@@ -1,99 +1,105 @@
 import {DOMLoaded} from "@modules/dom";
 
 
-interface IframeData {
-    iframeId: string;
+interface IframeNavbar {
     navbarId: string;
-    height: string;
+    iframeId: string;
+    isActive: boolean;
+    eventType: string;
+    eventMethod: (...args: any[]) => any;
 }
 
-
 abstract class PageInfo {
-    public static iframeData: IframeData[] = [
+    protected static iframeNavbars: IframeNavbar[] = [
         {
-            iframeId: "settings-screenshot",
-            navbarId: "settings-screenshot-navbar",
-            height: "524px"
+            navbarId: "navbar-screenshot",
+            iframeId: "iframe-screenshot",
+            isActive: true,
+            eventType: "click",
+            eventMethod: (navbarId: string, iframeId: string) => {
+                Settings.iframeNavbarClickEvent(navbarId, iframeId);
+            }
         },
         {
-            iframeId: "settings-download",
-            navbarId: "settings-download-navbar",
-            height: "250px"
+            navbarId: "navbar-download",
+            iframeId: "iframe-download",
+            isActive: false,
+            eventType: "click",
+            eventMethod: (navbarId: string, iframeId: string) => {
+                Settings.iframeNavbarClickEvent(navbarId, iframeId);
+            }
         }
     ];
 }
 
+abstract class Settings extends PageInfo {
+    protected static activeIframeNavbarId: string = undefined;
+    protected static activeIframeId: string = undefined;
 
-abstract class Settings {
     public static main(): void {
-        this.bindEvents();
+        Settings.bindIframeNavbars(Settings.iframeNavbars);
     }
 
-    public static bindEvents(): void {
-        for (let iframeData of PageInfo.iframeData) {
-            const iframeId = iframeData.iframeId;
-            const navbarId = iframeData.navbarId;
-            const height = iframeData.height;
+    protected static bindIframeNavbars(navbars: IframeNavbar[]): void {
+        for (let navbar of navbars) {
+            const navbarElement = <HTMLDivElement>document.getElementById(navbar.navbarId);
+            const iframeElement = <HTMLIFrameElement>document.getElementById(navbar.iframeId);
 
-            const navbar = document.getElementById(navbarId);
-
-            if (!navbar) {
-                console.error(`Could not find a navbar with the id - "${navbarId}".`);
-                continue;
+            if (!navbarElement) {
+                throw new Error(`Could not find an iframe navbar with that id - "${navbar.navbarId}".`);
             }
 
-            navbar.addEventListener("click", () => {
-                this.iframeClickEvent({iframeId, navbarId, height});
+            if (!iframeElement) {
+                throw new Error(`Could not find an iframe with that id - "${navbar.iframeId}".`);
+            }
+
+            if (navbar.isActive) {
+                navbarElement.classList.add("active-custom-navbar-item");
+                iframeElement.style.display = "block";
+                this.activeIframeNavbarId = navbarElement.id;
+                this.activeIframeId = iframeElement.id;
+            } else {
+                navbarElement.classList.remove("active-custom-navbar-item");
+                iframeElement.style.display = "none";
+            }
+
+            navbarElement.addEventListener(navbar.eventType, () => {
+                navbar.eventMethod(navbar.navbarId, navbar.iframeId);
             });
         }
     }
 
-    public static iframeClickEvent(iframeData: IframeData): void {
-        const iframeId = iframeData.iframeId;
-        const navbarId = iframeData.navbarId;
-        const height = iframeData.height;
+    public static iframeNavbarClickEvent(navbarId: string, iframeId: string): void {
+        let navbarElement = <HTMLDivElement>document.getElementById(this.activeIframeNavbarId);
+        let iframeElement = <HTMLIFrameElement>document.getElementById(this.activeIframeId);
 
-        this.disableAllIframes();
-
-        const navbar = document.getElementById(navbarId);
-        const iframe = <HTMLIFrameElement>document.getElementById(iframeId);
-
-        if (!navbar) {
-            console.error(`Could not find a navbar with the id - "${navbarId}".`);
-            return;
+        if (!navbarElement) {
+            throw new Error(`Could not find an active iframe navbar with that id - "${this.activeIframeNavbarId}".`);
         }
 
-        if (!iframe) {
-            console.error(`Could not find an iframe with the id - "${iframeId}".`);
-            return;
+        if (!iframeElement) {
+            throw new Error(`Could not find an active iframe with that id - "${this.activeIframeId}".`);
         }
 
-        navbar.classList.add("custom-border-bottom");
-        iframe.style.display = "block";
-        iframe.style.height = height;
-    }
+        navbarElement.classList.remove("active-custom-navbar-item");
+        iframeElement.style.display = "none";
 
-    public static disableAllIframes(): void {
-        for (let iframeData of PageInfo.iframeData) {
-            const iframeId = iframeData.iframeId;
-            const navbarId = iframeData.navbarId;
+        navbarElement = <HTMLDivElement>document.getElementById(navbarId);
+        iframeElement = <HTMLIFrameElement>document.getElementById(iframeId);
 
-            const navbar = document.getElementById(navbarId);
-            const iframe = <HTMLIFrameElement>document.getElementById(iframeId);
-
-            if (!navbar) {
-                console.error(`Could not find a navbar with the id - "${navbarId}".`);
-                continue;
-            }
-
-            if (!iframe) {
-                console.error(`Could not find an iframe with the id - "${iframeId}".`);
-                continue;
-            }
-
-            navbar.classList.remove("custom-border-bottom");
-            iframe.style.display = "none";
+        if (!navbarElement) {
+            throw new Error(`Could not find an iframe navbar with that id - "${navbarId}".`);
         }
+
+        if (!iframeElement) {
+            throw new Error(`Could not find an iframe with that id - "${iframeId}".`);
+        }
+
+        navbarElement.classList.add("active-custom-navbar-item");
+        iframeElement.style.display = "block";
+
+        this.activeIframeNavbarId = navbarId;
+        this.activeIframeId = iframeId;
     }
 }
 
