@@ -1,164 +1,190 @@
-/*
+import {UserSettings, StorageSync} from "@modules/storage-sync";
 import {Script} from "@modules/communication";
-import {UserSettings} from "@modules/user-settings";
-import * as Slider from "bootstrap-slider";
 
 
-export namespace ElementsInfo {
-    export interface ButtonInfo {
+export namespace Forms {
+    export interface Form {
+        formId: string;
+        settingField: string;
+        settingKey: string;
+    }
+
+    export interface Input extends Form {}
+    export interface Checkbox extends Form {}
+
+    export interface Button {
+        formId: string;
+        eventType: string;
+        eventMethod: (...args: any[]) => any;
+    }
+
+    export interface Element {
         id: string;
-        events: ButtonEvent[];
-    }
-
-    export interface ButtonEvent {
-        type: string;
-        event: (...args: any[]) => any;
-    }
-
-    export interface FormInfo {
-        type: string;
-        data: FormData[];
-    }
-
-    export interface FormData {
-        elementId: string;
-        settingId: string;
-    }
-
-    export interface SliderInfo {
-        id: string;
-        settingId: string;
-        options: Object;
-        events: SliderEvent[];
-    }
-
-    export interface SliderEvent {
-        name: string;
-        event: (...args: any[]) => any;
-    }
-
-    export interface HTMLInputEvent extends Event {
-        target: HTMLInputElement & EventTarget;
     }
 }
 
 
-export namespace ElementsEvent {
-    export abstract class Slider {
-        public static changeEvent(id: string, value: any): void {
-            const slider = document.getElementById(id);
+export namespace Iframe {
+    export function getElementById(id: string, checkDataset: boolean = true): HTMLElement {
+        const element = document.getElementById(id);
 
-            if (!slider) {
-                console.error(`Could not find an element with the id - "${id}".`);
-                return;
-            }
-
-            slider.textContent = value;
+        if (!element) {
+            throw new Error(`Could not find an element with that id - "${id}".`);
         }
+
+        if (
+            checkDataset && (
+            (!element.dataset || !Object.keys(element.dataset).length) ||
+            (!element.dataset.type)
+            )
+        ) {
+            throw new Error(`Could not use an element ("#${id}") without dataset.`);
+        }
+
+        return element;
     }
 
-    export abstract class SaveButton {
-        public static defaultEvent(forms: ElementsInfo.FormInfo[], userSettingId: string): void {
-            Iframe.updateAndSaveUserSettings(
-                forms, userSettingId
-            );
-            */
-            //Script.Background.sendMessageToAllContent(
-            //    {type: "command", command: "updateUserSettings"},
-            //    {url: "*://2ch.hk/*/res/*"}
-            //);
-            /*
-            Script.Content.sendMessageToBackground(
-                {type: "command", command: "updateUserSettings"}
-            );
-        }
-    }
-}
+    export abstract class Settings {
+        public static async getUserSettings(key: string): Promise<UserSettings> {
+            const userSettings = await StorageSync.get(key);
 
-
-export abstract class Iframe extends UserSettings {
-    public static bindButtons(buttons: ElementsInfo.ButtonInfo[]): void {
-        for (let buttonData of buttons) {
-            const elementId = buttonData.id;
-            const element = <HTMLButtonElement>document.getElementById(elementId);
-
-            if (!element) {
-                console.error(`Could not find an element with the id - "${elementId}".`);
-                continue;
+            if (!userSettings || !Object.keys(userSettings).length) {
+                throw new Error(`User settings with the key "${key}" is empty or undefined.`);
             }
 
-            for (let event of buttonData.events) {
-                element.addEventListener(event.type, event.event);
-            }
+            return userSettings[key];
         }
-    }
 
-    public static bindSliders(sliders: ElementsInfo.SliderInfo[], settingField: string): void {
-        for (let sliderData of sliders) {
-            const settingId = sliderData.settingId;
-            const elementId = sliderData.id;
-            const options = sliderData.options;
+        public static bindForms(forms: Forms.Form[], userSettings: UserSettings): void {
+            for (let form of forms) {
+                let element = undefined;
 
-            options["value"] = this.userSettings[settingField][settingId] || 0;
-            const slider = new Slider(elementId, options);
-
-            for (let event of sliderData.events) {
-                slider.on(event.name, event.event);
-            }
-        }
-    }
-
-    public static bindForms(forms: ElementsInfo.FormInfo[], settingField: string): void {
-        for (let formData of forms) {
-            for (let data of formData.data) {
-                const element = <HTMLInputElement>document.getElementById(data.elementId);
-                const value = this.userSettings[settingField][data.settingId];
-
-                if (!element) {
-                    console.error(`Could not find an element with the id - "${data.elementId}".`);
+                try {
+                    element = <HTMLInputElement>Iframe.getElementById(form.formId);
+                } catch (error) {
+                    console.error(error);
                     continue;
                 }
 
-                if (formData.type === "input" || formData.type === "select") {
+                const value = userSettings[form.settingField][form.settingKey];
+
+                // !value shouldn't used here, because values can be either 0, or false, or "" and so on.
+                if (typeof value === "undefined") {
+                    console.error(
+                        `Could not get a value with that field - "${form.settingField}" and that key - "${form.settingKey}".`
+                    );
+                    continue;
+                }
+
+                if (element.dataset.type === "boolean") {
+                    element.checked = Boolean(value);
+                } else {
                     element.value = value;
-                } else if (formData.type === "span") {
-                    element.textContent = value;
-                } else if (formData.type === "checkbox") {
-                    element.checked = value;
                 }
             }
         }
-    }
 
-    public static updateUserData(forms: ElementsInfo.FormInfo[], settingField: string): void {
-        for (let formData of forms) {
-            for (let data of formData.data) {
-                const element = <HTMLInputElement>document.getElementById(data.elementId);
-                let value = undefined;
+        public static bindButtons(forms: Forms.Button[]): void {
+            for (let form of forms) {
+                let element = undefined;
 
-                if (!element) {
-                    console.error(`Could not find an element with the id - "${data.elementId}".`);
+                try {
+                    element = <HTMLInputElement>Iframe.getElementById(form.formId, false);
+                } catch (error) {
+                    console.error(error);
                     continue;
                 }
 
-                if (formData.type === "input" || formData.type === "select") {
-                    value = element.value;
-                } else if (formData.type === "span") {
-                    value = Number(element.textContent);
-                } else if (formData.type === "checkbox") {
-                    value = element.checked;
-                }
-
-                this.userSettings[settingField][data.settingId] = value;
+                element.addEventListener(form.eventType, form.eventMethod);
             }
+        }
+
+        public static bindForm(form: Forms.Element, method: (...args: any[]) => any): void {
+            const element = <HTMLFormElement>Iframe.getElementById(form.id, false);
+            element.onsubmit = method;
+        }
+
+        public static saveUserSettings(settingKey: string, settings: UserSettings): Promise<void> {
+            return StorageSync.set({[settingKey]: settings});
         }
     }
 
-    public static updateAndSaveUserSettings(forms: ElementsInfo.FormInfo[], settingField: string): void {
-        // first, update the Iframe.userSettings,
-        this.updateUserData(forms, settingField);
-        // then save it.
-        this.saveUserSettings();
+    export abstract class Buttons {
+        public static async resetButtonEvent(): Promise<void> {
+            await StorageSync.restoreDefault(true);
+            window.location.reload();
+        }
+
+        public static clearButtonEvent(forms: Forms.Form[]): void {
+            for (let form of forms) {
+                let element: HTMLInputElement = undefined;
+
+                try {
+                    element = <HTMLInputElement>Iframe.getElementById(form.formId);
+                } catch (error) {
+                    console.error(error);
+                    continue;
+                }
+
+                if (element.dataset.type === "boolean") {
+                    element.checked = false;
+                } else {
+                    element.value = "";
+                }
+            }
+        }
+
+        public static saveButtonEvent(forms: Forms.Form[], userSettings: UserSettings): UserSettings {
+            for (let form of forms) {
+                let element = undefined;
+
+                try {
+                    element = <HTMLInputElement>Iframe.getElementById(form.formId);
+                } catch (error) {
+                    console.error(error);
+                    continue;
+                }
+
+                let type = element.dataset.type;
+                let value: any = element.value;
+
+                switch (type) {
+                    case "number":
+                        value = Number(value);
+                        break;
+
+                    case "string":
+                        value = String(value);
+                        break;
+
+                    case "boolean":
+                        value = element.checked;
+                        break;
+
+                    case "stringArray":
+                        value = value.split(",");
+                        value = value.map(String);
+                        break;
+
+                    default:
+                        console.error(
+                            `Unknown "data-type" ("${type}") for an element ("#${form.formId}").`
+                        );
+                        continue;
+                }
+
+                userSettings[form.settingField][form.settingKey] = value;
+            }
+
+            Script.Background.sendMessageToAllContent(
+                {type: "command", command: "updateSettings"},
+                {url: "*://2ch.hk/*/res/*"}
+            );
+            Script.Content.sendMessageToBackground(
+                {type: "command", command: "updateSettings"}
+            );
+
+            return userSettings;
+        }
     }
 }
-*/

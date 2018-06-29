@@ -145,6 +145,13 @@ export abstract class Screenshot {
     }
 
     /**
+     * Updates a current user settings.
+     */
+    public static async updateSettings(): Promise<void> {
+        this._settings = await this.getSettings();
+    }
+
+    /**
      * Captures a current screen area.
      *
      * @param settingKey The key of the screenshot settings.

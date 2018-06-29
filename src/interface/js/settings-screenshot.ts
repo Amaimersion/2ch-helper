@@ -1,138 +1,145 @@
-/*
 import {DOMLoaded} from "@modules/dom";
-import {ElementsInfo, ElementsEvent, Iframe} from "./settings-iframe";
+import {UserSettings} from "@modules/storage-sync";
+import {Forms, Iframe} from "./settings-iframe";
 
 
 abstract class PageInfo {
-    public static qualityFormId: string = "quality";
-    public static selectScreenshotFormatId: string = "screenshotFormat";
+    protected static settingKey = "settingsScreenshot";
 
-    public static buttons: ElementsInfo.ButtonInfo[] = [
+    protected static formElement: Forms.Element = {
+        id: "form"
+    };
+
+    protected static inputForms: Forms.Input[] = [
+        // Posts.
         {
-            id: "save",
-            events: [
-                {
-                    type: "click",
-                    event: function() {
-                        ElementsEvent.SaveButton.defaultEvent(
-                            PageInfo.forms, SettingsScreenshot.userSettingId
-                        );
-                    }
-                }
-            ]
+            formId: "posts-name",
+            settingField: "posts",
+            settingKey: "name"
+        },
+        {
+            formId: "posts-format",
+            settingField: "posts",
+            settingKey: "format"
+        },
+        {
+            formId: "posts-quality",
+            settingField: "posts",
+            settingKey: "quality"
+        },
+        {
+            formId: "posts-fillColor",
+            settingField: "posts",
+            settingKey: "fillColor"
+        },
+        {
+            formId: "posts-turnOffPosts",
+            settingField: "posts",
+            settingKey: "turnOffPosts"
+        },
+        {
+            formId: "posts-paddingTop",
+            settingField: "posts",
+            settingKey: "paddingTop"
+        },
+        {
+            formId: "posts-paddingBottom",
+            settingField: "posts",
+            settingKey: "paddingBottom"
+        },
+        {
+            formId: "posts-paddingLeft",
+            settingField: "posts",
+            settingKey: "paddingLeft"
+        },
+        {
+            formId: "posts-paddingRight",
+            settingField: "posts",
+            settingKey: "paddingRight"
+        },
+        {
+            formId: "posts-paddingBetween",
+            settingField: "posts",
+            settingKey: "paddingBetween"
+        },
+        // Thread.
+        {
+            formId: "thread-name",
+            settingField: "thread",
+            settingKey: "name"
+        },
+        {
+            formId: "thread-format",
+            settingField: "thread",
+            settingKey: "format"
+        },
+        {
+            formId: "thread-quality",
+            settingField: "thread",
+            settingKey: "quality"
+        },
+        {
+            formId: "thread-fillColor",
+            settingField: "thread",
+            settingKey: "fillColor"
+        },
+        {
+            formId: "thread-paddingTop",
+            settingField: "thread",
+            settingKey: "paddingTop"
+        },
+        {
+            formId: "thread-paddingBottom",
+            settingField: "thread",
+            settingKey: "paddingBottom"
+        },
+        {
+            formId: "thread-paddingLeft",
+            settingField: "thread",
+            settingKey: "paddingLeft"
+        },
+        {
+            formId: "thread-paddingRight",
+            settingField: "thread",
+            settingKey: "paddingRight"
         }
     ];
 
-    public static forms: ElementsInfo.FormInfo[] = [
+    protected static buttonForms: Forms.Button[] = [
         {
-            type: "input",
-            data: [
-                {elementId: "nameForPosts", settingId: "fileNamePosts"},
-                {elementId: "nameForThread", settingId: "fileNameThread"}
-            ]
+            formId: "reset",
+            eventType: "click",
+            eventMethod: () => {
+                Iframe.Buttons.resetButtonEvent();
+            }
         },
         {
-            type: "select",
-            data: [
-                {elementId: "screenshotFormat", settingId: "format"}
-            ]
-        },
-        {
-            type: "span",
-            data: [
-                {elementId: "screenshotQualityValue", settingId: "quality"},
-                {elementId: "screenshotDelayValue", settingId: "delay"}
-            ]
-        },
-        {
-            type: "checkbox",
-            data: [
-                {elementId: "turnOffTrue", settingId: "turnOffPostsYes"},
-                {elementId: "turnOffFalse", settingId: "turnOffPostsNo"}
-            ]
-        }
-    ];
-
-    public static sliders: ElementsInfo.SliderInfo[] = [
-        {
-            id: "#screenshotQuality",
-            settingId: "quality",
-            options: {
-                tooltip: "hide"
-            },
-            events: [
-                {
-                    name: "change",
-                    event: function(sliderValue: any) {
-                        const id = "screenshotQualityValue";
-                        const value = sliderValue.newValue;
-
-                        ElementsEvent.Slider.changeEvent(id, value);
-                    }
-                }
-            ]
-        },
-        {
-            id: "#screenshotDelay",
-            settingId: "delay",
-            options: {
-                tooltip: "hide"
-            },
-            events: [
-                {
-                    name: "change",
-                    event: function(sliderValue: any) {
-                        const id = "screenshotDelayValue";
-                        const value = sliderValue.newValue;
-
-                        ElementsEvent.Slider.changeEvent(id, value);
-                    }
-                }
-            ]
+            formId: "clear",
+            eventType: "click",
+            eventMethod: () => {
+                Iframe.Buttons.clearButtonEvent(PageInfo.inputForms);
+            }
         }
     ];
 }
 
-
-abstract class SettingsScreenshot {
-    public static userSettingId = "settings_screenshot";
+abstract class SettingsScreenshot extends PageInfo {
+    protected static _userSettings: UserSettings = undefined;
 
     public static async main(): Promise<void> {
-        await Iframe.initUserSettings(this.userSettingId);
-        Iframe.bindButtons(PageInfo.buttons);
-        Iframe.bindSliders(PageInfo.sliders, this.userSettingId);
-        Iframe.bindForms(PageInfo.forms, this.userSettingId);
-        this.customBind();
+        this._userSettings = await Iframe.Settings.getUserSettings(this.settingKey);
+        this.bindForms();
     }
 
-    public static customBind(): void {
-        const qualityElement = <HTMLDivElement>document.getElementById(PageInfo.qualityFormId);
-        const selectElement = <HTMLSelectElement>document.getElementById(PageInfo.selectScreenshotFormatId);
-
-        if (!qualityElement) {
-            console.error(`Could not find an element with the id - "${PageInfo.qualityFormId}".`);
-            return;
-        }
-
-        if (!selectElement) {
-            console.error(`Could not find a select element with the id - "${PageInfo.selectScreenshotFormatId}".`);
-            return;
-        }
-
-        if (selectElement.value === "png") {
-            qualityElement.style.display = "none";
-        }
-
-        selectElement.addEventListener("change", (event: ElementsInfo.HTMLInputEvent) => {
-            if (event.target.value === "jpeg") {
-                qualityElement.style.display = "block";
-            } else if (event.target.value === "png") {
-                qualityElement.style.display = "none";
-            }
+    protected static bindForms(): void {
+        Iframe.Settings.bindForms(this.inputForms, this._userSettings);
+        Iframe.Settings.bindButtons(this.buttonForms);
+        Iframe.Settings.bindForm(this.formElement, () => {
+            this._userSettings = Iframe.Buttons.saveButtonEvent(this.inputForms, this._userSettings);
+            Iframe.Settings.saveUserSettings(this.settingKey, this._userSettings);
         });
     }
 }
 
 
 DOMLoaded.runFunction(() => SettingsScreenshot.main());
-*/

@@ -11,8 +11,8 @@ export abstract class Settings {
     /**
      * Runs when the page is loaded.
      */
-    public static main(): void {
-        this.init();
+    public static async main(): Promise<void> {
+        await this.init();
     }
 
     /**

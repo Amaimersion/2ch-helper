@@ -494,6 +494,13 @@ export abstract class Screenshot {
     }
 
     /**
+     * Updates a current user settings.
+     */
+    public static async updateSettings(): Promise<void> {
+        this._settings = await this.getSettings();
+    }
+
+    /**
      * Gets an user settings for the `settingsScreenshot` key.
      */
     protected static getSettings(): Promise<UserSettings> {

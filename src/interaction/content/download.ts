@@ -48,6 +48,13 @@ export abstract class Download {
     }
 
     /**
+     * Updates a current user settings.
+     */
+    public static async updateSettings(): Promise<void> {
+        this._settings = await this.getSettings();
+    }
+
+    /**
      * Handles download of an elements.
      *
      * @param settingKey The key of the download settings.

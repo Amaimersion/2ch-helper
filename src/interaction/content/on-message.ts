@@ -1,6 +1,7 @@
 import {Message, OnMssg} from "@modules/communication";
 import {Download} from "./download";
 import {Screenshot} from "./screenshot";
+import {Settings} from "./settings";
 
 
 /**
@@ -78,6 +79,18 @@ abstract class OnMessage extends OnMssg.OnMessage {
             case "downloadThread": {
                 await OnMessage.runAsyncMethod(
                     () => {return Download.thread()},
+                    sendResponse
+                );
+                break;
+            }
+
+            case "updateSettings": {
+                await OnMessage.runAsyncMethod(
+                    async () => {
+                        await Settings.main();
+                        Screenshot.updateSettings();
+                        Download.updateSettings();
+                    },
                     sendResponse
                 );
                 break;
