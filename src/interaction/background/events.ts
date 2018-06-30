@@ -1,5 +1,5 @@
 import {StorageSync} from "@modules/storage-sync";
-
+import {DOMContentLoaded} from "./DOMContentLoaded";
 
 /**
  * Handles browser events.
@@ -10,6 +10,7 @@ abstract class Events {
      */
     public static async onFirstInstall(): Promise<void> {
         await StorageSync.setInitialSettings(true);
+        DOMContentLoaded.main();
     }
 }
 
