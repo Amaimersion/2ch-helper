@@ -83,7 +83,6 @@ module.exports = function(env) {
              * So, we replace [name].js to [name].[contenthash].min.js.
              */
             new ValidateHTMLLinksPlugin(),
-
             new FixManifestPlugin(platform)
         ]
     });
