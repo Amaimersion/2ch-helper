@@ -5,7 +5,7 @@ import {Settings} from "./settings";
 /**
  * Handles DOMContentLoaded event.
  */
-abstract class DOMContentLoaded {
+export abstract class DOMContentLoaded {
     /**
      * Runs when the page is loaded.
      */
