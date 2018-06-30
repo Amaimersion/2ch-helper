@@ -4,7 +4,7 @@ import {API} from "@modules/api";
 
 
 interface PopupElementEvent {
-    id: string;
+    selector: string;
     type: string;
     event: (...args: any[]) => any;
 }
@@ -12,63 +12,75 @@ interface PopupElementEvent {
 interface ErrorArguments {
     errorText?: string;
     displayTime?: number;
-    notificationElementId?: string;
+    notificationElementSelector?: string;
 }
 
 
 abstract class PageInfo {
-    public static elementsEvents: PopupElementEvent[] = [
+    protected static readonly _elementsEvents: PopupElementEvent[] = [
         {
-            id: "screenshot-of-posts",
+            selector: "#screenshot-of-posts",
             type: "click",
-            event: function() {
+            event: () => {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "screenshotPosts"}
+                    {type: "command", command: "screenshotPosts"},
+                    {url: "*://2ch.hk/*/res/*"},
+                    {errorText: "Активный тред не найден"}
                 );
             }
         },
         {
-            id: "screenshot-of-thread",
+            selector: "#screenshot-of-thread",
             type: "click",
-            event: function() {
+            event: () => {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "screenshotThread"}
+                    {type: "command", command: "screenshotThread"},
+                    {url: "*://2ch.hk/*/res/*"},
+                    {errorText: "Активный тред не найден"}
                 );
             }
         },
         {
-            id: "download-images",
+            selector: "#download-images",
             type: "click",
-            event: function() {
+            event: () => {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "downloadImages"}
+                    {type: "command", command: "downloadImages"},
+                    {url: "*://2ch.hk/*/res/*"},
+                    {errorText: "Активный тред не найден"}
                 );
             }
         },
         {
-            id: "download-video",
+            selector: "#download-video",
             type: "click",
-            event: function() {
+            event: () => {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "downloadVideo"}
+                    {type: "command", command: "downloadVideo"},
+                    {url: "*://2ch.hk/*/res/*"},
+                    {errorText: "Активный тред не найден"}
                 );
             }
         },
         {
-            id: "download-media",
+            selector: "#download-media",
             type: "click",
-            event: function() {
+            event: () => {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "downloadMedia"}
+                    {type: "command", command: "downloadMedia"},
+                    {url: "*://2ch.hk/*/res/*"},
+                    {errorText: "Активный тред не найден"}
                 );
             }
         },
         {
-            id: "download-thread",
+            selector: "#download-thread",
             type: "click",
-            event: function() {
+            event: () => {
                 Popup.defaultElementEvent(
-                    {type: "command", command: "downloadThread"}
+                    {type: "command", command: "downloadThread"},
+                    {url: "*://2ch.hk/*/res/*"},
+                    {errorText: "Активный тред не найден"}
                 )
             }
         }
@@ -76,19 +88,42 @@ abstract class PageInfo {
 }
 
 
-abstract class Popup {
-    private static timeoutId: number = null;
+abstract class Popup extends PageInfo {
+    private static _timeoutId: number = null;
 
     public static main(): void {
         this.bindEvents();
     }
 
-    public static bindEvents(): void {
-        for (let elementEvent of PageInfo.elementsEvents) {
-            const element = document.getElementById(elementEvent.id);
+    public static async defaultElementEvent(
+        message: Message.Content,
+        queryInfo: chrome.tabs.QueryInfo = {},
+        errorArgs: ErrorArguments = {}
+    ): Promise<void> {
+        let response: Message.Response = undefined;
 
-            if (!element) {
-                console.error(`Could not find an element with the id - "${elementEvent.id}".`);
+        try {
+            response = await Script.Background.sendMessageToActiveContent(message, queryInfo);
+        } catch (error) {
+            this.displayError(errorArgs);
+            throw error;
+        }
+
+        if (API.isErrorResponse(response)) {
+            this.displayError({errorText: response.errorText});
+        }
+    }
+
+    protected static bindEvents(): void {
+        for (let elementEvent of this._elementsEvents) {
+            let element: HTMLDivElement = undefined;
+
+            try {
+                element = API.getElement<HTMLDivElement>({
+                    selector: elementEvent.selector
+                });
+            } catch (error) {
+                console.error(error);
                 continue;
             }
 
@@ -96,39 +131,35 @@ abstract class Popup {
         }
     }
 
-    public static displayError(args: ErrorArguments): void {
-        const errorText = args.errorText || "Error";
+    protected static displayError(args: ErrorArguments): void {
+        const errorText = args.errorText || "Ошибка";
         const displayTime = args.displayTime || 2000;
-        const notificationElementId = args.notificationElementId || "version";
+        const notificationElementSelector = args.notificationElementSelector || "#version";
 
-        if (this.timeoutId != null) {
+        if (this._timeoutId !== null) {
             console.warn("Created timeout is still running.");
-            console.error(errorText);
-            return;
+            throw new Error(errorText);
         }
 
-        const notificationElement = document.getElementById(notificationElementId);
+        let notificationElement: HTMLElement = undefined;
 
-        if (!notificationElement) {
-            console.warn(`Could not find an element with the id "${notificationElementId}" to display an error.`);
+        try {
+            notificationElement = API.getElement<HTMLElement>({
+                selector: notificationElementSelector,
+                errorMessage: "Could not find an element to display an error."
+            });
+        } catch (error) {
             console.error(errorText);
-            return;
+            throw error;
         }
 
         const oldText = notificationElement.innerText;
         notificationElement.innerText = errorText;
 
-        this.timeoutId = window.setTimeout(() => {
+        this._timeoutId = window.setTimeout(() => {
             notificationElement.innerText = oldText;
-            this.timeoutId = null;
+            this._timeoutId = null;
         }, displayTime);
-    }
-
-    public static async defaultElementEvent(message: Message.AnyMessage, errorArgs?: ErrorArguments): Promise<void> {
-        const response = await Script.Background.sendMessageToActiveContent(message);
-
-        if (API.isErrorResponse(response))
-            this.displayError(errorArgs || {});
     }
 }
 

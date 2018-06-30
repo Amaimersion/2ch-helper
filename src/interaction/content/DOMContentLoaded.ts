@@ -1,4 +1,4 @@
-import {DOMLoaded, Method} from "@modules/dom";
+import {DOMLoaded, CheckMethod} from "@modules/dom";
 import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 import {PageOptions} from "./screenshot";
@@ -13,25 +13,22 @@ abstract class DOMContentLoaded {
      * Runs when the page is loaded.
      */
     public static main(): void {
-        this.run(() => {PageElements.main();});
-        this.run(() => {Settings.main();});
-        this.run(() => {PageOptions.main();});
-        this.run(() => {Statistics.main();});
+        DOMLoaded.run(() => {PageElements.main()}, true, this.checkForThread);
+        DOMLoaded.run(() => {Settings.main()}, true, this.checkForThread);
+        DOMLoaded.run(() => {PageOptions.main()}, true, this.checkForThread);
+        DOMLoaded.run(() => {Statistics.main()}, true);
     }
 
     /**
-     * Runs a method and ignores errors if any.
-     *
-     * @param method The method for execution.
+     * Checks if a current page is a thread.
      */
-    protected static run(method: Method): void {
-        try {
-            method();
-        } catch (error) {
-            console.error(error);
-        }
+    protected static checkForThread: CheckMethod = (location) => {
+        // (?<protocol>.*)(?<host>2ch\.hk)(?<board>\/.*\/)(?<resource>res\/)(?<thread>.*)(?<format>\.html)
+        const regexp = new RegExp(/(.*)(2ch\.hk)(\/.*\/)(res\/)(.*)(\.html)/, "");
+
+        return regexp.test(location.href);
     }
 }
 
 
-DOMLoaded.run(() => DOMContentLoaded.main());
+DOMLoaded.run(() => {DOMContentLoaded.main();});
