@@ -200,10 +200,10 @@ export abstract class Screenshot {
             }
         }
 
-        const mergedImageURI = await this.mergeImages(croppedImages, settingKey);
-        const fileName = (
-            `${this._settings[settingKey].name}.${this._settings[settingKey].format}`
-        );
+        const mergedImageBlob = await this.mergeImages(croppedImages, settingKey);
+        const mergedImageURI = URL.createObjectURL(mergedImageBlob);
+        const fileName = `${this._settings[settingKey].name}.${this._settings[settingKey].format}`;
+
         const downloadParameters: chrome.downloads.DownloadOptions = {
             url: mergedImageURI,
             filename: fileName
@@ -218,7 +218,7 @@ export abstract class Screenshot {
      * @param images The images for merging.
      * @param settingKey The key of the screenshot settings.
      */
-    protected static mergeImages(images: HTMLImageElement[], settingKey: ScreenshotKey): string {
+    protected static async mergeImages(images: HTMLImageElement[], settingKey: ScreenshotKey): Promise<Blob> {
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
 
@@ -266,9 +266,13 @@ export abstract class Screenshot {
         const imageFormat = this.getFormat(settingKey);
         const imageQuality = this.getQuality(settingKey, 100); // `0 <= x <= 1`.
 
-        const dataURL = canvas.toDataURL(`image/${imageFormat}`, imageQuality);
+        const blob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => {
+                return resolve(blob);
+            }, `image/${imageFormat}`, imageQuality);
+        });
 
-        return dataURL;
+        return blob;
     }
 
     /**

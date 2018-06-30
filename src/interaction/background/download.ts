@@ -64,11 +64,16 @@ export abstract class Download {
          */
         const getMHTML = (): any => {
             return new Promise<any>((resolve) => {
+                if (!chrome.pageCapture || !chrome.pageCapture.saveAsMHTML) {
+                    throw new Error("Не поддерживается браузером");
+                }
+
                 chrome.pageCapture.saveAsMHTML({tabId: activeTab.id}, (data) => {
                     return resolve(URL.createObjectURL(data));
                 });
             });
         };
+
         /**
          * Gets the name of the active page.
          */
