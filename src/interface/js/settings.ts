@@ -104,4 +104,4 @@ abstract class Settings extends PageInfo {
 }
 
 
-DOMLoaded.runFunction(() => Settings.main());
+DOMLoaded.run(() => Settings.main());

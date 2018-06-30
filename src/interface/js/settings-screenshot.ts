@@ -142,4 +142,4 @@ abstract class SettingsScreenshot extends PageInfo {
 }
 
 
-DOMLoaded.runFunction(() => SettingsScreenshot.main());
+DOMLoaded.run(() => SettingsScreenshot.main());

@@ -1,4 +1,9 @@
 /**
+ * Any non-async function.
+ */
+export type Method = (...args: any[]) => any;
+
+/**
  * Handles DOMContentLoaded requests.
  */
 export abstract class DOMLoaded {
@@ -7,7 +12,7 @@ export abstract class DOMLoaded {
      *
      * @param method The method for execution.
      */
-    public static runFunction(method: (...args: any[]) => any): void {
+    public static run(method: Method): void {
         if (document.readyState === "loading") {
             document.addEventListener("DOMContentLoaded", method);
         } else {

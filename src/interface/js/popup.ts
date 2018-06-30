@@ -133,4 +133,4 @@ abstract class Popup {
 }
 
 
-DOMLoaded.runFunction(() => Popup.main());
+DOMLoaded.run(() => Popup.main());

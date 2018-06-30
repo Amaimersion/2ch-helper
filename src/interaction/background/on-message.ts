@@ -2,6 +2,7 @@ import {Message, OnMssg} from "@modules/communication";
 import {Download} from "./download";
 import {Screenshot} from "./screenshot";
 import {Settings} from "./settings";
+import {Statistics} from "./statistics";
 
 
 /**
@@ -74,6 +75,19 @@ abstract class OnMessage extends OnMssg.OnMessage {
                         await Settings.main();
                         Screenshot.updateSettings();
                         Download.updateSettings();
+                    },
+                    sendResponse
+                );
+                break;
+            }
+
+            case "updateStatistics": {
+                await OnMessage.runAsyncMethod(
+                    () => {
+                        return Statistics.updateTotalSpent(
+                            message.data.focusOnTime,
+                            message.data.focusOffTime
+                        );
                     },
                     sendResponse
                 );
