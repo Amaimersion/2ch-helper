@@ -1,6 +1,6 @@
 # This folder contains a source code
 
-## Files description
+## Folders description
 
 - `build` - a folder which contains a webpack entry points to build;
 - `common` - a folder which contains a common resources used by `interaction`/`interface`;
