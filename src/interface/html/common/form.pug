@@ -1,33 +1,84 @@
 extends ./html5
 
 
-block append head
-  +link("/interface/css/libs/bootstrap-4.0.0.min.css")
+block append vars
+  - var placeholders = {
+  -  fileName: "Не должно содержать расширение и запрещенные символы",
+  -  from0To100: "Число от 0 до 100",
+  -  hexNumber: `Шестнадцатеричное число со знаком "#"`,
+  -  positiveNumber: "Положительное число",
+  -  typesForDownload: "Типы файлов без точки, перечисленные через запятую"
+  -};
 
 
 block append mixins
-  mixin form-group(object={})
-    div(class="form-group")&attributes(attributes)
+  mixin main()
+    main()&attributes(attributes)
+      block
+
+  mixin form()
+    form(class="custom-form" id="form")&attributes(attributes)
+      block
+
+  mixin row()
+    div(class="row custom-row-fix")&attributes(attributes)
+      block
+
+  mixin col()
+    div(class="col form-group")&attributes(attributes)
       block
 
   mixin label(object={})
-    label(class=object.class ? object.class : "d-block" for=object.for)&attributes(attributes)=object.name
+    label(for=object.for)&attributes(attributes)=object.text
 
   mixin input(object={})
-    input(class=object.class ? object.class : "form-control" id=object.id type="text" placeholder=object.name)&attributes(attributes)
+    input(
+      required
+      class="form-control"
+      id=object.id
+      type=object.type
+      placeholder=object.placeholder
+      data-type=object.dataType ? object.dataType : "undefined"
+    )&attributes(attributes)
 
-  mixin button(object={})
-    button(class=object.class ? object.class : "btn btn-primary" id=object.id type="button")&attributes(attributes)=object.name
-
-  mixin span(object={})
-    span(id=object.id)&attributes(attributes)=object.name
+  mixin checkbox(object={})
+    label(class="custom-control custom-checkbox")
+      input(
+        class="custom-control-input"
+        type="checkbox",
+        id=object.id,
+        data-type=object.dataType ? object.dataType : "undefined"
+      )&attributes(attributes)
+      span(class="custom-control-indicator")
 
   mixin select(object={})
-    select(class=object.class ? object.class : "custom-select" id=object.id)&attributes(attributes)
-      each option in object.options
-        option(value=option.value)=option.name
+    select(required class="custom-select" id=object.id data-type=object.dataType ? object.dataType : "undefined")
+      each item in object.items
+        option(value=item.value)=item.text
 
-  mixin form-check-inline(object)
-    div(class="form-check form-check-inline")
-      input(class="form-check-input" id=object.inputId type="radio" name=object.inputName)
-      label(class="form-check-label" for=object.inputId)=object.labelName
+  mixin button(object={})
+    button(
+      class="btn btn-primary"
+      id=object.id
+      type="button"
+    )&attributes(attributes)=object.text
+
+  mixin buttons()
+    +row()
+      +col()(class="text-left")
+        +button({text: "Восстановить", id: "reset"})(type="reset")
+
+      +col()(class="text-center")
+        +button({text: "Сохранить", id: "save"})(type="submit")
+
+      +col()(class="text-right")
+        +button({text: "Очистить", id: "clear"})(type="button")
+
+  mixin title(object={})
+    div(class="text-center font-weight-bold custom-margin-bottom")
+     p&attributes(attributes)=object.text
+
+
+block append head
+  +css("/interface/css/libs/bootstrap-4.0.0.min.css")
+  +css("/interface/css/styles/settings-iframe.css")

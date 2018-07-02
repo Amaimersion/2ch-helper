@@ -1,25 +1,41 @@
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
-import {AvailableDownloadKey, UserSettings} from "@modules/storage-sync";
+import {DownloadKey, UserSettings} from "@modules/storage-sync";
+import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 
 
+/**
+ * Handles download requests.
+ */
 export abstract class Download {
-    private static settings: UserSettings = undefined;
+    private static _settings: UserSettings = undefined;
 
+    /**
+     * Starts download of images.
+     */
     public static images(): Promise<void> {
         return this.handleDownload("images");
     }
 
+    /**
+     * Starts download of video.
+     */
     public static video(): Promise<void> {
         return this.handleDownload("video");
     }
 
+    /**
+     * Starts download of both images and video.
+     */
     public static async media(): Promise<void> {
         await this.images();
         await this.video();
     }
 
+    /**
+     * Starts download of thread.
+     */
     public static async thread(): Promise<void> {
         const response = await Script.Content.sendMessageToBackground({
             type: "command",
@@ -27,23 +43,34 @@ export abstract class Download {
         });
 
         if (API.isErrorResponse(response)) {
-            throw new Error(response.errorText || `Cannot handle download of thread.`);
+            throw new Error(response.errorText || "The background script cannot download the thread.");
         }
     }
 
-    protected static async handleDownload(settingId: AvailableDownloadKey): Promise<void> {
-        if (!this.settings) {
-            this.settings = await this.getSettings();
+    /**
+     * Updates a current user settings.
+     */
+    public static async updateSettings(): Promise<void> {
+        this._settings = await this.getSettings();
+    }
+
+    /**
+     * Handles download of an elements.
+     *
+     * @param settingKey The key of the download settings.
+     */
+    protected static async handleDownload(settingKey: DownloadKey): Promise<void> {
+        if (!this._settings) {
+            this._settings = await this.getSettings();
         }
 
-        const thread = API.getThread();
-        const query = this.createTypesQuery(this.settings[settingId].types);
+        const query = this.createTypesQuery(this._settings[settingKey].types);
         let pageLinks: NodeListOf<HTMLLinkElement> = undefined;
 
         try {
             pageLinks = API.getElements<HTMLLinkElement>({
                 selector: query,
-                dcmnt: thread
+                dcmnt: PageElements.thread
             });
         } catch (error) {
             console.warn("Could not find a links in the thread.");
@@ -61,19 +88,33 @@ export abstract class Download {
             command: "downloadLinks",
             data: {
                 links: Array.from(hrefs),
-                type: settingId
+                type: settingKey
             }
         });
 
         if (API.isErrorResponse(response)) {
-            throw new Error(response.errorText || `Cannot handle download for "${settingId}".`);
+            throw new Error(
+                response.errorText || `The background script cannot download links for the key "${settingKey}".`
+            );
         }
     }
 
+    /**
+     * Gets an user settings for the `settingsDownload` key.
+     */
     protected static getSettings(): Promise<UserSettings> {
         return Settings.get("settingsDownload");
     }
 
+    /**
+     * Creates a query selector for search of links with the certain type.
+     *
+     * @param types The types for search. Should not contain a dot symbol.
+     *
+     * @example
+     * types = ["jpg", "jpeg", "png", "gif"];
+     * Returns: `a[href$=".jpg"],a[href$=".jpeg"],a[href$=".png"],a[href$=".gif"]`
+     */
     protected static createTypesQuery(types: string[]): string {
         let query = "";
 

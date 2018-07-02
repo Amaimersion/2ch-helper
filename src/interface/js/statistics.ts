@@ -1,3 +1,46 @@
+import {DOMLoaded} from "@modules/dom";
+import {UserSettings} from "@modules/storage-sync";
+import {API} from "@modules/api";
+
+
+abstract class Statistics {
+    private static _settings: UserSettings = undefined;
+
+    public static async main(): Promise<void> {
+        if (!this._settings) {
+            this._settings = await API.getSettings("statistics");
+        }
+
+        this.bindTime();
+    }
+
+    protected static bindTime(): void {
+        const element = API.getElement<HTMLElement>({
+            selector: "#statistics-time"
+        });
+
+        let value: any = undefined;
+
+        if (typeof this._settings.totalSpent === "number") {
+            value = this._settings.totalSpent;
+
+            console.log(value);
+
+            // from milliseconds to hours.
+            value = value / 1000 / 3600;
+            value = Math.floor(value);
+        } else {
+            value = "Ошибка";
+            console.error("The time is not a number type.");
+        }
+
+        element.textContent = value;
+    }
+}
+
+
+DOMLoaded.run(() => {Statistics.main()});
+
 /*
 import {DOMLoaded} from "@modules/dom";
 import {UserSettings} from "@modules/user-settings";

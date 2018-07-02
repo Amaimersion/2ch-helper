@@ -6,25 +6,61 @@ block append vars
 
 
 block append head
-  +link("/interface/css/libs/bootstrap-slider.min.css")
-  +link("/interface/css/styles/settings-iframe.css")
-  +script("/interface/js/libs/bootstrap-slider.min.js")
-  +script("/interface/js/scripts/settings-download.js")
+  +js("/interface/js/scripts/settings-download.js")
 
 
-block main
-  div(class="container custom-container")
-    form
-      +form-group()
-        +label({for: "nameForPosts", name: "Имя файла"})
-        +form-check-inline({inputId: "downloadNameAuto", inputName: "downloadNameMode", labelName: "Автоопределение"})
-        +form-check-inline({inputId: "downloadNameUser", inputName: "downloadNameMode", labelName: "Пользовательское"})
-        +input({id: "downloadName", name: "Имя файла"})(class="mt-1")
+block append main
+  +main()
+    +form()
+      +title({text: "Изображения"})
 
-      +form-group()
-        +label({for: "downloadDelay", name: "Задержка"})
-        +input()(id="downloadDelay" data-provide="slider" type="text" data-slider-min="500" data-slider-max="2000" data-slider-step="100")
-        +span({id: "downloadDelayValue"})(class="pl-2")
-        +span({id: "downloadDelayUnit", name: "мс"})
+      +row()
+        +col()
+          +label({for: "images-fileName", text: "Имя файла"})
+          +input({id: "images-fileName", type: "text", dataType: "string", placeholder: placeholders.fileName})
 
-      +button({id: "save", name: "Сохранить"})
+        +col()
+          +label({for: "images-autoFileName", text: "Автоматическое определение имени файла"})
+          +checkbox({id: "images-autoFileName", dataType: "boolean"})
+
+      +row()
+        +col()
+          +label({for: "images-delay", text: "Задержка"})
+          +input({id: "images-delay", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "images-types", text: "Типы файлов"})
+          +input({id: "images-types", type: "text", dataType: "stringArray", placeholder: placeholders.typesForDownload})
+
+      +title({text: "Видео"})
+
+      +row()
+        +col()
+          +label({for: "video-fileName", text: "Имя файла"})
+          +input({id: "video-fileName", type: "text", dataType: "string", placeholder: placeholders.fileName})
+
+        +col()
+          +label({for: "video-autoFileName", text: "Автоматическое определение имени файла"})
+          +checkbox({id: "video-autoFileName", dataType: "boolean"})
+
+      +row()
+        +col()
+          +label({for: "video-delay", text: "Задержка"})
+          +input({id: "video-delay", type: "number", dataType: "number", placeholder: placeholders.positiveNumber})(min=0)
+
+        +col()
+          +label({for: "video-types", text: "Типы файлов"})
+          +input({id: "video-types", type: "text", dataType: "stringArray", placeholder: placeholders.typesForDownload})
+
+      +title({text: "Тред"})
+
+      +row()
+        +col()
+          +label({for: "thread-fileName", text: "Имя файла"})
+          +input({id: "thread-fileName", type: "text", dataType: "string", placeholder: placeholders.fileName})
+
+        +col()
+          +label({for: "thread-autoFileName", text: "Автоматическое определение имени файла"})
+          +checkbox({id: "thread-autoFileName", dataType: "boolean"})
+
+      +buttons()

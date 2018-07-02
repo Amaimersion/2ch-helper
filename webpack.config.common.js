@@ -1,11 +1,13 @@
 const path = require('path');
-const webpack = require('webpack');
 const merge = require('webpack-merge');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const RemovePlugin = require('remove-files-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const {TsConfigPathsPlugin} = require('awesome-typescript-loader');
+
+
+//#region Custom plugins.
 
 class CreateManifestPlugin {
     constructor(options) {
@@ -50,20 +52,23 @@ class CreateManifestPlugin {
     }
 }
 
+//#endregion
+
+
 module.exports = function(env) {
     env = env || {};
     const platform = env.platform ? env.platform : 'chromium';
 
     return {
         entry: {
-            '/interface/js/scripts/popup': './src/build/interface/popup-build.js',
-            '/interface/js/scripts/settings': './src/build/interface/settings-build.js',
-            '/interface/js/scripts/settings-iframe': './src/build/interface/settings-iframe-build.js',
-            '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot-build.js',
-            '/interface/js/scripts/settings-download': './src/build/interface/settings-download-build.js',
-            '/interface/js/scripts/statistics': './src/build/interface/statistics-build.js',
-            '/interaction/js/scripts/content/content': './src/build/interaction/content.js',
-            '/interaction/js/scripts/background/background': './src/build/interaction/background.js'
+            '/interface/js/scripts/popup': './src/build/interface/popup.js',
+            '/interface/js/scripts/settings': './src/build/interface/settings.js',
+            '/interface/js/scripts/settings-iframe': './src/build/interface/settings-iframe.js',
+            '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot.js',
+            '/interface/js/scripts/settings-download': './src/build/interface/settings-download.js',
+            '/interface/js/scripts/statistics': './src/build/interface/statistics.js',
+            '/interaction/content': './src/build/interaction/content.js',
+            '/interaction/background': './src/build/interaction/background.js'
         },
         output: {
             path: path.resolve(__dirname, 'dist', platform)
@@ -105,21 +110,26 @@ module.exports = function(env) {
                 before: {
                     root: __dirname,
                     include: [`dist/${platform}`]
+                },
+                after: {
+                    root: __dirname,
+                    test: [{
+                        folder: `dist/${platform}/interface/js/scripts`,
+                        method: (filePath) => {
+                            return filePath.includes("settings-iframe.js");
+                        }
+                    }]
                 }
             }),
             new CopyWebpackPlugin([
                 {
-                    from: './static/interface',
+                    from: './src/static/interface',
                     to: './interface'
-                },
-                {
-                    from: './static/interface/js/libs',
-                    to: './interface/js/libs'
                 }
             ]),
             /*
-             * Replace with mini-css-extract-plugin, when they do
-             * this fucking support for filename function type.
+             * Replace with mini-css-extract-plugin, when
+             * they do a support for filename function type.
              * https://github.com/webpack-contrib/mini-css-extract-plugin/issues/67
              * https://github.com/webpack-contrib/mini-css-extract-plugin/issues/143
              */
@@ -166,12 +176,6 @@ module.exports = function(env) {
         ],
         resolve: {
             alias: {
-                /*
-                 * "bootstrap-slider.js have optional jquery dependency".
-                 * "So, in order to not include jquery, we redirect to the stub file".
-                 * https://github.com/seiyria/bootstrap-slider#how-do-i-exclude-the-optional-jquery-dependency-from-my-build
-                 */
-                jquery: path.resolve(__dirname, './src/common/js/libs/jquery-stub.js'),
                 Interface: path.resolve(__dirname, './src/interface'),
                 Interaction: path.resolve(__dirname, './src/interaction')
             },
@@ -189,37 +193,6 @@ module.exports = function(env) {
                 '.scss',
                 '.pug'
             ]
-        },
-        externals: [
-            /*
-             * Some scripts (for now it is only "settings-iframe.ts") perform the import of "bootstrap-slider.js" library.
-             * However, it is only necessary for type definition, not entire lib.
-             * So, we exclude the lib from bundling and only looking for one instance of "bootstrap-slider.js".
-             *
-             * Different approaches:
-             * 1. If not exclude the lib, then some scripts (not only "settings-iframe.ts")
-             *    will contain "bootstrap-slider.js" and size of file and source maps will be large.
-             * 2. If create an entry point only for the lib and exclude from everywhere, then
-             *    webpack wraps out the lib and it can't add it's "Slider" constructor in the global namespace (see 3).
-             * 3. "bootstrap-slider.js" designed for usage without any initizalition. It is means that it add
-             *    it's constructor ("Slider") in the global namespace. So, if just manually copy in the build and
-             *    paste into the page, then it will be work. Therefore exclude the lib from everywhere and manually copy it.
-             *
-             * It is obvious that the second approach is preferable.
-             * In this case it's works with npm package ("bootstrap-slider"), not just a file.
-             * But for now we use third approach because of *see 2*.
-             */
-            function(context, request, callback) {
-                if (request === 'bootstrap-slider' /* *only for second approach* && !context.includes('build') */) {
-                    /*
-                     * Replace entire lib with module.exports = Slider.
-                     * Later it will be called as "new Slider()".
-                     */
-                    callback(null, 'Slider');
-                } else {
-                    callback();
-                }
-            }
-        ]
+        }
     }
 }

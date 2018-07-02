@@ -6,28 +6,28 @@ block append vars
 
 
 block append mixins
-  mixin navbar-element(id, name)
-    div(class="col custom-navbar-element" id=id)&attributes(attributes)=name
+  mixin navbar-item(object={})
+    div(class="col custom-navbar-item" id=object.id)&attributes(attributes)=object.text
+      block
 
-  mixin iframe(id, src)
-    iframe(id=id src=src frameborder="0")&attributes(attributes)="Ваш браузер не поддерживает iframe."
+  mixin iframe(object={})
+    iframe(frameborder="0" src=object.src id=object.id)&attributes(attributes)="Ваш браузер не поддерживает iframe."
 
 
 block append head
-  +link("/interface/css/styles/settings.css")
-  +script("/interface/js/scripts/settings.js")
+  +css("/interface/css/styles/settings.css")
+  +js("/interface/js/scripts/settings.js")
 
 
 block main
-  div="Not available in 1.0.0-beta.6"
-//-
-  main(class="custom-main custom-container")
-    div(class="custom-main-content")
-      div(class="custom-main-navbar")
-        div(class="row custom-row")
-          +navbar-element("settings-screenshot-navbar", "Скриншот")(class="custom-border-bottom")
-          +navbar-element("settings-download-navbar", "Загрузка")
+  main(class="custom-main")
+    div(class="custom-content custom-main-content")
+      div(class="container")
+        div(class="custom-navbar-content")
+          div(class="row custom-row-fix")
+            +navbar-item({id: "navbar-screenshot", text: "скриншот"})
+            +navbar-item({id: "navbar-download", text: "загрузка"})
 
-      div(class="custom-main-iframes")
-        +iframe("settings-screenshot", "settings-screenshot.html")
-        +iframe("settings-download", "settings-download.html")
+        div(class="custom-iframes-content")
+          +iframe({id: "iframe-screenshot", src: "settings-screenshot.html"})
+          +iframe({id: "iframe-download", src: "settings-download.html"})

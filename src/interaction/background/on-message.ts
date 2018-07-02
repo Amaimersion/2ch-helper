@@ -1,9 +1,17 @@
 import {Message, OnMssg} from "@modules/communication";
 import {Download} from "./download";
 import {Screenshot} from "./screenshot";
+import {Settings} from "./settings";
+import {Statistics} from "./statistics";
 
 
+/**
+ * Handles message requests.
+ */
 abstract class OnMessage extends OnMssg.OnMessage {
+    /**
+     * Handles messages.
+     */
     public static messageHandler: OnMssg.MessageEvent<Message.Background> = async (message, sender, sendResponse) => {
         switch (message.type) {
             case "command": {
@@ -24,53 +32,65 @@ abstract class OnMessage extends OnMssg.OnMessage {
         }
     }
 
+    /**
+     * Handles messages of `command` type.
+     */
     protected static commandHandler: OnMssg.MessageEvent<Message.Background> = async (message, sender, sendResponse) => {
         switch (message.command) {
-            case "downloadLinks": {
-                try {
-                    await Download.links(message.data.links, message.data.type);
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "downloadThread": {
-                try {
-                    await Download.thread();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
-                break;
-            }
-
-            case "screenshotHandleCoordinates": {
-                try {
-                    await Screenshot.handleCoordinates(message.data);
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
-
-                sendResponse({status: true});
+            case "screenshotCaptureCoordinates": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Screenshot.captureCoordinates(message.data.coordinates, message.data.settingKey)},
+                    sendResponse
+                );
                 break;
             }
 
             case "screenshotCreateFullImage": {
-                try {
-                    await Screenshot.createFullImage();
-                } catch (error) {
-                    sendResponse({status: false, errorText: error.message});
-                    throw error;
-                }
+                await OnMessage.runAsyncMethod(
+                    () => {return Screenshot.createFullImage(message.data)},
+                    sendResponse
+                );
+                break;
+            }
 
-                sendResponse({status: true});
+            case "downloadLinks": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Download.links(message.data.links, message.data.type)},
+                    sendResponse
+                );
+                break;
+            }
+
+            case "downloadThread": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Download.thread()},
+                    sendResponse
+                );
+                break;
+            }
+
+            case "updateSettings": {
+                await OnMessage.runAsyncMethod(
+                    async () => {
+                        await Settings.main();
+                        Screenshot.updateSettings();
+                        Download.updateSettings();
+                    },
+                    sendResponse
+                );
+                break;
+            }
+
+            case "updateStatistics": {
+                await OnMessage.runAsyncMethod(
+                    () => {
+                        return Statistics.updateTotalSpent(
+                            message.data.focusOnTime,
+                            message.data.focusOffTime
+                        );
+                    },
+                    sendResponse
+                );
                 break;
             }
 

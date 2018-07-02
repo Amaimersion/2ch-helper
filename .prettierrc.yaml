@@ -23,6 +23,6 @@ overrides:
       options:
         singleQuote: true
 
-    - files: ["*.pug", "*.scss"]
+    - files: ["*.pug", "*.scss", "*.md"]
       options:
         tabWidth: 2

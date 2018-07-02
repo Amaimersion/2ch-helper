@@ -1,121 +1,106 @@
-/*
-
 import {DOMLoaded} from "@modules/dom";
-import {ElementsInfo, ElementsEvent, Iframe} from "./settings-iframe";
+import {UserSettings} from "@modules/storage-sync";
+import {Forms, Iframe} from "./settings-iframe";
 
 
 abstract class PageInfo {
-    public static nameInputId: string = "downloadName";
-    public static autoInputId: string = "downloadNameAuto";
-    public static userInputId: string = "downloadNameUser";
+    protected static settingKey = "settingsDownload";
 
-    public static buttons: ElementsInfo.ButtonInfo[] = [
+    protected static formElement: Forms.Element = {
+        id: "form"
+    };
+
+    protected static inputForms: Forms.Input[] = [
+        // Images.
         {
-            id: "save",
-            events: [
-                {
-                    type: "click",
-                    event: function() {
-                        ElementsEvent.SaveButton.defaultEvent(
-                            PageInfo.forms, SettingsDownload.userSettingId
-                        );
-                    }
-                }
-            ]
+            formId: "images-fileName",
+            settingField: "images",
+            settingKey: "fileName"
+        },
+        {
+            formId: "images-autoFileName",
+            settingField: "images",
+            settingKey: "autoFileName"
+        },
+        {
+            formId: "images-delay",
+            settingField: "images",
+            settingKey: "delay"
+        },
+        {
+            formId: "images-types",
+            settingField: "images",
+            settingKey: "types"
+        },
+        // Video.
+        {
+            formId: "video-fileName",
+            settingField: "video",
+            settingKey: "fileName"
+        },
+        {
+            formId: "video-autoFileName",
+            settingField: "video",
+            settingKey: "autoFileName"
+        },
+        {
+            formId: "video-delay",
+            settingField: "video",
+            settingKey: "delay"
+        },
+        {
+            formId: "video-types",
+            settingField: "video",
+            settingKey: "types"
+        },
+        // Thread.
+        {
+            formId: "thread-fileName",
+            settingField: "thread",
+            settingKey: "fileName"
+        },
+        {
+            formId: "thread-autoFileName",
+            settingField: "thread",
+            settingKey: "autoFileName"
         }
     ];
 
-    public static forms: ElementsInfo.FormInfo[] = [
+    protected static buttonForms: Forms.Button[] = [
         {
-            type: "input",
-            data: [
-                {elementId: "downloadName", settingId: "fileName"}
-            ]
+            formId: "reset",
+            eventType: "click",
+            eventMethod: () => {
+                Iframe.Buttons.resetButtonEvent();
+            }
         },
         {
-            type: "span",
-            data: [
-                {elementId: "downloadDelayValue", settingId: "delay"}
-            ]
-        },
-        {
-            type: "checkbox",
-            data: [
-                {elementId: "downloadNameAuto", settingId: "autoDetectionName"},
-                {elementId: "downloadNameUser", settingId: "userName"}
-            ]
-        }
-    ];
-
-    public static sliders: ElementsInfo.SliderInfo[] = [
-        {
-            id: "#downloadDelay",
-            settingId: "delay",
-            options: {
-                tooltip: "hide"
-            },
-            events: [
-                {
-                    name: "change",
-                    event: function(sliderValue: any) {
-                        const id = "downloadDelayValue";
-                        const value = sliderValue.newValue;
-
-                        ElementsEvent.Slider.changeEvent(id, value);
-                    }
-                }
-            ]
+            formId: "clear",
+            eventType: "click",
+            eventMethod: () => {
+                Iframe.Buttons.clearButtonEvent(PageInfo.inputForms);
+            }
         }
     ];
 }
 
-
-abstract class SettingsDownload {
-    public static userSettingId: string = "settings_download";
+abstract class SettingsScreenshot extends PageInfo {
+    protected static _userSettings: UserSettings = undefined;
 
     public static async main(): Promise<void> {
-        await Iframe.initUserSettings(this.userSettingId);
-        Iframe.bindButtons(PageInfo.buttons);
-        Iframe.bindSliders(PageInfo.sliders, this.userSettingId);
-        Iframe.bindForms(PageInfo.forms, this.userSettingId);
-        this.customBind();
+        this._userSettings = await Iframe.Settings.getUserSettings(this.settingKey);
+        this.bindForms();
     }
 
-    public static customBind(): void {
-        const name = <HTMLInputElement>document.getElementById(PageInfo.nameInputId);
-        const auto = <HTMLInputElement>document.getElementById(PageInfo.autoInputId);
-        const user = <HTMLInputElement>document.getElementById(PageInfo.userInputId);
-
-        if (!name) {
-            console.error(`Could not find an input with the id - "${PageInfo.nameInputId}".`);
-            return;
-        }
-
-        if (!auto) {
-            console.error(`Could not find an input with the id - "${PageInfo.autoInputId}".`);
-            return;
-        }
-
-        if (!user) {
-            console.error(`Could not find an input with the id - "${PageInfo.userInputId}".`);
-            return;
-        }
-
-        if (auto.checked) {
-            name.style.display = "none";
-        }
-
-        auto.addEventListener("click", () => {
-            name.style.display = "none";
-        });
-
-        user.addEventListener("click", () => {
-            name.style.display = "block";
+    protected static bindForms(): void {
+        Iframe.Settings.bindForms(this.inputForms, this._userSettings);
+        Iframe.Settings.bindButtons(this.buttonForms);
+        Iframe.Settings.bindForm(this.formElement, () => {
+            this._userSettings = Iframe.Buttons.saveButtonEvent(this.inputForms, this._userSettings);
+            Iframe.Settings.saveUserSettings(this.settingKey, this._userSettings);
         });
     }
 }
 
 
-DOMLoaded.runFunction(() => SettingsDownload.main());
-
-*/
+DOMLoaded.run(() => SettingsScreenshot.main());

@@ -2,22 +2,22 @@ extends ./html5
 
 
 block append head
-  +link("/interface/css/libs/bootstrap-4.0.0.min.css")
+  +css("/interface/css/libs/bootstrap-4.0.0.min.css")
 
 
 block header
   header(class="custom-header custom-border-bottom")
-    div(class="custom-header-content")
-      div(class="row custom-row")
-        div(class="custom-header-logo")
-          img(src="/interface/icons/logo/logo-48.png" alt="")
-          h1="2ch-helper"
+    div(class="container custom-content custom-header-content")
+      div(class="row custom-row-fix")
+        div(class="custom-header-info")
+          div(class="custom-header-title")
+            h1(class="custom-title")="2ch-helper"
 
 
 block footer
   footer(class="custom-footer custom-border-top")
-    div(class="custom-footer-content")
-      div(class="row custom-row")
+    div(class="custom-content custom-footer-content")
+      div(class="row custom-row-fix")
         if year
           div(class="col")
             p=year

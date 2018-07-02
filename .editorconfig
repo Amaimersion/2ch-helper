@@ -10,5 +10,5 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.{pug,scss}]
+[*.{pug,scss,md}]
 indent_size = 2

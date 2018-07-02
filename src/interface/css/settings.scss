@@ -3,45 +3,30 @@
 
 /* Main. */
 
-.custom-main-navbar {
-  height: 51px; /* +1px because 1px border. */
-  line-height: 40px;
-  padding-top: 10px;
-}
-
-.custom-navbar-element {
+.custom-navbar-item {
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  vertical-align: middle;
+  flex-direction: column;
+  font-size: 3vh;
+  text-transform: uppercase;
   cursor: pointer;
+  opacity: .5;
+  border-radius: 5px;
+  margin: 0 .5vh;
+  background: radial-gradient(circle, #CCCCCCAA, #CCCCCCCC, #CCCCCCDD);
+  //background: linear-gradient(to bottom right, #FFFFFF10, #FFFFFF20, #FFFFFF25);
+
+  &, &:hover {
+    transition: opacity .2s ease;
+  }
 
   &:hover {
-    background-color: rgba(221, 221, 221, 0.7);
+    opacity: 1;
   }
 }
 
-.custom-navbar-element,
-.custom-navbar-element:hover {
-  transition: background-color .2s;
-}
-
-.custom-main-iframes {
-  iframe {
-    display: none;
-    width: 100%;
-  }
-
-  iframe:nth-child(1) {
-    display: block;
-    height: 524px;
-  }
-}
-
-
-/* Footer. */
-
-/*
- * Override Google Chrome stylesheet.
- */
-.custom-footer {
-  .col * {
-    line-height: inherit;
-  }
+.active-custom-navbar-item {
+  opacity: 1;
 }

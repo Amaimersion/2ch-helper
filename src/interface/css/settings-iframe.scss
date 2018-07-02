@@ -8,6 +8,102 @@ html {
   position: relative;
 }
 
-.custom-container {
-  padding-top: 10px;
+
+/* Main. */
+
+.custom-row-fix {
+  margin: 0;
+}
+
+.custom-form {
+  margin-top: 1vh;
+}
+
+.custom-margin-bottom {
+  margin-bottom: 1vh;
+}
+
+.custom-button {
+  color: inherit;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: none;
+  padding: .375rem .75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .25rem;
+  //background: radial-gradient(circle, #FFFFFF10, #FFFFFF20, #FFFFFF25);
+  background: linear-gradient(to bottom right, #FFFFFF10, #FFFFFF20, #FFFFFF25);
+
+  &:hover, &:active {
+    background: linear-gradient(to bottom left, #FFFFFF10, #FFFFFF20, #FFFFFF25);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+/** Custom checkbox.
+ *
+ * https://bootsnipp.com/snippets/gv6Pe
+ */
+
+.custom-checkbox {
+  min-height: 1rem;
+  padding-left: 0;
+  margin-right: 0;
+  cursor: pointer;
+  padding-top: 5px;
+}
+
+.custom-checkbox .custom-control-indicator {
+  content: "";
+  display: inline-block;
+  position: relative;
+  width: 30px;
+  height: 10px;
+  background-color: #818181;
+  border-radius: 15px;
+  margin-right: 10px;
+  -webkit-transition: background .2s ease;
+  transition: background .2s ease;
+  vertical-align: middle;
+  margin: 0 5px;
+  box-shadow: none;
+}
+
+.custom-checkbox .custom-control-indicator:after {
+  content: "";
+  position: absolute;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: #f1f1f1;
+  border-radius: 21px;
+  box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
+  left: -2px;
+  top: -4px;
+  -webkit-transition: left .2s ease, background .2s ease, box-shadow .1s ease;
+  transition: left .2s ease, background .2s ease, box-shadow .1s ease;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-indicator {
+  background-color: #0069D9AA;
+  background-image: none;
+  box-shadow: none !important;
+}
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-indicator:after {
+  background-color: #0069D9;
+  left: 15px;
+}
+
+.custom-checkbox .custom-control-input:focus ~ .custom-control-indicator {
+  box-shadow: none !important;
 }

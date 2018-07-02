@@ -11,5 +11,10 @@
 
     "options_ui": {
         "browser_style": true
-    }
+    },
+
+    "permissions": [
+        "tabs",
+        "<all_urls>"
+    ]
 }

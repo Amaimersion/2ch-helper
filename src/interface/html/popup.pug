@@ -47,7 +47,7 @@ block append vars
 
 
 block append mixins
-  mixin custom-item(object)
+  mixin custom-item(object={})
     if object.id
       div(class="custom-item" id=object.id)&attributes(attributes)=object.name
     else
@@ -55,19 +55,19 @@ block append mixins
 
 
 block append head
-  +link("/interface/css/styles/popup.css")
-  +script("/interface/js/scripts/popup.js")
+  +css("/interface/css/styles/popup.css")
+  +js("/interface/js/scripts/popup.js")
 
 
 block header
   header(class="custom-header custom-border-bottom")
-    div(class="custom-header-content custom-content")
+    div(class="custom-content custom-header-content")
       h1="2ch-helper"
 
 
 block main
   main(class="custom-main" class=version ? "custom-border-bottom" : "")
-    div(class="custom-main-content custom-content")
+    div(class="custom-content custom-main-content")
       div(class="custom-options")
         div(class="custom-screenshots custom-options-border-bottom")
           each item in content.main.screenshots
@@ -85,5 +85,5 @@ block main
 block footer
   if version
     footer(class="custom-footer")
-      div(class="custom-footer-content custom-content")
+      div(class="custom-content custom-footer-content")
         p(class="custom-version" id="version")=version
