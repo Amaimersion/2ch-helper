@@ -65,7 +65,7 @@ module.exports = function(env) {
              * Webpack creates empty sources maps for css files.
              * So, we remove them.
              */
-            new RemovePlugin({
+            env.dontRemove ? {apply: () => {return true}} : new RemovePlugin({
                 after: {
                     root: __dirname,
                     test: [

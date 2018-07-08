@@ -106,7 +106,7 @@ module.exports = function(env) {
             ]
         },
         plugins: [
-            new RemovePlugin({
+            env.dontRemove ? {apply: () => {return true}} : new RemovePlugin({
                 before: {
                     root: __dirname,
                     include: [`dist/${platform}`]

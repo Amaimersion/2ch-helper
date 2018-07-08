@@ -3,6 +3,8 @@
     "version": "1.1.0",
     "description": "A browser extension which facilitates interaction with the imageboard 2ch.hk.",
     "scripts": {
+        "watch:chromium:dev": "webpack --watch --config webpack.config.dev --env.platform=chromium --env.dontRemove=true",
+        "watch:firefox:dev": "webpack --watch --config webpack.config.dev --env.platform=firefox --env.dontRemove=true",
         "build:chromium:prod": "webpack --config webpack.config.prod --env.platform=chromium",
         "build:chromium:dev": "webpack --config webpack.config.dev --env.platform=chromium",
         "build:firefox:prod": "webpack --config webpack.config.prod --env.platform=firefox",
