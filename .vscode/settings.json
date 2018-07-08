@@ -4,6 +4,7 @@
         "dist": true,
         "node_modules": true,
         ".awcache": true,
+        "2ch-helper-webstore": true,
 
         // IDE's and editor's folders.
         ".vs": true,
