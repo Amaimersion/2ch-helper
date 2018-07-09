@@ -177,6 +177,9 @@ export abstract class API {
         return (!response || !response.status || response.errorText) ? true : false;
     }
 
+    /**
+     * Generates a hash.
+     */
     public static generateHash(): string {
         return (Math.random() + 1).toString(36).slice(2);
     }

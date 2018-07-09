@@ -17,6 +17,14 @@ export namespace Elements {
 
 
 /**
+ * Custom classes that will be added to the page.
+ */
+interface CustomClasses {
+    downloadButton?: string;
+}
+
+
+/**
  * Handles checkboxes.
  */
 abstract class Checkboxes {
@@ -349,8 +357,8 @@ abstract class Custom {
     /**
      * The name of classes that will be appended to the custom elements.
      */
-    public static readonly elementsClasses = {
-        download: "custom-2ch-helper-download-button"
+    public static readonly elementsClasses: CustomClasses = {
+        downloadButton: "custom-2ch-helper-download-button"
     };
 
     /**
@@ -382,7 +390,7 @@ abstract class Custom {
         }
 
         figures.forEach((figure) => {
-            const alreadyExists = figure.querySelector(`.${this.elementsClasses.download}`);
+            const alreadyExists = figure.querySelector(`.${this.elementsClasses.downloadButton}`);
 
             // For preview posts click event not working.
             // So, we will re-create it.
@@ -419,15 +427,15 @@ abstract class Custom {
             const a = document.createElement("a");
             const img = document.createElement("img");
 
-            div.classList.add(this.elementsClasses.download);
-            div.id = `${this.elementsClasses.download}-${API.generateHash()}`;
+            div.classList.add(this.elementsClasses.downloadButton);
+            div.id = `${this.elementsClasses.downloadButton}-${API.generateHash()}`;
 
             div.style.display = "inline-block";
             div.style.verticalAlign = "middle";
 
-            a.id = `${this.elementsClasses.download}-${API.generateHash()}`;
+            a.id = `${this.elementsClasses.downloadButton}-${API.generateHash()}`;
 
-            img.id = `${this.elementsClasses.download}-${API.generateHash()}`;
+            img.id = `${this.elementsClasses.downloadButton}-${API.generateHash()}`;
             img.style.height = "1.55vh";
             img.src = chrome.extension.getURL("/interaction/assets/images/font-awesome/arrow-alt-circle-down-solid.svg");
             img.alt = "Save";
@@ -473,6 +481,13 @@ export abstract class PageElements {
      */
     public static get activePosts(): Set<Elements.Post> {
         return Checkboxes.activePosts;
+    }
+
+    /**
+     * The custom classes.
+     */
+    public static get customClasses(): CustomClasses {
+        return Custom.elementsClasses;
     }
 
     /**

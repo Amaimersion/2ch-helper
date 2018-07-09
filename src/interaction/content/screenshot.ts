@@ -277,6 +277,7 @@ interface ElementsInstances {
     postPanelInstance: HTMLElement;
     checkboxInstance: HTMLElement;
     spoilerInstance: HTMLElement;
+    customDownloadButton: HTMLDivElement;
 }
 
 /**
@@ -295,6 +296,7 @@ interface DefaultOptions {
     postPanelDisplay: string;
     checkboxDisplay: string;
     spoilerColor: string;
+    customDownloadButtonDisplay: string;
 }
 
 /**
@@ -309,7 +311,8 @@ export abstract class PageOptions {
         autorefresh: "#autorefresh-checkbox-bot",
         postPanel: ".postpanel",
         checkbox: `.post-details > input[type="checkbox"]`,
-        spoiler: ".spoiler"
+        spoiler: ".spoiler",
+        customDownloadButton: `.${PageElements.customClasses.downloadButton}`
     };
     protected static _elements: ElementsInstances = undefined;
     protected static _defaults: DefaultOptions = undefined;
@@ -324,6 +327,7 @@ export abstract class PageOptions {
             boardStatsBox: this.getElement(this.selectors.boardStatsBox) as HTMLDivElement,
             favoritesBox: this.getElement(this.selectors.favoritesBox) as HTMLDivElement,
             autorefresh: this.getElement(this.selectors.autorefresh) as HTMLInputElement,
+            customDownloadButton: this.getElement(this.selectors.customDownloadButton) as HTMLDivElement,
             postPanelInstance: this.getElement(this.selectors.postPanel),
             checkboxInstance: this.getElement(this.selectors.checkbox),
             spoilerInstance: this.getElement(this.selectors.spoiler)
@@ -350,7 +354,8 @@ export abstract class PageOptions {
             boardStatsBoxDisplay: this._elements.boardStatsBox ? this._elements.boardStatsBox.style.display : undefined,
             postPanelDisplay: this._elements.postPanelInstance ? this._elements.postPanelInstance.style.display : undefined,
             checkboxDisplay: this._elements.checkboxInstance ? this._elements.checkboxInstance.style.display : undefined,
-            spoilerColor: this._elements.spoilerInstance ? this._elements.spoilerInstance.style.color : undefined
+            spoilerColor: this._elements.spoilerInstance ? this._elements.spoilerInstance.style.color : undefined,
+            customDownloadButtonDisplay: this._elements.customDownloadButton ? this._elements.customDownloadButton.style.display : undefined
         };
     }
 
@@ -390,6 +395,11 @@ export abstract class PageOptions {
         spoilers.forEach((element) => {
             element.style.color = "inherit";
         });
+
+        const customDownloadButtons = document.querySelectorAll<HTMLElement>(this.selectors.customDownloadButton);
+        customDownloadButtons.forEach((element) => {
+            element.style.display = "none";
+        });
     }
 
     /**
@@ -420,6 +430,11 @@ export abstract class PageOptions {
         const spoilers = document.querySelectorAll<HTMLElement>(this.selectors.spoiler);
         spoilers.forEach((element) => {
             element.style.color = this._defaults.spoilerColor;
+        });
+
+        const customDownloadButtons = document.querySelectorAll<HTMLElement>(this.selectors.customDownloadButton);
+        customDownloadButtons.forEach((element) => {
+            element.style.display = this._defaults.customDownloadButtonDisplay;
         });
 
         // should be at the end because of `postPanels` and `checkboxes` display change.
