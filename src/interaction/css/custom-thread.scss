@@ -1,3 +1,18 @@
-body {
-  background-color: black !important;
+/**
+ * All the following classes are used for custom elements on the page.
+ * Name of the classes are related to the content scripts.
+ * !If you change the names, make sure you also change the names in the JS files!
+ *
+ * Related:
+ * `.custom-2ch-helper-download-button` - `page-elements.ts`, `Custom.elementsClasses`;
+ */
+
+
+.custom-2ch-helper-download-button {
+  display: inline-block;
+  vertical-align: middle;
+
+  img {
+    height: 1.55vh;
+  }
 }

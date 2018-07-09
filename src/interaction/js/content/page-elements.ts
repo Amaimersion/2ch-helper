@@ -430,13 +430,9 @@ abstract class Custom {
             div.classList.add(this.elementsClasses.downloadButton);
             div.id = `${this.elementsClasses.downloadButton}-${API.generateHash()}`;
 
-            div.style.display = "inline-block";
-            div.style.verticalAlign = "middle";
-
             a.id = `${this.elementsClasses.downloadButton}-${API.generateHash()}`;
 
             img.id = `${this.elementsClasses.downloadButton}-${API.generateHash()}`;
-            img.style.height = "1.55vh";
             img.src = chrome.extension.getURL("/interaction/assets/images/font-awesome/arrow-alt-circle-down-solid.svg");
             img.alt = "Save";
 
