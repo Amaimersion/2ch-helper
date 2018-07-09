@@ -67,8 +67,9 @@ module.exports = function(env) {
             '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot.js',
             '/interface/js/scripts/settings-download': './src/build/interface/settings-download.js',
             '/interface/js/scripts/statistics': './src/build/interface/statistics.js',
-            '/interaction/content': './src/build/interaction/content.js',
-            '/interaction/background': './src/build/interaction/background.js'
+            '/interaction/js/content': './src/build/interaction/content.js',
+            '/interaction/js/background': './src/build/interaction/background.js',
+            '/interaction/css/custom-thread': './src/build/interaction/custom-thread.js'
         },
         output: {
             path: path.resolve(__dirname, 'dist', platform)
@@ -180,8 +181,8 @@ module.exports = function(env) {
         ],
         resolve: {
             alias: {
-                Interface: path.resolve(__dirname, './src/interface'),
-                Interaction: path.resolve(__dirname, './src/interaction')
+                '@interface': path.resolve(__dirname, './src/interface'),
+                '@interaction': path.resolve(__dirname, './src/interaction')
             },
             plugins: [
                 /*

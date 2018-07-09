@@ -1,5 +1,5 @@
-import 'Interface/js/settings.ts';
-import 'Interface/css/settings.scss';
+import '@interface/js/settings.ts';
+import '@interface/css/settings.scss';
 
 // In webpack.config.common.
-//import 'Interface/html/settings.pug';
+//import '@interface/html/settings.pug';

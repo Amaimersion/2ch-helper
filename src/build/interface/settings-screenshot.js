@@ -1,4 +1,4 @@
-import 'Interface/js/settings-screenshot.ts';
+import '@interface/js/settings-screenshot.ts';
 
 // In webpack.config.common.
-// import 'Interface/html/settings-screenshot.pug';
+// import '@interface/html/settings-screenshot.pug';

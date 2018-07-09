@@ -22,7 +22,7 @@ class FixManifestPlugin {
 
     handleAfterEmitHook(compilation, callback) {
         console.log(this.platform);
-        const files = fs.readdirSync(path.join(__dirname, 'dist', this.platform, 'interaction'));
+        const files = fs.readdirSync(path.join(__dirname, 'dist', this.platform, 'interaction', 'js'));
         let manifest = fs.readFileSync(path.join(__dirname, 'dist', this.platform, 'manifest.json'), {encoding: 'utf-8'});
 
         for (let name of ['content', 'background']) {
@@ -73,6 +73,12 @@ module.exports = function(env) {
                             folder: `dist/${platform}/interface/css/styles`,
                             method: (filePath) => {
                                 return new RegExp(/\.map$/, 'm').test(filePath);
+                            }
+                        },
+                        {
+                            folder: `dist/${platform}/interaction/css`,
+                            method: (filePath) => {
+                                return new RegExp(/(\.js|\.map)$/, 'm').test(filePath);
                             }
                         }
                     ]

@@ -1,5 +1,5 @@
-import 'Interface/js/popup.ts';
-import 'Interface/css/popup.scss';
+import '@interface/js/popup.ts';
+import '@interface/css/popup.scss';
 
 // In webpack.config.common.
-//import 'Interface/html/popup.pug';
+//import '@interface/html/popup.pug';

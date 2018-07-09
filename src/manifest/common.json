@@ -35,13 +35,17 @@
     "content_scripts": [
         {
             "matches": ["*://2ch.hk/*"],
-            "js": ["/interaction/content.js"]
+            "js": ["/interaction/js/content.js"]
+        },
+        {
+            "matches": ["*://2ch.hk/*/res/*"],
+            "css": ["/interaction/css/custom-thread.css"]
         }
     ],
 
     "background": {
         "scripts": [
-            "/interaction/background.js"
+            "/interaction/js/background.js"
         ]
     },
 
