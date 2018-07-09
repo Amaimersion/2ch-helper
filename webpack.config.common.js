@@ -125,6 +125,10 @@ module.exports = function(env) {
                 {
                     from: './src/static/interface',
                     to: './interface'
+                },
+                {
+                    from: './src/static/interaction',
+                    to: './interaction/assets'
                 }
             ]),
             /*

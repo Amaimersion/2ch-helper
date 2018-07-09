@@ -1,4 +1,5 @@
 import {API} from "@modules/api";
+import {Script} from "@modules/communication";
 
 
 /**
@@ -161,6 +162,7 @@ abstract class Observer {
                 }
 
                 //Images.bindExpand(<HTMLElement>node);
+                Custom.createDownloadButtons(node as Elements.Post);
 
                 if (Observer.isReplyPost(node as Elements.Post)) {
                     Observer.replyPostEvent(node as Elements.Post);
@@ -341,6 +343,119 @@ abstract class Images {
 
 
 /**
+ * Handles custom changes.
+ */
+abstract class Custom {
+    /**
+     * The name of classes that will be appended to the custom elements.
+     */
+    public static readonly elementsClasses = {
+        download: "custom-2ch-helper-download-button"
+    };
+
+    /**
+     * Runs when the page is loaded.
+     */
+    public static main(): void {
+        this.createDownloadButtons();
+    }
+
+    /**
+     * Creates download buttons for media elements.
+     *
+     * @param element
+     * The element for media finding.
+     * Defaults to `PageElements.thread`.
+     */
+    public static createDownloadButtons(element: Elements.Element = PageElements.thread): void {
+        let figures: NodeListOf<Elements.Element> = undefined;
+
+        try {
+            figures = API.getElements<Elements.Element>({
+                dcmnt: element,
+                selector: "figure.image",
+                errorMessage: "Could not find a figure elements."
+            });
+        } catch (error) {
+            console.warn(error);
+            return;
+        }
+
+        figures.forEach((figure) => {
+            const alreadyExists = figure.querySelector(`.${this.elementsClasses.download}`);
+
+            // For preview posts click event not working.
+            // So, we will re-create it.
+            if (alreadyExists) {
+                alreadyExists.innerHTML = "";
+            }
+
+            let span: Elements.Element = undefined;
+            let href: string = undefined;
+
+            try {
+                span = API.getElement<Elements.Element>({
+                    dcmnt: figure,
+                    selector: "span",
+                    errorMessage: "Could not find a span."
+                });
+            } catch (error) {
+                console.warn(error);
+                return;
+            }
+
+            try {
+                href = API.getElement<Elements.Link>({
+                    dcmnt: figure,
+                    selector: "a",
+                    errorMessage: "Could not find a link."
+                }).href;
+            } catch (error) {
+                console.warn(error);
+                return;
+            }
+
+            const div = document.createElement("div");
+            const a = document.createElement("a");
+            const img = document.createElement("img");
+
+            div.classList.add(this.elementsClasses.download);
+            div.id = `${this.elementsClasses.download}-${API.generateHash()}`;
+
+            div.style.display = "inline-block";
+            div.style.verticalAlign = "middle";
+
+            a.id = `${this.elementsClasses.download}-${API.generateHash()}`;
+
+            img.id = `${this.elementsClasses.download}-${API.generateHash()}`;
+            img.style.height = "1.55vh";
+            img.src = chrome.extension.getURL("/interaction/assets/images/font-awesome/arrow-alt-circle-down-solid.svg");
+            img.alt = "Save";
+
+            img.addEventListener("click", async () =>{
+                const response = await Script.Content.sendMessageToBackground({
+                    type: "command",
+                    command: "downloadLinks",
+                    data: {
+                        links: [href],
+                        type: new RegExp(/((webm|mp4)$)/, "m").test(href) ? "video" : "images"
+                    }
+                });
+
+                if (API.isErrorResponse(response)) {
+                    throw new Error(response.errorText || `Could not download ${href}`);
+                }
+            });
+
+            div.appendChild(a);
+            a.appendChild(img);
+            span.parentElement.insertBefore(div, span);
+        });
+    }
+}
+
+
+/**
  * Handles page elements requests.
  */
 export abstract class PageElements {
@@ -368,6 +483,7 @@ export abstract class PageElements {
         Checkboxes.main();
         Observer.main();
         Images.main();
+        Custom.main();
     }
 
     /**

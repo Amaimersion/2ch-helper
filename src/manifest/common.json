@@ -50,5 +50,9 @@
         "downloads",
         "activeTab",
         "*://2ch.hk/*"
+    ],
+
+    "web_accessible_resources": [
+        "interaction/assets/*"
     ]
 }
