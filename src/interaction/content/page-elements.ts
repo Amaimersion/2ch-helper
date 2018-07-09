@@ -9,6 +9,9 @@ export namespace Elements {
     export type Element = HTMLElement;
     export type Post = HTMLDivElement;
     export type Checkbox = HTMLInputElement;
+    export type Image = HTMLImageElement;
+    export type Video = HTMLVideoElement;
+    export type Link = HTMLLinkElement;
 }
 
 
@@ -157,6 +160,8 @@ abstract class Observer {
                     continue;
                 }
 
+                //Images.bindExpand(<HTMLElement>node);
+
                 if (Observer.isReplyPost(node as Elements.Post)) {
                     Observer.replyPostEvent(node as Elements.Post);
                 } else {
@@ -247,6 +252,95 @@ abstract class Observer {
 
 
 /**
+ * Handles images.
+ */
+abstract class Images {
+    /**
+     * Runs when the page is loaded.
+     */
+    public static main(): void {
+        this.bindExpand();
+    }
+
+    /**
+     * Binds an expand event for all finded preview images.
+     *
+     * @param element
+     * The element for all preview images finding.
+     * Defaults to `PageElements.thread`.
+     */
+    public static bindExpand(element: Elements.Element = PageElements.thread): void {
+        let previewImages: NodeListOf<Elements.Image> = undefined;
+
+        try {
+            previewImages = API.getElements<Elements.Image>({
+                selector: "img.preview",
+                dcmnt: element,
+                errorMessage: "Could not find a preview images."
+            });
+        } catch (error) {
+            console.warn(error);
+            return;
+        }
+
+        /**
+         * Finds an original element by src.
+         *
+         * @param src The src for finding.
+         * @returns Either video or image.
+         * @throws Throws an error if could not find.
+         */
+        const getOriginalElement = (src: string): Elements.Video | Elements.Image => {
+            if (RegExp(/((webm|mp4)$)/, "m").test(src)) {
+                return API.getElement<Elements.Element>({
+                    selector: `source[src="${src}"]`,
+                    errorMessage: "Could not find a source of video."
+                }).parentElement as Elements.Video;
+            } else {
+                return API.getElement<Elements.Image>({
+                    selector: `img[src="${src}"]`,
+                    errorMessage: "Could not find an original image."
+                });
+            }
+        };
+
+        previewImages.forEach((previewImage) => {
+            const parent = previewImage.parentElement as Elements.Link;
+            const originalSrc = parent.href.replace(window.location.origin, "");
+
+            if (!originalSrc) {
+                console.warn("Original href is empty or undefined.");
+                return;
+            }
+
+            previewImage.addEventListener("mouseenter", () => {
+                previewImage.click();
+                let originalElement: Elements.Video | HTMLImageElement = undefined;
+
+                try {
+                    originalElement = getOriginalElement(originalSrc);
+                } catch (error) {
+                    console.warn(error);
+                    return;
+                }
+
+                const originalLeaveEvent = () => {
+                    previewImage.click();
+                };
+
+                const originalClickEvent = () => {
+                    originalElement.removeEventListener("mouseleave", originalLeaveEvent);
+                }
+
+                originalElement.addEventListener("mouseleave", originalLeaveEvent);
+                originalElement.addEventListener("click", originalClickEvent);
+            });
+        });
+    }
+}
+
+
+/**
  * Handles page elements requests.
  */
 export abstract class PageElements {
@@ -273,6 +367,7 @@ export abstract class PageElements {
         this._thread = API.getThread();
         Checkboxes.main();
         Observer.main();
+        Images.main();
     }
 
     /**
