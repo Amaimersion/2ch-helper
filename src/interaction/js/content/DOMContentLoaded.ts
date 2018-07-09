@@ -3,6 +3,7 @@ import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 import {PageOptions} from "./screenshot";
 import {Statistics} from "./statistics";
+import {TitleGeneration} from "./title-generation";
 
 
 /**
@@ -10,12 +11,13 @@ import {Statistics} from "./statistics";
  */
 abstract class DOMContentLoaded {
     /**
-     * Runs when the page is loaded.
+     * Runs when the `*://2ch.hk/*` is loaded.
      */
     public static main(): void {
         DOMLoaded.run(() => {PageElements.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {Settings.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {PageOptions.main()}, true, this.checkForThread);
+        DOMLoaded.run(() => {TitleGeneration.main()}, true, this.checkForBoard);
         DOMLoaded.run(() => {Statistics.main()}, true);
     }
 
@@ -28,7 +30,13 @@ abstract class DOMContentLoaded {
 
         return regexp.test(location.href);
     }
+
+    protected static checkForBoard: CheckMethod = (location) => {
+        const regexp = new RegExp(/(?<protocol>.*)(?<host>2ch\.hk)\/(?<board>\w*)(\/?)(#?)$/, "m");
+
+        return regexp.test(location.href);
+    }
 }
 
 
-DOMLoaded.run(() => {DOMContentLoaded.main();});
+DOMLoaded.run(() => {DOMContentLoaded.main()});
