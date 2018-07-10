@@ -3,7 +3,7 @@ import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 import {PageOptions} from "./screenshot";
 import {Statistics} from "./statistics";
-import {TitleGeneration} from "./title-generation";
+import {TitleGeneration, CustomForms} from "./title-generation";
 
 
 /**
@@ -17,7 +17,10 @@ abstract class DOMContentLoaded {
         DOMLoaded.run(() => {PageElements.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {Settings.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {PageOptions.main()}, true, this.checkForThread);
+
         DOMLoaded.run(() => {TitleGeneration.main()}, true, this.checkForBoard);
+        DOMLoaded.run(() => {CustomForms.main()}, true, this.checkForBoard);
+
         DOMLoaded.run(() => {Statistics.main()}, true);
     }
 
@@ -27,13 +30,11 @@ abstract class DOMContentLoaded {
     protected static checkForThread: CheckMethod = (location) => {
         // (?<protocol>.*)(?<host>2ch\.hk)(?<board>\/.*\/)(?<resource>res\/)(?<thread>.*)(?<format>\.html)
         const regexp = new RegExp(/(.*)(2ch\.hk)(\/.*\/)(res\/)(.*)(\.html)/, "");
-
         return regexp.test(location.href);
     }
 
     protected static checkForBoard: CheckMethod = (location) => {
         const regexp = new RegExp(/(?<protocol>.*)(?<host>2ch\.hk)\/(?<board>\w*)(\/?)(#?)$/, "m");
-
         return regexp.test(location.href);
     }
 }
