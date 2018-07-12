@@ -69,6 +69,7 @@ module.exports = function(env) {
             '/interface/js/scripts/statistics': './src/build/interface/statistics.js',
             '/interaction/js/content': './src/build/interaction/content.js',
             '/interaction/js/background': './src/build/interaction/background.js',
+            '/interaction/js/exif': './src/build/interaction/exif.js',
             '/interaction/css/custom-thread': './src/build/interaction/custom-thread.js'
         },
         output: {

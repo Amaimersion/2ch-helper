@@ -1,4 +1,6 @@
 import {DOMLoaded, CheckMethod} from "@modules/dom";
+import {Script} from "@modules/communication";
+import {API} from "@modules/api";
 import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 import {PageOptions} from "./screenshot";
@@ -14,14 +16,29 @@ abstract class DOMContentLoaded {
      * Runs when the `*://2ch.hk/*` is loaded.
      */
     public static main(): void {
+        DOMLoaded.run(() => {Statistics.main()}, true);
+
         DOMLoaded.run(() => {PageElements.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {Settings.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {PageOptions.main()}, true, this.checkForThread);
+        DOMLoaded.run(async () => {
+            const response = await Script.Content.sendMessageToBackground({
+                type: "command",
+                command: "injectJS",
+                data: {
+                    injectDetails: {
+                        file: "/interaction/js/exif.js"
+                    }
+                }
+            });
+
+            if (API.isErrorResponse(response)) {
+                throw new Error(response.errorText || "Cannot inject a `exif.js`.");
+            }
+        }, true, this.checkForThread);
 
         DOMLoaded.run(() => {TitleGeneration.main()}, true, this.checkForBoard);
         DOMLoaded.run(() => {CustomForms.main()}, true, this.checkForBoard);
-
-        DOMLoaded.run(() => {Statistics.main()}, true);
     }
 
     /**

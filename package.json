@@ -37,7 +37,9 @@
     },
     "license": "MIT",
     "private": true,
-    "dependencies": {},
+    "dependencies": {
+        "exif-js": "^2.3.0"
+    },
     "devDependencies": {
         "@types/chrome": "0.0.63",
         "awesome-typescript-loader": "^5.2.0",

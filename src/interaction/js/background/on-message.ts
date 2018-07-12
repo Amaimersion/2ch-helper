@@ -3,6 +3,7 @@ import {Download} from "./download";
 import {Screenshot} from "./screenshot";
 import {Settings} from "./settings";
 import {Statistics} from "./statistics";
+import {Inject} from "./inject";
 
 
 /**
@@ -89,6 +90,14 @@ abstract class OnMessage extends OnMssg.OnMessage {
                             message.data.focusOffTime
                         );
                     },
+                    sendResponse
+                );
+                break;
+            }
+
+            case "injectJS": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Inject.script(message.data.injectDetails)},
                     sendResponse
                 );
                 break;

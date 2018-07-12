@@ -20,7 +20,8 @@ export namespace Elements {
  * Custom classes that will be added to the page.
  */
 interface CustomClasses {
-    downloadButton?: string;
+    commonButton: string;
+    downloadButton: string;
 }
 
 
@@ -358,6 +359,7 @@ abstract class Custom {
      * The name of classes that will be appended to the custom elements.
      */
     public static readonly elementsClasses: CustomClasses = {
+        commonButton: "custom-2ch-helper-image-button",
         downloadButton: "custom-2ch-helper-download-button"
     };
 
@@ -427,6 +429,7 @@ abstract class Custom {
             const a = document.createElement("a");
             const img = document.createElement("img");
 
+            div.classList.add(this.elementsClasses.commonButton);
             div.classList.add(this.elementsClasses.downloadButton);
             div.id = `${this.elementsClasses.downloadButton}-${API.generateHash()}`;
 
