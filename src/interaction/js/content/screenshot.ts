@@ -278,6 +278,7 @@ interface ElementsInstances {
     checkboxInstance: HTMLElement;
     spoilerInstance: HTMLElement;
     customDownloadButton: HTMLDivElement;
+    customInfoButton: HTMLDivElement;
 }
 
 /**
@@ -297,6 +298,7 @@ interface DefaultOptions {
     checkboxDisplay: string;
     spoilerColor: string;
     customDownloadButtonDisplay: string;
+    customInfoButtonDisplay: string;
 }
 
 /**
@@ -312,7 +314,8 @@ export abstract class PageOptions {
         postPanel: ".postpanel",
         checkbox: `.post-details > input[type="checkbox"]`,
         spoiler: ".spoiler",
-        customDownloadButton: `.${PageElements.customClasses.downloadButton}`
+        customDownloadButton: `.${PageElements.customClasses.downloadButton}`,
+        customInfoButton: ".custom-2ch-helper-info-button"
     };
     protected static _elements: ElementsInstances = undefined;
     protected static _defaults: DefaultOptions = undefined;
@@ -328,6 +331,7 @@ export abstract class PageOptions {
             favoritesBox: this.getElement(this.selectors.favoritesBox) as HTMLDivElement,
             autorefresh: this.getElement(this.selectors.autorefresh) as HTMLInputElement,
             customDownloadButton: this.getElement(this.selectors.customDownloadButton) as HTMLDivElement,
+            customInfoButton: this.getElement(this.selectors.customInfoButton) as HTMLDivElement,
             postPanelInstance: this.getElement(this.selectors.postPanel),
             checkboxInstance: this.getElement(this.selectors.checkbox),
             spoilerInstance: this.getElement(this.selectors.spoiler)
@@ -338,9 +342,10 @@ export abstract class PageOptions {
      * Gets a defaults options of the elements.
      */
     public static getDefaults(): void {
-        if (!this._elements) {
-            this.main();
-        }
+        // Should not check for `this._elements`.
+        // Because script can be injected and then running  after this main function.
+        // So, element will be undefined at start of main function, but will be available after.
+        this.main();
 
         this._defaults = {
             scrollX: window.pageXOffset,
@@ -355,7 +360,8 @@ export abstract class PageOptions {
             postPanelDisplay: this._elements.postPanelInstance ? this._elements.postPanelInstance.style.display : undefined,
             checkboxDisplay: this._elements.checkboxInstance ? this._elements.checkboxInstance.style.display : undefined,
             spoilerColor: this._elements.spoilerInstance ? this._elements.spoilerInstance.style.color : undefined,
-            customDownloadButtonDisplay: this._elements.customDownloadButton ? this._elements.customDownloadButton.style.display : undefined
+            customDownloadButtonDisplay: this._elements.customDownloadButton ? this._elements.customDownloadButton.style.display : undefined,
+            customInfoButtonDisplay: this._elements.customInfoButton ? this._elements.customInfoButton.style.display : undefined
         };
     }
 
@@ -400,6 +406,11 @@ export abstract class PageOptions {
         customDownloadButtons.forEach((element) => {
             element.style.display = "none";
         });
+
+        const customInfoButtons = document.querySelectorAll<HTMLElement>(this.selectors.customInfoButton);
+        customInfoButtons.forEach((element) => {
+            element.style.display = "none";
+        });
     }
 
     /**
@@ -435,6 +446,11 @@ export abstract class PageOptions {
         const customDownloadButtons = document.querySelectorAll<HTMLElement>(this.selectors.customDownloadButton);
         customDownloadButtons.forEach((element) => {
             element.style.display = this._defaults.customDownloadButtonDisplay;
+        });
+
+        const customInfoButtons = document.querySelectorAll<HTMLElement>(this.selectors.customInfoButton);
+        customInfoButtons.forEach((element) => {
+            element.style.display = this._defaults.customInfoButtonDisplay;
         });
 
         // should be at the end because of `postPanels` and `checkboxes` display change.
