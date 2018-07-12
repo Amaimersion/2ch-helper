@@ -170,7 +170,7 @@ abstract class Observer {
                     continue;
                 }
 
-                //Images.bindExpand(<HTMLElement>node);
+                Images.bindExpand(node as Elements.Element);
                 Custom.createDownloadButtons(node as Elements.Post);
 
                 if (Observer.isReplyPost(node as Elements.Post)) {
