@@ -230,6 +230,11 @@ abstract class Exif {
         img.src = chrome.extension.getURL("/interaction/assets/images/font-awesome/info-circle-solid.svg");
         img.alt = "Info";
 
+        // Custom set because when download a `mhtml` file the injected style
+        // will disappear and images become very large. To prevent this behaviour
+        // we set height manually. It uses height from a `custom-thread.scss`.
+        img.style.height = "1.55vh";
+
         img.addEventListener("click", () => {
             this.showExif(originalSrc);
         });
