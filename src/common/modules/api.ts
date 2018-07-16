@@ -36,10 +36,21 @@ export abstract class API {
      * @throws Throws an error if could not get a thread.
      */
     public static getThread(): HTMLFormElement {
-        return this.getElement<HTMLFormElement>({
-            selector: "#posts-form",
-            errorMessage: "The thread form does not exists."
-        });
+        let form: HTMLFormElement = undefined;
+
+        // normal 2ch.hk.
+        form = document.querySelector("#posts-form");
+
+        // dollchan.
+        if (!form) {
+            form = document.querySelector("form[de-form]");
+        }
+
+        if (!form) {
+            throw new Error("Could not get a thread form.");
+        }
+
+        return form;
     }
 
     /**
