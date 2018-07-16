@@ -5,3 +5,4 @@ import '@interaction/js/background/on-message.ts';
 import '@interaction/js/background/screenshot.ts';
 import '@interaction/js/background/settings.ts';
 import '@interaction/js/background/inject.ts';
+import '@interaction/js/background/notifications.ts';

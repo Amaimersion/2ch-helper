@@ -1,5 +1,6 @@
 import {DOMLoaded} from "@modules/dom";
 import {Settings} from "./settings";
+import {Notifications} from "./notifications";
 
 
 /**
@@ -11,6 +12,7 @@ export abstract class DOMContentLoaded {
      */
     public static main(): void {
         DOMLoaded.run(() => {Settings.main()}, true);
+        DOMLoaded.run(() => {Notifications.main()}, true);
     }
 }
 

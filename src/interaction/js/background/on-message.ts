@@ -4,6 +4,7 @@ import {Screenshot} from "./screenshot";
 import {Settings} from "./settings";
 import {Statistics} from "./statistics";
 import {Inject} from "./inject";
+import {Notifications} from "./notifications";
 
 
 /**
@@ -98,6 +99,14 @@ abstract class OnMessage extends OnMssg.OnMessage {
             case "injectJS": {
                 await OnMessage.runAsyncMethod(
                     () => {return Inject.script(message.data.injectDetails)},
+                    sendResponse
+                );
+                break;
+            }
+
+            case "createReplyNotification": {
+                await OnMessage.runAsyncMethod(
+                    () => {return Notifications.createReplyNotification(message.data.options, sender)},
                     sendResponse
                 );
                 break;

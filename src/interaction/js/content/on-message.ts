@@ -2,6 +2,7 @@ import {Message, OnMssg} from "@modules/communication";
 import {Download} from "./download";
 import {Screenshot} from "./screenshot";
 import {Settings} from "./settings";
+import {Notifications} from "./notifications";
 
 
 /**
@@ -91,6 +92,14 @@ abstract class OnMessage extends OnMssg.OnMessage {
                         Screenshot.updateSettings();
                         Download.updateSettings();
                     },
+                    sendResponse
+                );
+                break;
+            }
+
+            case "updateLastNotificationHref": {
+                await OnMessage.runAsyncMethod(
+                    async () => {Notifications.updateLastHref()},
                     sendResponse
                 );
                 break;

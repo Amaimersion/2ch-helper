@@ -53,6 +53,7 @@
         "storage",
         "downloads",
         "activeTab",
+        "notifications",
         "*://2ch.hk/*"
     ],
 
