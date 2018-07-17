@@ -60,7 +60,8 @@ abstract class DOMContentLoaded {
     }
 
     protected static checkForBoard: CheckMethod = (location) => {
-        const regexp = new RegExp(/(?<protocol>.*)(?<host>2ch\.hk)\/(?<board>\w*)(\/?)(#?)$/, "m");
+        // (?<protocol>.*)(?<host>2ch\.hk)\/(?<board>\w*)(\/?)(#?)$
+        const regexp = new RegExp(/(.*)(2ch\.hk)\/(\w*)(\/?)(#?)$/, "m");
         return regexp.test(location.href);
     }
 }
