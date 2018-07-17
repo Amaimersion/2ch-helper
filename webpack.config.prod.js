@@ -55,7 +55,8 @@ module.exports = function(env) {
         mode: 'production',
         devtool: 'nosources-source-map',
         output: {
-            filename: "[name].[chunkhash].min.js",
+            //filename: "[name].[chunkhash].min.js",
+            filename: '[name].min.js',
         },
         plugins: [
             new webpack.DefinePlugin({

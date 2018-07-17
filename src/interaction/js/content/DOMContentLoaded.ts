@@ -36,7 +36,10 @@ abstract class DOMContentLoaded {
                 command: "injectJS",
                 data: {
                     injectDetails: {
-                        file: "/interaction/js/exif.js"
+                        // `.min` only in production.
+                        // without `.min` only in dev.
+                        // i should fix this variability in the future versions.
+                        file: "/interaction/js/exif.min.js"
                     }
                 }
             });
