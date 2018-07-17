@@ -1,4 +1,5 @@
 import {Script} from "@modules/communication";
+import {API} from "@modules/api";
 
 
 type NotificationOptions = chrome.notifications.NotificationOptions;
@@ -31,18 +32,18 @@ export abstract class Notifications {
     public static async createReplyNotification(options: NotificationOptions, sender: Sender): Promise<void> {
         this._lastSender = sender;
 
-        chrome.notifications.create({
+        const notificationOptions: NotificationOptions = {...options,
             type: "basic",
-            iconUrl: chrome.extension.getURL("/interface/icons/logo/logo-48.png"),
-            title: options.title,
-            message: options.message,
-            contextMessage: options.contextMessage,
-            buttons: [
-                {
-                    title: "Показать"
-                }
-            ]
-        }, (notificationId) => {
+            iconUrl: chrome.extension.getURL("/interface/icons/logo/logo-48.png")
+        };
+
+        if (API.isGoogleChrome()) {
+            notificationOptions.buttons = [
+                {title: "Показать"}
+            ];
+        }
+
+        chrome.notifications.create(notificationOptions, (notificationId) => {
             this._lastNotificationId = notificationId;
             console.log(this._lastNotificationId);
         });
