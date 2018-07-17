@@ -90,7 +90,6 @@ interface PostInfo {
  */
 export abstract class Notifications {
     private static _pageTitle: string = undefined;
-    private static _lastHref: string = undefined;
 
     /**
      * Runs when the page is loaded.
@@ -115,19 +114,20 @@ export abstract class Notifications {
      */
     public static replyPostEvent(node: HTMLElement): void {
         const postInfo = this.getPostInfo(node);
-        this._lastHref = postInfo.href;
         this.createReplyNotification({
             title: "Ответ на Ваш пост",
             message: postInfo.message,
             contextMessage: this._pageTitle
-        });
+        }, postInfo.href);
     }
 
     /**
      * Updates the window href to the latest post reply href.
+     *
+     * @param href The `window.location.href` will be replaced by this url.
      */
-    public static updateLastHref(): void {
-        window.location.href = this._lastHref;
+    public static updateLastHref(href: string): void {
+        window.location.href = href;
     }
 
     /**
@@ -155,13 +155,15 @@ export abstract class Notifications {
      * Sends a message to create the reply notification.
      *
      * @param options The options for notification.
+     * @param postHref The href of the new post.
      */
-    protected static async createReplyNotification(options: chrome.notifications.NotificationOptions): Promise<void> {
+    protected static async createReplyNotification(options: chrome.notifications.NotificationOptions, postHref: string): Promise<void> {
         const response = await Script.Content.sendMessageToBackground({
             type: "command",
             command: "createReplyNotification",
             data: {
-                options: options
+                options: options,
+                postHref: postHref
             }
         });
 

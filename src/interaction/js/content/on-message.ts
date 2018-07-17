@@ -99,7 +99,7 @@ abstract class OnMessage extends OnMssg.OnMessage {
 
             case "updateLastNotificationHref": {
                 await OnMessage.runAsyncMethod(
-                    async () => {Notifications.updateLastHref()},
+                    async () => {Notifications.updateLastHref(message.data.href)},
                     sendResponse
                 );
                 break;

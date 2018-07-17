@@ -106,7 +106,7 @@ abstract class OnMessage extends OnMssg.OnMessage {
 
             case "createReplyNotification": {
                 await OnMessage.runAsyncMethod(
-                    () => {return Notifications.createReplyNotification(message.data.options, sender)},
+                    () => {return Notifications.createReplyNotification(message.data.options, sender, message.data.postHref)},
                     sendResponse
                 );
                 break;

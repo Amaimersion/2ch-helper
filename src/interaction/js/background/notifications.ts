@@ -9,17 +9,21 @@ type Sender = chrome.runtime.MessageSender;
  * Handlse notifications requests.
  */
 export abstract class Notifications {
-    private static _lastNotificationId: string = undefined;
-    private static _lastSender: Sender = undefined;
+    private static _notificationsInfo: {[notificationId: string]: {sender: Sender, postHref: string}} = {};
 
     /**
      * Runs when the page is loaded.
      *
-     * Binds an event for the buttons of notification.
+     * Binds an event for the buttons of notification and
+     * binds an event for notification close.
      */
     public static main(): void {
         chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
             this.showButtonEvent(notificationId, buttonIndex);
+        });
+
+        chrome.notifications.onClosed.addListener((notificationId) => {
+            delete this._notificationsInfo[notificationId];
         });
     }
 
@@ -28,15 +32,15 @@ export abstract class Notifications {
      *
      * @param options The options for notification.
      * @param sender The sender tab.
+     * @param postHref The href of the new post.
      */
-    public static async createReplyNotification(options: NotificationOptions, sender: Sender): Promise<void> {
-        this._lastSender = sender;
-
+    public static async createReplyNotification(options: NotificationOptions, sender: Sender, postHref: string): Promise<void> {
         const notificationOptions: NotificationOptions = {...options,
             type: "basic",
             iconUrl: chrome.extension.getURL("/interface/icons/logo/logo-48.png")
         };
 
+        // buttons are supported only in Google Chrome.
         if (API.isGoogleChrome()) {
             notificationOptions.buttons = [
                 {title: "Показать"}
@@ -44,8 +48,10 @@ export abstract class Notifications {
         }
 
         chrome.notifications.create(notificationOptions, (notificationId) => {
-            this._lastNotificationId = notificationId;
-            console.log(this._lastNotificationId);
+            this._notificationsInfo[notificationId] = {
+                sender: sender,
+                postHref: postHref
+            };
         });
     }
 
@@ -62,10 +68,13 @@ export abstract class Notifications {
             throw new Error(`Unknown button index ${buttonIndex} for ${notificationId}`);
         }
 
+        const sender = this._notificationsInfo[notificationId].sender;
+        const href = this._notificationsInfo[notificationId].postHref;
+
         // callback is not optional.
-        // report in issue in DefinitelyTyped.
+        // report in issues of DefinitelyTyped.
         try {
-            chrome.tabs.highlight({tabs: this._lastSender.tab.index}, () => {});
+            chrome.tabs.highlight({tabs: sender.tab.index}, () => {});
         } catch (error) {
             // if the sender page is active, then will be error. Ignore it.
             console.error(error);
@@ -73,7 +82,10 @@ export abstract class Notifications {
 
         Script.Background.sendMessageToActiveContent({
             type: "command",
-            command: "updateLastNotificationHref"
+            command: "updateLastNotificationHref",
+            data: {
+                href: href
+            }
         });
     }
 }
