@@ -1,6 +1,7 @@
 import {DOMLoaded, CheckMethod} from "@modules/dom";
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
+import {Settings as ParentSettings} from "@modules/settings";
 import {PageElements} from "./page-elements";
 import {Settings} from "./settings";
 import {PageOptions} from "./screenshot";
@@ -19,11 +20,17 @@ abstract class DOMContentLoaded {
     public static main(): void {
         DOMLoaded.run(() => {Statistics.main()}, true);
 
-        DOMLoaded.run(() => {PageElements.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {Settings.main()}, true, this.checkForThread);
+        DOMLoaded.run(() => {PageElements.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {PageOptions.main()}, true, this.checkForThread);
         DOMLoaded.run(() => {Notifications.main()}, true, this.checkForThread);
         DOMLoaded.run(async () => {
+            const settings = await ParentSettings.get("settingsOther");
+
+            if (!settings.other.exifButtonNearFile) {
+                return;
+            }
+
             const response = await Script.Content.sendMessageToBackground({
                 type: "command",
                 command: "injectJS",

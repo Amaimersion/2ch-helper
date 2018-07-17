@@ -100,7 +100,37 @@ interface DefaultSettings extends UserSettings {
         }
     },
 
-    settingsOther: {}
+    /**
+     * The settings for ungrouped settings.
+     */
+    settingsOther: {
+        other: {
+            /**
+             * Display notification when the someone reply to the user post.
+             */
+            notificationWhenReply: boolean;
+            /**
+             * Add download button for each file in the thread.
+             */
+            downloadButtonNearFile: boolean;
+            /**
+             * Add exif button for each file (only certain formats) in the thread.
+             */
+            exifButtonNearFile: boolean;
+            /**
+             * Expand original image (or media) when the user targets cursor on a preview.
+             */
+            expandImageWhenTarget: boolean;
+            /**
+             * Add titles if missing for the threads (works only on `*://2ch.hk/*\/`).
+             */
+            addMissingTitles: boolean;
+            /**
+             * Add forms if missing for the post creation (works only on `*://2ch.hk/*\/`).
+             */
+            addMissingForms: boolean;
+        }
+    }
 }
 
 /**

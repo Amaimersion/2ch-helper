@@ -1,5 +1,6 @@
 import {Script} from "@modules/communication";
 import {API} from "@modules/api";
+import {Settings} from "@modules/settings";
 
 
 /**
@@ -94,7 +95,13 @@ export abstract class Notifications {
     /**
      * Runs when the page is loaded.
      */
-    public static main(): void {
+    public static async main(): Promise<void> {
+        const settings = await Settings.get("settingsOther");
+
+        if (!settings.other.notificationWhenReply) {
+            return;
+        }
+
         Observer.main();
         this._pageTitle = this.getPageTitle();
     }

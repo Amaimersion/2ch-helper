@@ -1,4 +1,5 @@
 import {API} from "@modules/api";
+import {Settings} from "@modules/settings";
 
 
 /**
@@ -32,7 +33,13 @@ export abstract class CustomForms {
      * Runs when the page is loaded.
      * It is implemented for usage only on `*://2ch.hk/*\/` pages.
      */
-    public static main(): void {
+    public static async main(): Promise<void> {
+        const settings = await Settings.get("settingsOther");
+
+        if (!settings.other.addMissingForms) {
+            return;
+        }
+
         this.appendForms();
     }
 
@@ -225,7 +232,13 @@ export abstract class TitleGeneration {
      * Runs when the page is loaded.
      * It is implemented for usage only on `*://2ch.hk/*\/` pages.
      */
-    public static main(): void {
+    public static async main(): Promise<void> {
+        const settings = await Settings.get("settingsOther");
+
+        if (!settings.other.addMissingTitles) {
+            return;
+        }
+
         this.generateTitles();
         Observer.main();
     }

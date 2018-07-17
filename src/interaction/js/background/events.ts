@@ -1,6 +1,7 @@
 import {StorageSync} from "@modules/storage-sync";
 import {DOMContentLoaded} from "./DOMContentLoaded";
 
+
 /**
  * Handles browser events.
  */
@@ -12,18 +13,21 @@ abstract class Events {
         await StorageSync.setInitialSettings(true);
         DOMContentLoaded.main();
     }
+
+    /**
+     * Runs when the extension is updated.
+     */
+    public static async onUpdate(): Promise<void> {
+        await StorageSync.checkAndFix();
+        DOMContentLoaded.main();
+    }
 }
 
 
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === "install") {
         Events.onFirstInstall();
+    } else if (details.reason === "update") {
+        Events.onUpdate();
     }
-
-    /*
-    // only in dev mode.
-    else if (details.reason === "update") {
-        Events.onFirstInstall();
-    }
-    */
 });

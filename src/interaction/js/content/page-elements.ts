@@ -1,5 +1,6 @@
 import {API} from "@modules/api";
 import {Script} from "@modules/communication";
+import {Settings} from "@modules/settings";
 
 
 /**
@@ -269,7 +270,13 @@ abstract class Images {
     /**
      * Runs when the page is loaded.
      */
-    public static main(): void {
+    public static async main(): Promise<void> {
+        const settings = await Settings.get("settingsOther");
+
+        if (!settings.other.expandImageWhenTarget) {
+            return;
+        }
+
         this.bindExpand();
     }
 
@@ -366,7 +373,13 @@ abstract class Custom {
     /**
      * Runs when the page is loaded.
      */
-    public static main(): void {
+    public static async main(): Promise<void> {
+        const settings = await Settings.get("settingsOther");
+
+        if (!settings.other.downloadButtonNearFile) {
+            return;
+        }
+
         this.createDownloadButtons();
     }
 

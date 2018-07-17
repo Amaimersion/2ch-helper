@@ -66,6 +66,7 @@ module.exports = function(env) {
             '/interface/js/scripts/settings-iframe': './src/build/interface/settings-iframe.js',
             '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot.js',
             '/interface/js/scripts/settings-download': './src/build/interface/settings-download.js',
+            '/interface/js/scripts/settings-other': './src/build/interface/settings-other.js',
             '/interface/js/scripts/statistics': './src/build/interface/statistics.js',
             '/interaction/js/content': './src/build/interaction/content.js',
             '/interaction/js/background': './src/build/interaction/background.js',
@@ -167,6 +168,11 @@ module.exports = function(env) {
             new HTMLWebpackPlugin({
                 template: './src/interface/html/settings-screenshot.pug',
                 filename: '/interface/html/settings-screenshot.html',
+                inject: false
+            }),
+            new HTMLWebpackPlugin({
+                template: './src/interface/html/settings-other.pug',
+                filename: '/interface/html/settings-other.html',
                 inject: false
             }),
             new HTMLWebpackPlugin({
