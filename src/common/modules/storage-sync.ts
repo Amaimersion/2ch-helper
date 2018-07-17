@@ -15,14 +15,14 @@ export type ScreenshotKey = (
 /**
  * User settings object.
  */
-export interface UserSettings {
+export interface UserSettings extends Object {
     [key: string]: any;
 }
 
 /**
  * Default user settings object.
  */
-interface DefaultSettings {
+interface DefaultSettings extends UserSettings {
     /**
      * The settings for screenshot.
      */
@@ -98,7 +98,9 @@ interface DefaultSettings {
              */
             types?: string[]
         }
-    }
+    },
+
+    settingsOther: {}
 }
 
 /**
@@ -168,6 +170,16 @@ abstract class ProfileInfo {
                 autoFileName: true,
                 fileName: "thread"
             }
+        },
+        settingsOther: {
+            other: {
+                notificationWhenReply: true,
+                downloadButtonNearFile: true,
+                exifButtonNearFile: true,
+                expandImageWhenTarget: false,
+                addMissingTitles: true,
+                addMissingForms: false
+            }
         }
     };
 
@@ -194,7 +206,7 @@ export abstract class StorageSync extends ProfileInfo {
     public static get(key: string | string[] | Object | null = null): Promise<UserSettings> {
         return new Promise((resolve) => {
             chrome.storage.sync.get(key, (items) => {
-                return resolve(items);
+                return resolve(items as UserSettings);
             })
         });
     }
@@ -296,6 +308,24 @@ export abstract class StorageSync extends ProfileInfo {
             return (await this.get(key) ? true : false);
         } else {
             return (await this.get({isExists: false})).isExists;
+        }
+    }
+
+    /**
+     * Checks if a key from the initial settings exists in the current settings.
+     * If not, then sets it.
+     *
+     * It only checks for the top-keys, not properties of the keys!
+     */
+    public static async checkAndFix(): Promise<void> {
+        let existingSettings = await this.get();
+
+        for (let key in this._initialSettings) {
+            if (existingSettings.hasOwnProperty(key)) {
+                continue;
+            }
+
+            await this.set({[key]: this._initialSettings[key]});
         }
     }
 }
