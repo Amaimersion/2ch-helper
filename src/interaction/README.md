@@ -1,6 +1,6 @@
-# This folder contains a content and background scripts
+# This folder contains an interaction files
 
 ## Folders description
 
-- `content` - a files that will be included in the context of web pages;
-- `background` - a files that will be included in the background of a browser.
+- `css` - a CSS files that will be added to the page;
+- `js` - a JS files that will be added to the page.

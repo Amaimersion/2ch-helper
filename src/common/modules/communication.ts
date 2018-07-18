@@ -12,12 +12,11 @@ export namespace Message {
     interface Message {
         type: string;
         command?: string;
+        data?: any;
     }
 
     export interface Content extends Message {}
-    export interface Background extends Message {
-        data?: any;
-    }
+    export interface Background extends Message {}
 }
 
 

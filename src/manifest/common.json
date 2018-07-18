@@ -3,7 +3,7 @@
 
     "name": "2ch-helper",
     "short_name": "2ch-helper",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Облегчение взаимодействия с имиджбордой 2ch.hk.",
 
     "author": "Sergey Kuznetsov",
@@ -35,13 +35,17 @@
     "content_scripts": [
         {
             "matches": ["*://2ch.hk/*"],
-            "js": ["/interaction/content.js"]
+            "js": ["/interaction/js/content.js"]
+        },
+        {
+            "matches": ["*://2ch.hk/*/res/*"],
+            "css": ["/interaction/css/custom-thread.css"]
         }
     ],
 
     "background": {
         "scripts": [
-            "/interaction/background.js"
+            "/interaction/js/background.js"
         ]
     },
 
@@ -49,6 +53,11 @@
         "storage",
         "downloads",
         "activeTab",
+        "notifications",
         "*://2ch.hk/*"
+    ],
+
+    "web_accessible_resources": [
+        "interaction/assets/*"
     ]
 }

@@ -1,6 +1,8 @@
-import 'Interaction/background/DOMContentLoaded.ts';
-import 'Interaction/background/download.ts';
-import 'Interaction/background/events.ts';
-import 'Interaction/background/on-message.ts';
-import 'Interaction/background/screenshot.ts';
-import 'Interaction/background/settings.ts';
+import '@interaction/js/background/DOMContentLoaded.ts';
+import '@interaction/js/background/download.ts';
+import '@interaction/js/background/events.ts';
+import '@interaction/js/background/on-message.ts';
+import '@interaction/js/background/screenshot.ts';
+import '@interaction/js/background/settings.ts';
+import '@interaction/js/background/inject.ts';
+import '@interaction/js/background/notifications.ts';

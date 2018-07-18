@@ -36,10 +36,21 @@ export abstract class API {
      * @throws Throws an error if could not get a thread.
      */
     public static getThread(): HTMLFormElement {
-        return this.getElement<HTMLFormElement>({
-            selector: "#posts-form",
-            errorMessage: "The thread form does not exists."
-        });
+        let form: HTMLFormElement = undefined;
+
+        // normal 2ch.hk.
+        form = document.querySelector("#posts-form");
+
+        // dollchan.
+        if (!form) {
+            form = document.querySelector("form[de-form]");
+        }
+
+        if (!form) {
+            throw new Error("Could not get a thread form.");
+        }
+
+        return form;
     }
 
     /**
@@ -175,6 +186,51 @@ export abstract class API {
      */
     public static isErrorResponse(response: Message.Response): boolean {
         return (!response || !response.status || response.errorText) ? true : false;
+    }
+
+    /**
+     * Generates a hash.
+     */
+    public static generateHash(): string {
+        return (Math.random() + 1).toString(36).slice(2);
+    }
+
+    /**
+     * Checks if the current browser is Google Chrome.
+     *
+     * @see https://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome#answer-13348618
+     */
+    public static isGoogleChrome(): boolean {
+        // please note,
+        // that IE11 now returns undefined again for window.chrome
+        // and new Opera 30 outputs true for window.chrome
+        // but needs to check if window.opr is not undefined
+        // and new IE Edge outputs to true now for window.chrome
+        // and if not iOS Chrome check
+        // so use the below updated condition
+        const isChromium = window.chrome;
+        const winNav = window.navigator;
+        const vendorName = winNav.vendor;
+        const isOpera = typeof (<any>window).opr !== "undefined";
+        const isIEedge = winNav.userAgent.indexOf("Edge") > -1;
+        const isIOSChrome = winNav.userAgent.match("CriOS");
+
+        if (isIOSChrome) {
+           // is Google Chrome on IOS.
+           return false;
+        } else if (
+          isChromium !== null &&
+          typeof isChromium !== "undefined" &&
+          vendorName === "Google Inc." &&
+          isOpera === false &&
+          isIEedge === false
+        ) {
+           // is Google Chrome.
+           return true;
+        } else {
+           // not Google Chrome.
+           return false;
+        }
     }
 
     /**

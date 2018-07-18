@@ -66,9 +66,12 @@ module.exports = function(env) {
             '/interface/js/scripts/settings-iframe': './src/build/interface/settings-iframe.js',
             '/interface/js/scripts/settings-screenshot': './src/build/interface/settings-screenshot.js',
             '/interface/js/scripts/settings-download': './src/build/interface/settings-download.js',
+            '/interface/js/scripts/settings-other': './src/build/interface/settings-other.js',
             '/interface/js/scripts/statistics': './src/build/interface/statistics.js',
-            '/interaction/content': './src/build/interaction/content.js',
-            '/interaction/background': './src/build/interaction/background.js'
+            '/interaction/js/content': './src/build/interaction/content.js',
+            '/interaction/js/background': './src/build/interaction/background.js',
+            '/interaction/js/exif': './src/build/interaction/exif.js',
+            '/interaction/css/custom-thread': './src/build/interaction/custom-thread.js'
         },
         output: {
             path: path.resolve(__dirname, 'dist', platform)
@@ -106,7 +109,7 @@ module.exports = function(env) {
             ]
         },
         plugins: [
-            new RemovePlugin({
+            env.dontRemove ? {apply: () => {return true}} : new RemovePlugin({
                 before: {
                     root: __dirname,
                     include: [`dist/${platform}`]
@@ -125,6 +128,10 @@ module.exports = function(env) {
                 {
                     from: './src/static/interface',
                     to: './interface'
+                },
+                {
+                    from: './src/static/interaction',
+                    to: './interaction/assets'
                 }
             ]),
             /*
@@ -164,6 +171,11 @@ module.exports = function(env) {
                 inject: false
             }),
             new HTMLWebpackPlugin({
+                template: './src/interface/html/settings-other.pug',
+                filename: '/interface/html/settings-other.html',
+                inject: false
+            }),
+            new HTMLWebpackPlugin({
                 template: './src/interface/html/statistics.pug',
                 filename: '/interface/html/statistics.html',
                 inject: false
@@ -176,8 +188,8 @@ module.exports = function(env) {
         ],
         resolve: {
             alias: {
-                Interface: path.resolve(__dirname, './src/interface'),
-                Interaction: path.resolve(__dirname, './src/interaction')
+                '@interface': path.resolve(__dirname, './src/interface'),
+                '@interaction': path.resolve(__dirname, './src/interaction')
             },
             plugins: [
                 /*

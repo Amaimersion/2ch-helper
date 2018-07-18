@@ -1,8 +1,10 @@
 {
     "name": "2ch-helper",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "A browser extension which facilitates interaction with the imageboard 2ch.hk.",
     "scripts": {
+        "watch:chromium:dev": "webpack --watch --config webpack.config.dev --env.platform=chromium --env.dontRemove=true",
+        "watch:firefox:dev": "webpack --watch --config webpack.config.dev --env.platform=firefox --env.dontRemove=true",
         "build:chromium:prod": "webpack --config webpack.config.prod --env.platform=chromium",
         "build:chromium:dev": "webpack --config webpack.config.dev --env.platform=chromium",
         "build:firefox:prod": "webpack --config webpack.config.prod --env.platform=firefox",
@@ -35,16 +37,18 @@
     },
     "license": "MIT",
     "private": true,
-    "dependencies": {},
+    "dependencies": {
+        "exif-js": "^2.3.0"
+    },
     "devDependencies": {
         "@types/chrome": "0.0.63",
-        "awesome-typescript-loader": "^4.0.1",
+        "awesome-typescript-loader": "^5.2.0",
         "bestzip": "^1.1.4",
         "copy-webpack-plugin": "^4.5.2",
         "css-loader": "^0.28.11",
         "extract-text-webpack-plugin": "^4.0.0-beta.0",
         "html-webpack-plugin": "^3.2.0",
-        "node-sass": "^4.9.0",
+        "node-sass": "^4.9.2",
         "pug": "^2.0.3",
         "pug-loader": "^2.4.0",
         "remove-files-webpack-plugin": "^1.0.0",
@@ -52,7 +56,7 @@
         "sass-loader": "^6.0.7",
         "typescript": "^2.9.2",
         "validate-html-links-webpack-plugin": "^1.0.0",
-        "webpack": "^4.14.0",
+        "webpack": "^4.15.1",
         "webpack-cli": "^2.1.5",
         "webpack-merge": "^4.1.3"
     }

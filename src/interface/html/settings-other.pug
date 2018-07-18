@@ -1,0 +1,41 @@
+extends ./common/form
+
+
+block append vars
+  - var title = "Настройки – Другое";
+
+
+block append head
+  +js("/interface/js/scripts/settings-other.js")
+
+
+block append main
+  +main()
+    +form()
+      +row()
+        +col()
+          +label({for: "other-notificationWhenReply", text: "Уведомление при ответе на свой пост"})
+          +checkbox({id: "other-notificationWhenReply", dataType: "boolean"})
+
+        +col()
+          +label({for: "other-downloadButtonNearFile", text: "Кнопка скачивания рядом с файлом"})
+          +checkbox({id: "other-downloadButtonNearFile", dataType: "boolean"})
+
+        +col()
+          +label({for: "other-exifButtonNearFile", text: "Кнопка показа EXIF рядом с файлом"})
+          +checkbox({id: "other-exifButtonNearFile", dataType: "boolean"})
+
+      +row()
+        +col()
+          +label({for: "other-expandImageWhenTarget", text: "Раскрытие изображения при наведении курсора"})
+          +checkbox({id: "other-expandImageWhenTarget", dataType: "boolean"})
+
+        +col()
+          +label({for: "other-addMissingTitles", text: "Добавление отсутствующих заголовков к тредам"})
+          +checkbox({id: "other-addMissingTitles", dataType: "boolean"})
+
+        +col()
+          +label({for: "other-addMissingForms", text: "Добавление отсутствующих форм для создания треда"})
+          +checkbox({id: "other-addMissingForms", dataType: "boolean"})
+
+      +buttons()

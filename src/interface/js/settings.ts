@@ -28,6 +28,15 @@ abstract class PageInfo {
             eventMethod: (navbarId: string, iframeId: string) => {
                 Settings.iframeNavbarClickEvent(navbarId, iframeId);
             }
+        },
+        {
+            navbarId: "navbar-other",
+            iframeId: "iframe-other",
+            isActive: false,
+            eventType: "click",
+            eventMethod: (navbarId: string, iframeId: string) => {
+                Settings.iframeNavbarClickEvent(navbarId, iframeId);
+            }
         }
     ];
 }

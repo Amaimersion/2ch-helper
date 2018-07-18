@@ -1,1 +1,1 @@
-import 'Interface/css/settings-iframe.scss';
+import '@interface/css/settings-iframe.scss';

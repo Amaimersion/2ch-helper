@@ -1,6 +1,8 @@
-import 'Interaction/content/DOMContentLoaded.ts';
-import 'Interaction/content/download.ts';
-import 'Interaction/content/on-message.ts';
-import 'Interaction/content/page-elements.ts';
-import 'Interaction/content/screenshot.ts';
-import 'Interaction/content/settings.ts';
+import '@interaction/js/content/DOMContentLoaded.ts';
+import '@interaction/js/content/download.ts';
+import '@interaction/js/content/on-message.ts';
+import '@interaction/js/content/page-elements.ts';
+import '@interaction/js/content/screenshot.ts';
+import '@interaction/js/content/settings.ts';
+import '@interaction/js/content/title-generation.ts';
+import '@interaction/js/content/notifications.ts';
