@@ -57,14 +57,14 @@ abstract class DOMContentLoaded {
      * Checks if a current page is a thread.
      */
     protected static checkForThread: CheckMethod = (location) => {
-        // (?<protocol>.*)(?<host>2ch\.hk)(?<board>\/.*\/)(?<resource>res\/)(?<thread>.*)(?<format>\.html)
-        const regexp = new RegExp(/(.*)(2ch\.hk)(\/.*\/)(res\/)(.*)(\.html)/, "");
+        // (?<protocol>.*)(?::\/\/)(?<host>2ch)(?:\.)(?<domain>.*)(?<board>\/.*\/)(?:res\/)(?<thread>.*)(?<format>\..*)
+        const regexp = new RegExp(/(.*)(:\/\/)(2ch)(\.)(.*)(\/.*\/)(res\/)(.*)(\..*)/, "");
         return regexp.test(location.href);
     }
 
     protected static checkForBoard: CheckMethod = (location) => {
-        // (?<protocol>.*)(?<host>2ch\.hk)\/(?<board>\w*)(\/?)(#?)$
-        const regexp = new RegExp(/(.*)(2ch\.hk)\/(\w*)(\/?)(#?)$/, "m");
+        // (?<protocol>.*)(?::\/\/)(?<host>2ch)(?:\.)(?<domain>[^\/]*)\/(?<board>\w*)(\/?)(#?)$
+        const regexp = new RegExp(/(.*)(:\/\/)(2ch)(\.)([^\/]*)\/(\w*)(\/?)(#?)$/, "m");
         return regexp.test(location.href);
     }
 }

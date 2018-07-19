@@ -17,6 +17,14 @@ interface ErrorArguments {
 
 
 abstract class PageInfo {
+    protected static readonly threadUrls = [
+        "*://2ch.hk/*/res/*",
+        "*://2ch.pm/*/res/*",
+        "*://2ch.re/*/res/*",
+        "*://2ch.tf/*/res/*",
+        "*://2ch.wf/*/res/*",
+        "*://2ch.yt/*/res/*"
+    ];
     protected static readonly _elementsEvents: PopupElementEvent[] = [
         {
             selector: "#screenshot-of-posts",
@@ -24,7 +32,7 @@ abstract class PageInfo {
             event: () => {
                 Popup.defaultElementEvent(
                     {type: "command", command: "screenshotPosts"},
-                    {url: "*://2ch.hk/*/res/*"},
+                    {url: PageInfo.threadUrls},
                     {errorText: "Активный тред не найден"}
                 );
             }
@@ -35,7 +43,7 @@ abstract class PageInfo {
             event: () => {
                 Popup.defaultElementEvent(
                     {type: "command", command: "screenshotThread"},
-                    {url: "*://2ch.hk/*/res/*"},
+                    {url: PageInfo.threadUrls},
                     {errorText: "Активный тред не найден"}
                 );
             }
@@ -46,7 +54,7 @@ abstract class PageInfo {
             event: () => {
                 Popup.defaultElementEvent(
                     {type: "command", command: "downloadImages"},
-                    {url: "*://2ch.hk/*/res/*"},
+                    {url: PageInfo.threadUrls},
                     {errorText: "Активный тред не найден"}
                 );
             }
@@ -57,7 +65,7 @@ abstract class PageInfo {
             event: () => {
                 Popup.defaultElementEvent(
                     {type: "command", command: "downloadVideo"},
-                    {url: "*://2ch.hk/*/res/*"},
+                    {url: PageInfo.threadUrls},
                     {errorText: "Активный тред не найден"}
                 );
             }
@@ -68,7 +76,7 @@ abstract class PageInfo {
             event: () => {
                 Popup.defaultElementEvent(
                     {type: "command", command: "downloadMedia"},
-                    {url: "*://2ch.hk/*/res/*"},
+                    {url: PageInfo.threadUrls},
                     {errorText: "Активный тред не найден"}
                 );
             }
@@ -79,7 +87,7 @@ abstract class PageInfo {
             event: () => {
                 Popup.defaultElementEvent(
                     {type: "command", command: "downloadThread"},
-                    {url: "*://2ch.hk/*/res/*"},
+                    {url: PageInfo.threadUrls},
                     {errorText: "Активный тред не найден"}
                 )
             }
