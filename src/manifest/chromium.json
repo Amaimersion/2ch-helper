@@ -9,7 +9,7 @@
         "persistent": false
     },
 
-    "permissions": [
+    "optional_permissions": [
         "pageCapture"
     ]
 }
