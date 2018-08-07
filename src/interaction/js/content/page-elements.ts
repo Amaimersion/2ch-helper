@@ -1,6 +1,7 @@
 import {API} from "@modules/api";
 import {Script} from "@modules/communication";
 import {Settings} from "@modules/settings";
+import {UserSettings} from "@modules/storage-sync";
 
 
 /**
@@ -141,10 +142,13 @@ abstract class Checkboxes {
  * Observation for changes of the page.
  */
 abstract class Observer {
+    private static _settings: UserSettings = undefined;
+
     /**
      * Runs when the page is loaded.
      */
-    public static main(): void {
+    public static async main(): Promise<void> {
+        this._settings = await Settings.get("settingsOther");
         this.bindObserver();
     }
 
@@ -171,13 +175,18 @@ abstract class Observer {
                     continue;
                 }
 
-                Images.bindExpand(node as Elements.Element);
-                Custom.createDownloadButtons(node as Elements.Post);
-
                 if (Observer.isReplyPost(node as Elements.Post)) {
                     Observer.replyPostEvent(node as Elements.Post);
                 } else {
                     Observer.commonPostEvent(node as Elements.Post);
+                }
+
+                if (Observer._settings.expandImageWhenTarget) {
+                    Images.bindExpand(node as Elements.Element);
+                }
+
+                if (Observer._settings.downloadButtonNearFile) {
+                    Custom.createDownloadButtons(node as Elements.Post);
                 }
             }
         }

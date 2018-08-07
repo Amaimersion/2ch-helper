@@ -57,17 +57,44 @@ export abstract class Download {
             this._settings = await this.getSettings();
         }
 
+        /**
+         * Checks for page download permission.
+         *
+         * @throws Throws an error if a user denied permission.
+         * @throws Throws an error if a browser not supported this feature.
+         */
+        const checkPermission = async (): Promise<void> => {
+            await new Promise((resolve) => {
+                try {
+                    chrome.permissions.request({
+                        permissions: ["pageCapture"]
+                    }, (granted) => {
+                        if (!granted) {
+                            throw new Error("Отказано в доступе");
+                        }
+
+                        return resolve();
+                    });
+                } catch (error) {
+                    // `pageCapture` permission not listed in manifest as a `optional_permissions`.
+                    throw new Error("Не поддерживается браузером");
+                }
+            });
+
+            // ensure that chromium browsers support this.
+            if (!chrome.pageCapture || !chrome.pageCapture.saveAsMHTML) {
+                throw new Error("Не поддерживается браузером");
+            }
+        }
+
+        await checkPermission();
         const activeTab = await API.getActiveTab();
 
         /**
          * Gets the MHTML content of the active page.
          */
-        const getMHTML = (): any => {
+        const getMHTML = (): Promise<any> => {
             return new Promise<any>((resolve) => {
-                if (!chrome.pageCapture || !chrome.pageCapture.saveAsMHTML) {
-                    throw new Error("Не поддерживается браузером");
-                }
-
                 chrome.pageCapture.saveAsMHTML({tabId: activeTab.id}, (data) => {
                     return resolve(URL.createObjectURL(data));
                 });
