@@ -180,7 +180,7 @@ abstract class Exif {
      * Defaults to `API.getThread()`.
      */
     public static bindFigures(element: HTMLElement = API.getThread()): void {
-        const figures = element.querySelectorAll<HTMLElement>("figure.image");
+        const figures = element.querySelectorAll<HTMLElement>("figure.post__image");
 
         figures.forEach((figure) => {
             this.bindFigure(figure);
@@ -200,7 +200,7 @@ abstract class Exif {
         }).href;
         const spanFileSize = API.getElement<HTMLSpanElement>({
             dcmnt: figure,
-            selector: "figcaption > span.filesize",
+            selector: "figcaption > span.post__filezise",
             errorMessage: "Could not find a span."
         });
 
