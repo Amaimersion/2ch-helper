@@ -277,6 +277,7 @@ interface ElementsInstances {
     postPanelInstance: HTMLElement;
     checkboxInstance: HTMLElement;
     spoilerInstance: HTMLElement;
+    adminbarInstance: HTMLElement;
     customDownloadButton: HTMLDivElement;
     customInfoButton: HTMLDivElement;
 }
@@ -297,6 +298,7 @@ interface DefaultOptions {
     postPanelDisplay: string;
     checkboxDisplay: string;
     spoilerColor: string;
+    adminbarDisplay: string;
     customDownloadButtonDisplay: string;
     customInfoButtonDisplay: string;
 }
@@ -314,6 +316,7 @@ export abstract class PageOptions {
         postPanel: ".post__details .post__detailpart:last-of-type",
         checkbox: `.post__details > input[type="checkbox"]`,
         spoiler: ".spoiler",
+        adminbar: ".adminbar",
         customDownloadButton: `.${PageElements.customClasses.downloadButton}`,
         customInfoButton: ".custom-2ch-helper-info-button"
     };
@@ -334,7 +337,8 @@ export abstract class PageOptions {
             customInfoButton: this.getElement(this.selectors.customInfoButton) as HTMLDivElement,
             postPanelInstance: this.getElement(this.selectors.postPanel),
             checkboxInstance: this.getElement(this.selectors.checkbox),
-            spoilerInstance: this.getElement(this.selectors.spoiler)
+            spoilerInstance: this.getElement(this.selectors.spoiler),
+            adminbarInstance: this.getElement(this.selectors.adminbar)
         };
     }
 
@@ -360,6 +364,7 @@ export abstract class PageOptions {
             postPanelDisplay: this._elements.postPanelInstance ? this._elements.postPanelInstance.style.display : undefined,
             checkboxDisplay: this._elements.checkboxInstance ? this._elements.checkboxInstance.style.display : undefined,
             spoilerColor: this._elements.spoilerInstance ? this._elements.spoilerInstance.style.color : undefined,
+            adminbarDisplay: this._elements.adminbarInstance ? this._elements.adminbarInstance.style.display : undefined,
             customDownloadButtonDisplay: this._elements.customDownloadButton ? this._elements.customDownloadButton.style.display : undefined,
             customInfoButtonDisplay: this._elements.customInfoButton ? this._elements.customInfoButton.style.display : undefined
         };
@@ -402,6 +407,11 @@ export abstract class PageOptions {
             element.style.color = "inherit";
         });
 
+        const adminbars = document.querySelectorAll<HTMLElement>(this.selectors.adminbar);
+        adminbars.forEach((element) => {
+            element.style.display = "none";
+        });
+
         const customDownloadButtons = document.querySelectorAll<HTMLElement>(this.selectors.customDownloadButton);
         customDownloadButtons.forEach((element) => {
             element.style.display = "none";
@@ -441,6 +451,11 @@ export abstract class PageOptions {
         const spoilers = document.querySelectorAll<HTMLElement>(this.selectors.spoiler);
         spoilers.forEach((element) => {
             element.style.color = this._defaults.spoilerColor;
+        });
+
+        const adminbars = document.querySelectorAll<HTMLElement>(this.selectors.adminbar);
+        adminbars.forEach((element) => {
+            element.style.display = this._defaults.adminbarDisplay;
         });
 
         const customDownloadButtons = document.querySelectorAll<HTMLElement>(this.selectors.customDownloadButton);
