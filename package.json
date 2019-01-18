@@ -56,8 +56,8 @@
         "sass-loader": "^6.0.7",
         "typescript": "^2.9.2",
         "validate-html-links-webpack-plugin": "^1.0.0",
-        "webpack": "^4.28.4",
+        "webpack": "^4.15.1",
         "webpack-cli": "^2.1.5",
-        "webpack-merge": "^4.2.1"
+        "webpack-merge": "^4.1.3"
     }
 }
