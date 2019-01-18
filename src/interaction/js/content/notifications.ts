@@ -33,7 +33,7 @@ abstract class Observer {
     protected static observerEvent: MutationCallback = (mutations) => {
         for (let mutation of mutations) {
             for (let node of mutation.addedNodes) {
-                if (!Observer.isNewPostNode(node as HTMLElement)) {
+                if (!Observer.isPostNode(node as HTMLElement)) {
                     continue;
                 }
 
@@ -49,15 +49,27 @@ abstract class Observer {
      *
      * @param node The node for checking.
      */
-    protected static isNewPostNode(node: HTMLElement): boolean {
+    protected static isPostNode(node: HTMLElement): boolean {
         const postTags = ["div"];
         const postId = new RegExp(/((post)-*)/, "");
 
         return (
             node.tagName &&
             postTags.includes(node.tagName.toLowerCase()) &&
-            node.id &&
-            postId.test(node.id.toLowerCase())
+            (
+                // old layout, without empty parent div.
+                (
+                    node.id &&
+                    postId.test(node.id.toLowerCase()
+                )) ||
+
+                // now all new posts is wrapped in empty div.
+                (
+                    node.firstElementChild &&
+                    node.firstElementChild.id &&
+                    postId.test(node.firstElementChild.id.toLowerCase())
+                )
+            )
         );
     }
 
@@ -67,10 +79,12 @@ abstract class Observer {
      * @param post The post for checking.
      */
     protected static isReplyPost(post: HTMLElement): boolean {
-        const replyPostClasses = ["reply-posts-marker"];
+        const replyPostClasses = [
+            ".post_type_replied"
+        ];
 
         const containClass = replyPostClasses.some((element) => {
-            return post.classList.contains(element);
+            return !!post.querySelector(element);
         });
 
         return containClass;
@@ -143,8 +157,14 @@ export abstract class Notifications {
      * @param node The post div.
      */
     protected static getPostInfo(node: HTMLElement): PostInfo {
-        const messageElement = node.querySelector<HTMLElement>(".post-message");
+        const messageElement = node.querySelector<HTMLElement>(".post__message");
         const messageText = messageElement ? messageElement.innerText : "Не удалось получить сообщение поста.";
+
+        if (!node.id) {
+            // in new layout a new posts is wrapped in empty div.
+            // so, we are searching for actual post.
+            node = node.querySelector(`[id*=post]`);
+        }
 
         const href = node.id ? `${window.location.pathname}#${node.id}` : window.location.pathname;
 
