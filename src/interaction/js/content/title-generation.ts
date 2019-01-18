@@ -264,7 +264,7 @@ export abstract class TitleGeneration {
      */
     public static generateTitle(thread: HTMLElement): void {
         // if already exists.
-        if (thread.querySelector(".post-title")) {
+        if (thread.querySelector(".post__title")) {
             return;
         }
 
@@ -278,7 +278,7 @@ export abstract class TitleGeneration {
         }
 
         const span = document.createElement("span");
-        span.classList.add("post-title");
+        span.classList.add("post__title");
         span.innerText = title;
 
         const beforeElement = this.getBeforeInsertElement(thread);
@@ -288,7 +288,7 @@ export abstract class TitleGeneration {
         } else {
             const postDetails = API.getElement<HTMLElement>({
                 dcmnt: thread,
-                selector: ".post-details",
+                selector: ".post__details",
                 errorMessage: "Could not find a post details elements."
             });
             postDetails.appendChild(span);
@@ -306,7 +306,7 @@ export abstract class TitleGeneration {
     protected static createTitle(thread: HTMLElement): string {
         const message = API.getElement<HTMLElement>({
             dcmnt: thread,
-            selector: ".post-message",
+            selector: ".post__message",
             errorMessage: "Could not find a post message."
         });
 
@@ -359,25 +359,25 @@ export abstract class TitleGeneration {
      * @returns Returns `undefined` if cannot find.
      */
     protected static getBeforeInsertElement(thread: HTMLElement): HTMLElement {
-        const details = thread.querySelector("div.post-details");
+        const details = thread.querySelector("div.post__details");
 
         if (!details) return undefined;
 
         let element = undefined;
 
-        element = details.querySelector(".ananimas");
+        element = details.querySelector(".post__anon");
         if (element) return element;
 
-        element = details.querySelector(".post-email");
+        element = details.querySelector(".post__email");
         if (element) return element;
 
-        element = details.querySelector(".posttime");
+        element = details.querySelector(".post__time");
         if (element) return element;
 
-        element = details.querySelector(".reflink");
+        element = details.querySelector(".post__reflink");
         if (element) return element;
 
-        element = details.querySelector(".postpanel");
+        element = details.querySelector(".post__detailpart");
         if (element) return element;
 
         element = details.querySelector(".desktop");

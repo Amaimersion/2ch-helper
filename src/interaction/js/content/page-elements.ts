@@ -405,7 +405,7 @@ abstract class Custom {
         try {
             figures = API.getElements<Elements.Element>({
                 dcmnt: element,
-                selector: "figure.image",
+                selector: "figure.post__image",
                 errorMessage: "Could not find a figure elements."
             });
         } catch (error) {

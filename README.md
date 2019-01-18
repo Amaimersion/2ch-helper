@@ -37,7 +37,7 @@
 Расширение доступно для установки из следующих интернет-магазинов:
 - [Google Chrome Web Store](https://chrome.google.com/webstore/detail/2ch-helper/cdbeejpneccnfkmmmefieghgffglidmm)
 - [Mozilla Firefox Web Store](https://addons.mozilla.org/ru/firefox/addon/2ch-helper/)
-- [Opera Web Store]()
+- ~~Opera Web Store~~
 
 1. Перейдите в один из вышеперечисленных магазинов.
 2. Нажмите `Установить`.
