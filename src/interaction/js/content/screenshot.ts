@@ -311,8 +311,8 @@ export abstract class PageOptions {
         boardStatsBox: "#boardstats-box",
         favoritesBox: "#favorites-box",
         autorefresh: "#autorefresh-checkbox-bot",
-        postPanel: ".postpanel",
-        checkbox: `.post-details > input[type="checkbox"]`,
+        postPanel: ".post__details .post__detailpart:last-of-type",
+        checkbox: `.post__details > input[type="checkbox"]`,
         spoiler: ".spoiler",
         customDownloadButton: `.${PageElements.customClasses.downloadButton}`,
         customInfoButton: ".custom-2ch-helper-info-button"
